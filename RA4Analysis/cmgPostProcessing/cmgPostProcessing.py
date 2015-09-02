@@ -62,7 +62,7 @@ if options.skim.startswith('met'):
   skimCond = "met_pt>"+str(float(options.skim[3:]))
 if options.skim=='HT400':
   skimCond = "Sum$(Jet_pt)>400"
-if options.skim=='HT400ST200':   ##tuples have already ST200 skim
+if options.skim=='HT400ST200':
   skimCond = "Sum$(Jet_pt)>400&&(LepGood_pt[0]+met_pt)>200"
 
 ##In case a lepton selection is required, loop only over events where there is one 

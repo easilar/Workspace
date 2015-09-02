@@ -63,12 +63,12 @@ nbjets_30 = "Sum$(Jet_pt>"+str(minPt_Jet)+"&&abs(Jet_eta)<"+str(maxEta_Jet)+"&&J
 
 #ht = "(Sum$(Jet_pt*(Jet_pt>"+str(minPt_Jet)+"&&abs(Jet_eta)<"+str(maxEta_Jet)+"&&Jet_id)))"
 ht = "(Sum$(Jet_pt*(Jet_pt>"+str(minPt_Jet)+"&&abs(Jet_eta)<"+str(maxEta_Jet)+")))"
-dPhi = "acos((LepGood_pt[0]+metNoHF_pt*cos(LepGood_phi[0]-metNoHF_phi))/sqrt((LepGood_pt[0]**2)+(metNoHF_pt**2)+(2*metNoHF_pt*LepGood_pt[0]*cos(LepGood_phi[0]-metNoHF_phi))))"
-#dPhi = "acos((LepGood_pt+metNoHF_pt*cos(LepGood_phi-metNoHF_phi))/sqrt((LepGood_pt**2)+(metNoHF_pt**2)+(2*metNoHF_pt*LepGood_pt*cos(LepGood_phi-metNoHF_phi))))"
+dPhi = "acos((LepGood_pt[0]+met_pt*cos(LepGood_phi[0]-met_phi))/sqrt((LepGood_pt[0]**2)+(met_pt**2)+(2*met_pt*LepGood_pt[0]*cos(LepGood_phi[0]-met_phi))))"
+#dPhi = "acos((LepGood_pt+met_pt*cos(LepGood_phi-met_phi))/sqrt((LepGood_pt**2)+(met_pt**2)+(2*met_pt*LepGood_pt*cos(LepGood_phi-met_phi))))"
 
 
-#st = "(Sum$(((LepGood_pt[0]+metNoHF_pt)>"+str(min_st)+")*"+OneLep+")==1)"
-st = "(Sum$(((LepGood_pt[0]+metNoHF_pt)>"+str(min_st)+"))==1)"
+#st = "(Sum$(((LepGood_pt[0]+met_pt)>"+str(min_st)+")*"+OneLep+")==1)"
+st = "(Sum$(((LepGood_pt[0]+met_pt)>"+str(min_st)+"))==1)"
 
 ####njet and ht cuts
 njets_30_cut = "(("+njets_30+")>="+str(min_njets)+")"
@@ -80,7 +80,9 @@ ht_cut = "("+ht+">"+str(min_ht)+")"
 #dPhi_cut = "("+"Sum$("+dPhi+">"+str(min_DPhi)+")==1)"
 dPhi_cut = "("+dPhi+">"+str(min_DPhi)+")"
 
-filters = "(Flag_goodVertices&&Flag_CSCTightHaloFilter&&Flag_eeBadScFilter)"
+#filters = "(Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_CSCTightHaloFilter&&Flag_eeBadScFilter)"
+filters = "(Flag_HBHENoiseFilterMinZeroPatched&&Flag_goodVertices&&Flag_CSCTightHaloFilter&&Flag_eeBadScFilter)"
+#filters = "(Flag_HBHENoiseFilter&&Flag_CSCTightHaloFilter&&Flag_eeBadScFilter)"
 
 
 
