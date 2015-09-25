@@ -1,5 +1,8 @@
 import copy, os, sys
-dir = '/data/rschoefbeck/cmgTuples/postProcessed_Spring15/hard/' 
+dir = '/data/rschoefbeck/cmgTuples/postProcessed_Spring15/HT400ST200/hard/' 
+#"ZJetsToNuNu_HT-200To400_13TeV-madgraph_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1",
+#"ZJetsToNuNu_HT-400To600_13TeV-madgraph_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1",
+#"ZJetsToNuNu_HT-600ToInf_13TeV-madgraph_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1",
 
 TTJets_25ns={\
 "name" : "tt+Jets",
@@ -107,6 +110,7 @@ QCDHT_25ns = {
 }
 
 
+
 QCDEle_25ns={\
 "name" : "QCD (Ele)",
 "bins" : [
@@ -127,21 +131,6 @@ QCDEle_25ns={\
 ],
 'dir' : dir,
 }
-
-QCD_HT_25ns={\
-"name" : "QCD HT",
-"bins" : [
-"QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2",
-"QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1",
-"QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1",
-"QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2",
-"QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2",
-"QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1",
-"QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1",
-],
-'dir' : dir,
-}
-
 
 allSignalStrings=[\
 "SMS_T2tt_2J_mStop425_mLSP325",

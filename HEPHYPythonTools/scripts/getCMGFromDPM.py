@@ -128,7 +128,8 @@ else:
   print "Now working through %i pairs of log- and tree files."%len(pairs)
 
   for n, [logFile, treeFile] in pairs.iteritems():
-    chunkDir = getAbsNFSPath(options.targetDir).rstrip('/')+'_Chunk_'+str(n)
+    sdir=options.targetDir.rstrip('/').split('/')[-1]
+    chunkDir = getAbsNFSPath(options.targetDir).rstrip('/')+'/'+sdir+'_Chunk_'+str(n)
     if os.path.exists(chunkDir):
       if options.overwrite:
         shutil.rmtree(chunkDir)
@@ -166,4 +167,3 @@ else:
     os.remove(tlf) #remove target log file
     print "... done."
   print "Done with copying %i files"%len(pairs)
-
