@@ -1,6 +1,7 @@
 import copy, os, sys
 
-data_path = "/data/rschoefbeck/cmgTuples/Run2015D/"
+data_path = "/data/rschoefbeck/cmgTuples/Run2015D/hadd/"
+
 
 SingleMuon_Run2015D_PromptReco = { "name" : "SingleMuon_Run2015D-PromptReco-v3",}
 MuonEG_Run2015D_PromptReco = { "name" : "MuonEG_Run2015D-PromptReco-v3",}
@@ -19,5 +20,6 @@ for s in allSamples_Data25ns_0l:
     "skimAnalyzerDir":"",
     "treeName":"tree",
     'isData':True,
+    #'dir' : data_path + s['name']+'/'
     'dir' : data_path
   })

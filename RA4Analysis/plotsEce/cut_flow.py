@@ -4,11 +4,12 @@ import os,sys
 from Workspace.HEPHYPythonTools.user import username
 import Workspace.HEPHYPythonTools.xsec as xsec
 from Workspace.HEPHYPythonTools.helpers import getObjFromFile, getChain, getChunks, getCutYieldFromChain, getYieldFromChain
-from Workspace.RA4Analysis.cmgTuples_Spring15_v2 import *
+#from Workspace.RA4Analysis.cmgTuples_Spring15_v2 import *
+from Workspace.RA4Analysis.cmgTuples_Spring15_25ns import *
 from cutFlow_helper import *
 
 
-path = "/afs/hephy.at/user/e/easilar/www/Spring15/Cut_Flow/"
+path = "/afs/hephy.at/user/e/easilar/www/Spring15/Cut_Flow/25ns/"
 if not os.path.exists(path):
   os.makedirs(path)
 
@@ -16,7 +17,7 @@ maxN = 1
 small = False
 if not small : maxN = -1
 
-lumi = 42 #pb-1
+lumi = 3000 #pb-1
 
 lepSels = [
 #  {'cut':OneMu , 'veto':OneMu_lepveto, 'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '(HLT_MuHT350MET70 || HLT_Mu50)'},\
@@ -26,11 +27,12 @@ lepSels = [
 
 
 samples=[
-{"sample":"DY",           "list":[DY_HT200to400,DY_HT400to600,DY_HT600toInf],"tex":"DY + jets",'color':ROOT.kRed-6},
-{"sample":"singleTop",    "list":[T_tWch,TBar_tWch,TToLeptons_tch],"tex":"single top",'color': ROOT.kViolet+5},
-#{"sample":"QCD",          "list":[QCD_HT200to300,QCD_HT300to500,QCD_HT500to700,QCD_HT700to1000,QCD_HT1000to1500,QCD_HT1500to2000,QCD_HT2000toInf], "tex":"QCD","color":ROOT.kCyan-6},        
-{"sample":"WJets",        "list":[WJets],"tex":"W + jets","color":ROOT.kGreen-2},
-{"sample":"ttJets",       "list":[TTJets], "tex":"ttbar + jets",'color':ROOT.kBlue-4},
+{"sample":"DY",           "list":[DYJetsToLL_M_50_HT100to200_25ns,DYJetsToLL_M_50_HT200to400_25ns,DYJetsToLL_M_50_HT400to600_25ns,DYJetsToLL_M_50_HT600toInf_25ns],"tex":"DY + jets",'color':ROOT.kRed-6},
+{"sample":"singleTop",    "list":[TToLeptons_sch_25ns,TToLeptons_tch_25ns,TBar_tWch_25ns],"tex":"single top",'color': ROOT.kViolet+5},
+{"sample":"QCD",          "list":[QCD_HT200to300_25ns,QCD_HT300to500_25ns,QCD_HT500to700_25ns,QCD_HT700to1000_25ns,QCD_HT1000to1500_25ns,QCD_HT1500to2000_25ns,QCD_HT2000toInf_25ns], "tex":"QCD","color":ROOT.kCyan-6},        
+{"sample":"WJets",        "list":[WJetsToLNu_HT100to200_25ns,WJetsToLNu_HT200to400_25ns,WJetsToLNu_HT400to600_25ns,WJetsToLNu_HT600to800_25ns,WJetsToLNu_HT800to1200_25ns,WJetsToLNu_HT1200to2500_25ns,WJetsToLNu_HT2500toInf_25ns],"tex":"W + jets","color":ROOT.kGreen-2},
+#{"sample":"ttJets",       "list":[TTJets], "tex":"ttbar + jets",'color':ROOT.kBlue-4},
+{"sample":"ttJets",       "list":[TTJets_LO_25ns,TTJets_LO_HT600to800_25ns,TTJets_LO_HT800to1200_25ns,TTJets_LO_HT1200to2500_25ns,TTJets_LO_HT2500toInf_25ns], "tex":"ttbar + jets",'color':ROOT.kBlue-4},
 ]
 
 for lepSel in lepSels:
@@ -40,18 +42,21 @@ for lepSel in lepSels:
     {'cut':"&&".join([lepSel['cut'],lepSel['veto']]), 'label':'lepton veto'},\
     {'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut]), 'label':'$H_T >$ 500 GeV'},\
     {'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st]), 'label':'$L_T >$ 250 GeV'},\
-    {'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut]), 'label':'2 jets ($\\geq$ 30 GeV)'},\
+    {'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut]), 'label':'4 jets ($\\geq$ 30 GeV)'},\
     {'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80]), 'label':'2. jets ($\\geq$ 80 GeV)'},\
     {'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_zero]), 'label':'0 b-jets (CSVv2)'},\
-    {'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_zero,filters]), 'label':'Filters'},\
+    {'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_zero,dPhi_cut]), 'label':'$\\Delta\\Phi > 1$'},\
+    #{'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_zero,filters]), 'label':'Filters'},\
     {'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_multi]), 'label':'$>=1 b-jets (CSVv2)$'},\
-    {'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_multi,filters]), 'label':'Filters'},\
+    {'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_multi,dPhi_cut]), 'label':'$\\Delta\\Phi > 1$'},\
+    #{'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_multi,filters]), 'label':'Filters'},\
   ]
   ofile = file(path+'cut_flow_'+str(lumi)+'pb_'+lepSel['label']+'_4jets_.tex','w')
   doc_header = '\\documentclass{article}\\usepackage[english]{babel}\\usepackage{graphicx}\\usepackage[margin=0.5in]{geometry}\\begin{document}'
   ofile.write(doc_header)
   ofile.write("\n")
-  table_header = '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{c | c | c | c | c | c | c | c | c | c}'
+  #table_header = '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{c | c | c | c | c | c | c | c | c | c}'
+  table_header = '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{c | c | c | c | c | c }'
   ofile.write(table_header)
   ofile.write("\n")
   for s in samples:

@@ -16,7 +16,7 @@ lepSel = 'hard'
 
 lumi = 3 #fb-1
 #lumi = 0.1 #fb-1
-weight_str = '((weight/4)*'+str(lumi)+')'
+#weight_str = '((weight/4)*'+str(lumi)+')'
 
 htCut = [500,10000000000]
 #stCut = [250,350]

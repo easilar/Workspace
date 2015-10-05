@@ -1,7 +1,8 @@
 import ROOT
 from Workspace.HEPHYPythonTools.helpers import getChain, getPlotFromChain
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_v5_Phys14V2 import * 
-from Workspace.RA4Analysis.cmgTuplesPostProcessed_v8_Phys14V3_HT400ST200 import *
+#from Workspace.RA4Analysis.cmgTuplesPostProcessed_v8_Phys14V3_HT400ST200 import *
+from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
 
 small = False
 maxN = -1 if not small else 1 
@@ -14,7 +15,7 @@ from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName,nBTagBinName,v
 from math import pi, sqrt
 from Workspace.HEPHYPythonTools.user import username
 uDir = username[0]+'/'+username
-subDir = 'pngPie/forACD/'
+subDir = '/MC/Spring15/25ns/PiCharts/'
 
 path = '/afs/hephy.at/user/'+uDir+'/www/'+subDir
 if not os.path.exists(path):
@@ -40,18 +41,21 @@ htb = eval("("+options.htb+")") if options.htb!="" else None
 from draw_helpers_new import *
 
 #from Workspace.RA4Analysis.cmgTuples_v5_Phys14 import *
-samples=[WJetsHTToLNu['hard'], ttJets['hard'], QCD['hard'], singleTop['hard'], DY['hard'],  TTVH['hard']]
+#samples=[WJetsHTToLNu['hard'], ttJets['hard'], QCD['hard'], singleTop['hard'], DY['hard'],  TTVH['hard']]
+samples=[DY_25ns,singleTop_25ns,QCD_HT_25ns,WJetsHTToLNu_25ns,TTJets_LO_25ns]
 for s in samples:
   s['chain']=getChain(s,maxN=maxN,histname="")
 
-lepton = options.lepton
+#lepton = options.lepton
+lepton = "both"
 print "lepton", lepton, "ST:",stb, 'htb',htb, "btb", btb
 
 
-#htreg = [(500,750),(750, 1000),(1000,1250),(1250,-1)]
-htreg = [(500,750),(750,1250),(1250,-1)]
-#njreg = [(2,2),(3,3),(4,4),(5,5),(6,7),(8,-1)]
-njreg = [(2,2),(3,3),(4,4),(5,5),(6,8),(9,-1)]
+
+htreg = [(500,750),(750, 1000),(1000,1250),(1250,-1)]
+#htreg = [(500,750),(750,1250),(1250,-1)]
+njreg = [(2,2),(3,3),(4,4),(5,5),(6,7),(8,-1)]
+#njreg = [(2,2),(3,3),(4,4),(5,5),(6,8),(9,-1)]
 nbtreg = [(0,0),(1,1),(2,2),(3,-1)]
 
 plots={}
@@ -73,7 +77,7 @@ if btb and stb:
       looseLeptonVeto(lepton=lepton), \
   #            nJetCut(njb=njb, minPt=30, maxEta=2.4), \
   #            htCut  (htb=htb, minPt=30, maxEta=2.4), \
-      #jet2Ptcut(),\
+      jet2Ptcut(),\
       nBTagCut(btb),
       stCut(stb=stb), \
       dPhiCut(1)\
@@ -140,7 +144,7 @@ if htb and stb:
       exactlyOneTightLepton(lepton=lepton),\
       looseLeptonVeto(lepton=lepton), \
   #            nJetCut(njb=njb, minPt=30, maxEta=2.4), \
-      #jet2Ptcut(),\
+      jet2Ptcut(),\
       htCut  (htb=htb), \
   #   nBTagCut(btb, minPt=30, maxEta=2.4, minCMVATag=0.732),
       stCut(stb=stb), \

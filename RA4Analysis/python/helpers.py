@@ -17,7 +17,7 @@ def color(S):
   s=S.lower()
   if "qcd" in s:
     return ROOT.kCyan-6 
-  if "singletop" in s:
+  if "single top" in s:
     return ROOT.kViolet+5
   if ("ttjets" in s) or ("ttbar" in s) or ("tt+jets" in s):
     return ROOT.kBlue-2
