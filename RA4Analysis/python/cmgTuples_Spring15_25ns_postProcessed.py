@@ -142,6 +142,17 @@ QCD_HT_25ns={\
 'dir' : '/data/easilar/cmgTuples/postProcessed_Spring15/hard/',
 }
 
+TTVH_25ns={\
+"name" : "TTVH_25ns",
+"bins" : [
+"TTWJetsToLNu_25ns",
+"TTWJetsToQQ_25ns",
+"TTZToLLNuNu_25ns",
+"TTZToQQ_25ns"
+],
+"dir" : "/data/easilar/cmgTuples/postProcessed_Spring15/hard/",
+}
+
 
 allSignalStrings=[\
 "SMS_T2tt_2J_mStop425_mLSP325",

@@ -29,7 +29,8 @@ process.maxEvents = cms.untracked.PSet(
 # Input source
 process.source = cms.Source("PoolSource",
 
-    fileNames = cms.untracked.vstring('root://hephyse.oeaw.ac.at//dpm/oeaw.ac.at/home/cms/store/user/nrad/T2DegStop_300_270_GEN-SIM/T2DegStop_300_270_DIGI-RunIISpring15-MCRUN2_74_V9-25ns-V3/33caaa9427930cea9e594b39486eddcd/step1_DIGI_L1_DIGI2RAW_HLT_25ns_986_1_qFc.root'),
+    #fileNames = cms.untracked.vstring('root://hephyse.oeaw.ac.at//dpm/oeaw.ac.at/home/cms/store/user/nrad/T2DegStop_300_270_GEN-SIM/T2DegStop_300_270_DIGI-RunIISpring15-MCRUN2_74_V9-25ns-V3/33caaa9427930cea9e594b39486eddcd/step1_DIGI_L1_DIGI2RAW_HLT_25ns_986_1_qFc.root'),
+    fileNames = cms.untracked.vstring('file://step1_DIGI_L1_DIGI2RAW_HLT_25ns_1000evt.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 

@@ -95,7 +95,7 @@ ht_cut = "("+ht+">"+str(min_ht)+")"
 dPhi_cut = "("+dPhi+">"+str(min_DPhi)+")"
 
 #filters = "(Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_CSCTightHaloFilter&&Flag_eeBadScFilter)"
-filters = "(Flag_CSCTightHaloFilter&&Flag_goodVertices&&Flag_CSCTightHaloFilter&&Flag_eeBadScFilter)"
+filters = "(Flag_CSCTightHaloFilter&&Flag_HBHENoiseFilterMinZeroPatched&&Flag_goodVertices&&Flag_eeBadScFilter)"
 #filters = "(Flag_CSCTightHaloFilter)"
 
 

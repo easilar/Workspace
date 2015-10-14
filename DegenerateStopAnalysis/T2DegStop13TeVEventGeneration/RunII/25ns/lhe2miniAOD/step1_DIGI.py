@@ -23,14 +23,14 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1)
+    input = cms.untracked.int32(1000)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
     dropDescendantsOfDroppedBranches = cms.untracked.bool(False),
-    fileNames = cms.untracked.vstring('root://hephyse.oeaw.ac.at//dpm/oeaw.ac.at/home/cms/store/user/nrad/T2DegStop_300_270_GEN-SIM/T2DegStop_300_270_GEN-SIM/59531333944c2793ca6c056c8055e782/T2DegStop_300_270_GENSIM_387_1_iS5.root'),
-    #fileNames = cms.untracked.vstring('GENSIM.root'),
+    #fileNames = cms.untracked.vstring('root://hephyse.oeaw.ac.at//dpm/oeaw.ac.at/home/cms/store/user/nrad/T2DegStop_300_270_GEN-SIM/T2DegStop_300_270_GEN-SIM/59531333944c2793ca6c056c8055e782/T2DegStop_300_270_GENSIM_387_1_iS5.root'),
+    fileNames = cms.untracked.vstring('file:/afs/hephy.at/work/e/easilar/new_working_directory/CMSSW_7_1_15_patch1/src/fromNavid/25ns/lhe2miniAOD/gluino_1000_xqcut30_1_GENSIM_1000evt.root'),
     inputCommands = cms.untracked.vstring('keep *', 
         'drop *_genParticles_*_*', 
         'drop *_genParticlesForJets_*_*', 
@@ -70,7 +70,7 @@ process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
         filterName = cms.untracked.string('')
     ),
     eventAutoFlushCompressedSize = cms.untracked.int32(5242880),
-    fileName = cms.untracked.string('step1_DIGI_L1_DIGI2RAW_HLT_25ns.root'),
+    fileName = cms.untracked.string('step1_DIGI_L1_DIGI2RAW_HLT_25ns_1000evt.root'),
     outputCommands = process.RAWSIMEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )

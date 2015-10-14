@@ -73,7 +73,7 @@ if options.leptonSelection.lower()=='soft':
   skimCond += "&&Sum$(LepGood_pt>5&&LepGood_pt<25&&abs(LepGood_eta)<2.4)>=1"
 if options.leptonSelection.lower()=='hard':
   #skimCond += "&&Sum$(LepGood_pt>25&&LepGood_relIso03<0.4&&abs(LepGood_eta)<2.4)>=1"
-  skimCond += "&&Sum$(LepGood_pt>25&&abs(LepGood_eta)<2.4)>=1"
+  skimCond += "&&Sum$(LepGood_pt>25&&abs(LepGood_eta)<2.5)>=1"
 if options.leptonSelection.lower()=='dilep':
   #skimCond += "&&Sum$(LepGood_pt>25&&LepGood_relIso03<0.4&&abs(LepGood_eta)<2.4)>=1"
   skimCond += "&&Sum$(LepGood_pt>15&&abs(LepGood_eta)<2.4)>1"
@@ -124,7 +124,8 @@ for isample, sample in enumerate(allSamples):
     lumiScaleFactor=1
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_DATA 
   else:
-    lumiScaleFactor = xsec[sample['dbsName']]*target_lumi/float(sumWeight)
+    #lumiScaleFactor = xsec[sample['dbsName']]*target_lumi/float(sumWeight)
+    lumiScaleFactor = target_lumi/float(sumWeight)
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_MC
 
   readVariables = ['met_pt/F', 'met_phi/F']
@@ -197,7 +198,8 @@ for isample, sample in enumerate(allSamples):
         r.init()
         t.GetEntry(i)
         genWeight = 1 if sample['isData'] else t.GetLeaf('genWeight').GetValue()
-        s.weight = lumiScaleFactor*genWeight
+        xsectemp = t.GetLeaf('xsec').GetValue()
+        s.weight = xsectemp*lumiScaleFactor*genWeight
 
         if not sample['isData']:
           if "TTJets" in sample['dbsName']:

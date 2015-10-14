@@ -19,12 +19,13 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10)
+    input = cms.untracked.int32(1000)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('root://hephyse.oeaw.ac.at//dpm/oeaw.ac.at/home/cms/store/user/nrad/T2DegStop_300_270_GEN-SIM/T2DegStop_300_270_RECO-RunIISpring15-MCRUN2_74_V9-25ns/cdcc155817963320a88c2dd6cf768461/step2_RAW2DIGI_L1Reco_RECO_EI_100_1_iG9.root'),
+    #fileNames = cms.untracked.vstring('root://hephyse.oeaw.ac.at//dpm/oeaw.ac.at/home/cms/store/user/nrad/T2DegStop_300_270_GEN-SIM/T2DegStop_300_270_RECO-RunIISpring15-MCRUN2_74_V9-25ns/cdcc155817963320a88c2dd6cf768461/step2_RAW2DIGI_L1Reco_RECO_EI_100_1_iG9.root'),
+    fileNames = cms.untracked.vstring('file://step2_RAW2DIGI_L1Reco_RECO_EI.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -51,7 +52,8 @@ process.MINIAODSIMoutput = cms.OutputModule("PoolOutputModule",
     dropMetaData = cms.untracked.string('ALL'),
     eventAutoFlushCompressedSize = cms.untracked.int32(15728640),
     fastCloning = cms.untracked.bool(False),
-    fileName = cms.untracked.string('T2DegStop_300_270_RunII_25ns_miniAOD.root'),
+    #fileName = cms.untracked.string('T2DegStop_300_270_RunII_25ns_miniAOD.root'),
+    fileName = cms.untracked.string('gluino_1000_xqcut30_1_GENSIM_1000evt_miniAOD.root'),
     outputCommands = process.MINIAODSIMEventContent.outputCommands,
     overrideInputFileSplitLevels = cms.untracked.bool(True)
 )
