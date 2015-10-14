@@ -5,6 +5,7 @@ TTJets_HTLO_25ns={\
 "name" : "tt+Jets LO",
 "bins" : [
 #"TTJets_HT-0to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2",
+"TTJets_LO_25ns",
 "TTJets_HT600to800",
 "TTJets_HT800to1200",
 "TTJets_HT1200to2500",
@@ -29,16 +30,16 @@ WJetsHTToLNu_25ns={\
 }
 
 
-#singleTop_25ns={\
-#"name" : "single top",
-#"bins" : [
-#"ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1",
-#"ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1",
-#"ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1",
-#"ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1",
-#],
-#'dir' : dir,
-#}
+singleTop_25ns={\
+"name" : "single top",
+"bins" : [
+"TBar_tWch",
+"TToLeptons_sch",
+"TToLeptons_tch",
+"T_tWch",
+],
+'dir' : dir,
+}
 
 DY_25ns={\
 "name" : "DY",
