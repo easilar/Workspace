@@ -1,5 +1,16 @@
 data_path = "/data/easilar/tuples_from_Artur/" 
 
+TTJets_LO_25ns = {\
+"name" : "TTJets_LO_25ns",
+"chunkString":"TTJets_LO_25ns",
+"dir": data_path,
+"dbsName" : "",
+"skimAnalyzerDir":"skimAnalyzerCount",
+"rootFileLocation":"/treeProducerSusySingleLepton/tree.root",
+"treeName":"tree",
+'isData':False,
+}
+
 TTJets_LO_HT600to800_25ns={\
 "name" : "TTJets_HT600to800",
 "chunkString":"TTJets_HT600to800",
@@ -10,6 +21,7 @@ TTJets_LO_HT600to800_25ns={\
 "treeName":"tree",
 'isData':False,
 }
+
 TTJets_LO_HT800to1200_25ns={\
 "name" : "TTJets_HT800to1200",
 "chunkString":"TTJets_HT800to1200",
@@ -299,6 +311,52 @@ TTZToQQ_25ns={\
 "treeName":"tree",
 'isData':False
 }
+
+TBar_tWch ={\
+"name" : "TBar_tWch",
+"chunkString":"TBar_tWch",
+"dir":  data_path ,
+"dbsName" : "",
+"skimAnalyzerDir":"skimAnalyzerCount",
+"rootFileLocation":"/treeProducerSusySingleLepton/tree.root",
+"treeName":"tree",
+'isData':False
+}
+
+TToLeptons_sch ={\
+"name" : "TToLeptons_sch",
+"chunkString":"TToLeptons_sch",
+"dir":  data_path ,
+"dbsName" : "",
+"skimAnalyzerDir":"skimAnalyzerCount",
+"rootFileLocation":"/treeProducerSusySingleLepton/tree.root",
+"treeName":"tree",
+'isData':False
+}
+
+TToLeptons_tch ={\
+"name" : "TToLeptons_tch",
+"chunkString":"TToLeptons_tch",
+"dir":  data_path ,
+"dbsName" : "",
+"skimAnalyzerDir":"skimAnalyzerCount",
+"rootFileLocation":"/treeProducerSusySingleLepton/tree.root",
+"treeName":"tree",
+'isData':False
+}
+
+T_tWch ={\
+"name" : "T_tWch",
+"chunkString":"T_tWch",
+"dir":  data_path ,
+"dbsName" : "",
+"skimAnalyzerDir":"skimAnalyzerCount",
+"rootFileLocation":"/treeProducerSusySingleLepton/tree.root",
+"treeName":"tree",
+'isData':False
+}
+
+
 
 
 #allSamples_Spring15_25ns = [TTJets_25ns, DYJetsToLL_M_10to50_25ns, DYJetsToLL_M_50_HT100to200_25ns, DYJetsToLL_M_50_HT200to400_25ns, DYJetsToLL_M_50_HT400to600_25ns, DYJetsToLL_M_50_HT600toInf_25ns, WJetsToLNu_HT100to200_25ns, WJetsToLNu_HT200to400_25ns, WJetsToLNu_HT400to600_25ns, WJetsToLNu_HT600toInf_25ns, WJetsToLNu_HT600to800_25ns, WJetsToLNu_HT800to1200_25ns, WJetsToLNu_HT1200to2500_25ns, WJetsToLNu_HT2500toInf_25ns, TToLeptons_sch_25ns, TToLeptons_tch_25ns, TBar_tWch_25ns, T_tWch_25ns, QCD_MuEnriched_Pt15to20_25ns, QCD_MuEnriched_Pt20to30_25ns, QCD_MuEnriched_Pt30to50_25ns, QCD_MuEnriched_Pt50to80_25ns, QCD_MuEnriched_Pt80to120_25ns, QCD_MuEnriched_Pt120to170_25ns, QCD_MuEnriched_Pt170to300_25ns, QCD_MuEnriched_Pt300to470_25ns, QCD_MuEnriched_Pt470to600_25ns, QCD_MuEnriched_Pt600to800_25ns, QCD_MuEnriched_Pt800to1000_25ns, QCD_MuEnriched_Pt1000toInf_25ns, QCD_EMEnriched_Pt15to20_25ns, QCD_EMEnriched_Pt20to30_25ns, QCD_EMEnriched_Pt30to50_25ns, QCD_EMEnriched_Pt50to80_25ns, QCD_EMEnriched_Pt80to120_25ns, QCD_EMEnriched_Pt120to170_25ns, QCD_EMEnriched_Pt170to300_25ns, QCD_EMEnriched_Pt300toInf_25ns, QCD_bcToE_Pt15to20_25ns, QCD_bcToE_Pt20to30_25ns, QCD_bcToE_Pt30to80_25ns, QCD_bcToE_Pt80to170_25ns, QCD_bcToE_Pt170to250_25ns, QCD_bcToE_Pt250toInf_25ns, WZ_25ns, WWTo2L2Nu_25ns, ZZ_25ns, ZJetsToNuNu_HT200to400_25ns, ZJetsToNuNu_HT400to600_25ns, ZJetsToNuNu_HT600toInf_25ns, ]
