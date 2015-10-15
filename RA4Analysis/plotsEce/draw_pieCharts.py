@@ -2,7 +2,8 @@ import ROOT
 from Workspace.HEPHYPythonTools.helpers import getChain, getPlotFromChain
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_v5_Phys14V2 import * 
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_v8_Phys14V3_HT400ST200 import *
-from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
+#from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
+from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur import *
 
 small = False
 maxN = -1 if not small else 1 
@@ -15,7 +16,7 @@ from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName,nBTagBinName,v
 from math import pi, sqrt
 from Workspace.HEPHYPythonTools.user import username
 uDir = username[0]+'/'+username
-subDir = '/MC/Spring15/25ns/PiCharts/'
+subDir = '/MC/Spring15/25ns_fromArtur/PiCharts/'
 
 path = '/afs/hephy.at/user/'+uDir+'/www/'+subDir
 if not os.path.exists(path):
@@ -42,7 +43,7 @@ from draw_helpers_new import *
 
 #from Workspace.RA4Analysis.cmgTuples_v5_Phys14 import *
 #samples=[WJetsHTToLNu['hard'], ttJets['hard'], QCD['hard'], singleTop['hard'], DY['hard'],  TTVH['hard']]
-samples=[DY_25ns,TTVH_25ns,singleTop_25ns,QCD_HT_25ns,WJetsHTToLNu_25ns,TTJets_LO_25ns]
+samples=[DY_25ns,TTV_25ns,singleTop_25ns,QCDHT_25ns,WJetsHTToLNu_25ns,TTJets_HTLO_25ns]
 for s in samples:
   s['chain']=getChain(s,maxN=maxN,histname="")
 

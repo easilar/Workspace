@@ -16,6 +16,7 @@ def exactlyOneTightLepton(lepton="muon"):
   if lepton.lower()=="muon":
     #return exactlyOneTightMuon(minPt=minPt, maxEta=maxEta, minID=minID, minRelIso=minRelIso)
     return "singleMuonic"
+    #return "(Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>25&&abs(LepGood_eta)<=2.4&&LepGood_miniRelIso<0.2&&LepGood_mediumMuonId==1&&LepGood_sip3d<4.0))==1)"
   if lepton.lower()=="electron":
     #return exactlyOneTightElectron(minPt=minPt, maxEta=maxEta, minID=minID, minRelIso=minRelIso)
     return "singleElectronic"
@@ -27,13 +28,15 @@ def exactlyOneTightLepton(lepton="muon"):
 def looseLeptonVeto(lepton, minPt=10):
   if lepton=="muon":
     #return "(Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>"+str(minPt)+")==1&&Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt)+")==0)"
-    return "nLooseHardLeptons==1&&nTightHardLeptons==1"
+    #return "nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0"
+    return "nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0"
+    #return "((Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>=10&&LepGood_miniRelIso<0.4&&abs(LepGood_eta)<=2.4))==1&&(Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>=10&&abs(LepGood_eta)<=2.5&&LepGood_miniRelIso<0.4&&((abs(LepGood_eta)<0.8&&LepGood_mvaIdSpring15>-0.16)||((abs(LepGood_eta)>=0.8&&abs(LepGood_eta)<1.479)&&LepGood_mvaIdSpring15>-0.65)||((abs(LepGood_eta)>=1.479)&&LepGood_mvaIdSpring15>-0.74))))==0)"
   if lepton=="electron":
     #return "(Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>"+str(minPt)+")==0&&Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt)+")==1)"
-    return "nLooseHardLeptons==1&&nTightHardLeptons==1"
+    return "nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0"
   if lepton=="both":
     #return "(Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>"+str(minPt)+") + Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt)+")==1)"
-    return "nLooseHardLeptons==1&&nTightHardLeptons==1"
+    return "nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0"
 
 def nBTagStr():
   #return "Sum$(Jet_pt>"+str(minPt)+"&&abs(Jet_eta)<"+str(maxEta)+"&&Jet_id&&Jet_btagCMVA>"+str(minCMVATag)+")"
