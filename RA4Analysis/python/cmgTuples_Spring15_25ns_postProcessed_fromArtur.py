@@ -2,7 +2,7 @@ import copy, os, sys
 dir = '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur/hard/' 
 
 TTJets_HTLO_25ns={\
-"name" : "tt+Jets LO",
+"name" : "tt+Jets_LO",
 "bins" : [
 #"TTJets_HT-0to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2",
 "TTJets_LO_25ns",
@@ -31,7 +31,7 @@ WJetsHTToLNu_25ns={\
 
 
 singleTop_25ns={\
-"name" : "single top",
+"name" : "singleTop",
 "bins" : [
 "TBar_tWch",
 "TToLeptons_sch",
@@ -54,7 +54,7 @@ DY_25ns={\
 
 
 QCDHT_25ns = {
-"name":"QCD (HT)",
+"name":"QCD",
 "bins":[
 "QCD_HT1000to1500",
 "QCD_HT1500to2000",
@@ -68,7 +68,7 @@ QCDHT_25ns = {
 }
 
 TTV_25ns = {
-"name":"TTVH (HT)",
+"name":"TTVH_HT",
 "bins":[
 "TTWJetsToLNu_25ns",
 "TTWJetsToQQ_25ns",

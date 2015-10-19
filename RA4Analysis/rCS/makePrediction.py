@@ -6,7 +6,8 @@ from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName,nBTagBinName,v
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_v8_Phys14V3_HT400ST200 import *
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_v9_Phys14V3_HT400ST200_ForTTJetsUnc import *
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_Spring15_hard import *
-from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
+#from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
+from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur import *
 from makeTTPrediction import makeTTPrediction
 from makeWPrediction import makeWPrediction
 from Workspace.HEPHYPythonTools.user import username
@@ -21,10 +22,12 @@ lepSel = 'hard'
 debugReweighting = False
 
 cWJets  = getChain(WJetsHTToLNu_25ns,histname='')
-cTTJets = getChain(TTJets_LO_25ns,histname='')
-cRest = getChain([singleTop_25ns, DY_25ns, diBosons_25ns],histname='')#no QCD no TTVH no DY (too low statistics!)
-cBkg = getChain([WJetsHTToLNu_25ns,TTJets_LO_25ns,singleTop_25ns, DY_25ns, diBosons_25ns],histname='')#no QCD, no TTVH, no DY
-cData = getChain([WJetsHTToLNu_25ns,TTJets_LO_25ns,singleTop_25ns, DY_25ns, diBosons_25ns] , histname='')
+#cTTJets = getChain(TTJets_LO_25ns,histname='')
+cTTJets = getChain(TTJets_HTLO_25ns,histname='')
+#cRest = getChain([singleTop_25ns, DY_25ns, diBosons_25ns],histname='')#no QCD no TTVH no DY (too low statistics!)
+cRest = getChain([singleTop_25ns,TTV_25ns,DY_25ns],histname='')#no QCD
+cBkg = getChain([WJetsHTToLNu_25ns,TTJets_HTLO_25ns,singleTop_25ns, DY_25ns],histname='')#no QCD, no TTVH, no DY
+cData = getChain([WJetsHTToLNu_25ns,TTJets_HTLO_25ns,singleTop_25ns, DY_25ns] , histname='')
 
 #cBkg = getChain([WJetsHTToLNu[lepSel], ttJets[lepSel], DY[lepSel], singleTop[lepSel], TTVH[lepSel]],histname='')#no QCD
 #cData = getChain([WJetsHTToLNu[lepSel], ttJets[lepSel], DY[lepSel], singleTop[lepSel], TTVH[lepSel]] , histname='')
@@ -39,7 +42,7 @@ if small: signalRegions = smallRegion
 #DEFINE LUMI AND PLOTDIR
 lumi = 3.
 printDir = '/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Spring15/25ns/templateFit/'
-pickleDir = '/data/'+username+'/Spring15/25ns/NORMALIZATIONTEST_rCS_0b_'+str(lumi)+'/'
+pickleDir = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'/'
 
 if not os.path.exists(pickleDir):
   os.makedirs(pickleDir)

@@ -11,15 +11,17 @@
 #  return "(Sum$("+muonSelectionStr(minPt=minPt, maxEta=maxEta, minID=minID, minRelIso=minRelIso)+")==1)"
 #def exactlyOneTightElectron(minPt=25, maxEta=2.4, minID=1, minRelIso=0.14):
 #  return "(Sum$("+electronSelectionStr(minPt=minPt, maxEta=maxEta, minID=minID, minRelIso=minRelIso)+")==1)"
+from cutFlow_helper import *
  
 def exactlyOneTightLepton(lepton="muon"):
   if lepton.lower()=="muon":
+    return OneMu
     #return exactlyOneTightMuon(minPt=minPt, maxEta=maxEta, minID=minID, minRelIso=minRelIso)
-    return "singleMuonic"
-    #return "(Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>25&&abs(LepGood_eta)<=2.4&&LepGood_miniRelIso<0.2&&LepGood_mediumMuonId==1&&LepGood_sip3d<4.0))==1)"
+    #return "singleMuonic"
   if lepton.lower()=="electron":
+    return OneE
     #return exactlyOneTightElectron(minPt=minPt, maxEta=maxEta, minID=minID, minRelIso=minRelIso)
-    return "singleElectronic"
+    #return "singleElectronic"
   if lepton.lower()=="both":
     #assert len(minPt)==2 and len(maxEta)==2 and len(minID)==2 and len(minRelIso)==2, "exactlyOneTightLepton: Not all args of length 2!"
     #return "(Sum$("+anyLeptonSelectionStr(minPt=minPt, maxEta=maxEta, minID=minID, minRelIso=minRelIso)+")==1)" 
@@ -29,11 +31,13 @@ def looseLeptonVeto(lepton, minPt=10):
   if lepton=="muon":
     #return "(Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>"+str(minPt)+")==1&&Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt)+")==0)"
     #return "nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0"
-    return "nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0"
+    ##return "nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0"
+    return OneMu_lepveto
     #return "((Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>=10&&LepGood_miniRelIso<0.4&&abs(LepGood_eta)<=2.4))==1&&(Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>=10&&abs(LepGood_eta)<=2.5&&LepGood_miniRelIso<0.4&&((abs(LepGood_eta)<0.8&&LepGood_mvaIdSpring15>-0.16)||((abs(LepGood_eta)>=0.8&&abs(LepGood_eta)<1.479)&&LepGood_mvaIdSpring15>-0.65)||((abs(LepGood_eta)>=1.479)&&LepGood_mvaIdSpring15>-0.74))))==0)"
   if lepton=="electron":
     #return "(Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>"+str(minPt)+")==0&&Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt)+")==1)"
-    return "nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0"
+    ##return "nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0"
+    return OneE_lepveto
   if lepton=="both":
     #return "(Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>"+str(minPt)+") + Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt)+")==1)"
     return "nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0"
