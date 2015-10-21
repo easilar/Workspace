@@ -11,9 +11,10 @@ dPhiStr = 'deltaPhi_Wl'
 
 ROOT.TH1F().SetDefaultSumw2()
 
-def makeWPrediction(bins, samples, htb, stb, srNJet, presel, dPhiCut=1.0, btagVarString = 'nBJetMediumCSV30', lumi=4.0, printDir='/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Spring15/defaultDir/templateFit/'):
+def makeWPrediction(weight_str, weight_err_str , bins, samples, htb, stb, srNJet, presel, dPhiCut=1.0, btagVarString = 'nBJetMediumCSV30', lumi=4.0, printDir='/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Spring15/defaultDir/templateFit/'):
   print "in W predition lumi is :"  , lumi
-  weight_str, weight_err_str = makeWeight(lumi)
+  #weight_str, weight_err_str = makeWeight(lumi, in_weight = weight_dict['var'])
+  #weight_str, weight_err_str = in_weight
   cWJets = samples['W']
   cTTJets = samples['TT']
   cRest = samples['Rest']

@@ -7,7 +7,9 @@ from Workspace.RA4Analysis.helpers import *# nameAndCut, nJetBinName, nBTagBinNa
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_v6_Phys14V2_HT400ST150_withDF import *
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_v8_Phys14V3_HT400ST200 import *
 #from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
-from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
+#from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
+from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur import *
+
 from rCShelpers import *
 import math
 from Workspace.RA4Analysis.signalRegions import *
@@ -19,15 +21,18 @@ small = False
 maxN = -1 if not small else 1 
 
 lepSel = 'hard'
+useFits = False
+drawOption = 'hist ][ e1'
+drawOptionSame = drawOption + 'same'
 
 cWJets  = getChain(WJetsHTToLNu_25ns,histname='',maxN=maxN)
-cTTJets = getChain(TTJets_LO_25ns,histname='',maxN=maxN)
+#cTTJets = getChain(TTJets_LO_25ns,histname='',maxN=maxN)
 #cTTJets = getChain(ttJets[lepSel],histname='',maxN=maxN)
 #cBkg    = getChain([WJetsHTToLNu[lepSel], ttJets[lepSel], QCD[lepSel], DY[lepSel], singleTop[lepSel], TTVH[lepSel]],histname='')
 
 from Workspace.HEPHYPythonTools.user import username
 uDir = username[0]+'/'+username
-subDir = 'Spring15/25ns/rCS/presel/'
+subDir = 'Spring15/25ns/rCS/ANnoFitWithFiltersMVAEleID15_softVeto/'
 #subDir = 'pngCMG2/rCS/PHYS14V3/useRecoMet'
 
 path = '/afs/hephy.at/user/'+uDir+'/www/'+subDir+'/'
@@ -53,10 +58,11 @@ elif channel =='mu':
   pdgId = 13
 
 streg = [[(250,350),1.],[(350,450),1.],[(450,-1),1.]]#,[(350,450), 1.],[(450,-1),1.]]#, [(350, 450), 1.],  [(450, -1), 1.] ]
-htreg = [(500,750),(750,1000),(1000,-1)]#,(500,1000)]#,(1000,1250),(1250,-1)]#,(1250,-1)]
+htreg = [(500,-1),(750,-1),(1000,-1)]#,(500,1000)]#,(1000,1250),(1250,-1)]#,(1250,-1)]
 btreg = (0,0)
 njreg = [(3,3),(4,4),(5,5),(6,7),(8,-1)]#,(7,7),(8,8),(9,9)]
-nbjreg = [(0,0),(1,1),(2,2)]
+nbjreg = [(0,0)]
+#nbjreg = [(0,0),(1,1),(2,2)]
 
 #Usage of GenMet for deltaPhi / rCS
 GenMetSwitch = False
@@ -77,9 +83,12 @@ l_H     = ngNuEFromW+"+"+ngNuMuFromW+"==1&&"+ngNuTauFromW+"==0"
 #presel='singleLeptonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftPt10Leptons==0&&Jet_pt[1]>80'
 #presel='singleLeptonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftPt10Leptons==0&&Jet_pt[1]>80&&Flag_EcalDeadCellTriggerPrimitiveFilter&&acos(cos(Jet_phi[0]-met_phi))>0.45&&acos(cos(Jet_phi[1]-met_phi))>0.45'
 
-presel = "singleLeptonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0&&Jet_pt[1]>80&&st>250&&nJet30>2&&htJet30j>500&&nBJetMediumCSV30==0"
+presel = "singleLeptonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0&&Jet_pt[1]>80&&st>250&&nJet30>2&&htJet30j>500"#&&nBJetMediumCSV30==0"
 #presel = presel + '&&Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_eeBadScFilter&&Flag_goodVertices&&Flag_CSCTightHaloFilter&&Flag_HBHENoiseFilter'
 #presel = presel + '&acos(cos(Jet_phi[0]-met_phi))>0.45&&acos(cos(Jet_phi[1]-met_phi))>0.45'
+#filters = "&&Flag_CSCTightHaloFilter&&Flag_HBHENoiseFilterMinZeroPatched&&Flag_goodVertices&&Flag_eeBadScFilter&&Flag_EcalDeadCellTriggerPrimitiveFilter"
+filters = "&&Flag_CSCTightHaloFilter&&Flag_HBHENoiseFilter_fix&&Flag_HBHENoiseFilter&&Flag_goodVertices&&Flag_eeBadScFilter&&Flag_EcalDeadCellTriggerPrimitiveFilter" #strange filter settings!!
+presel += filters
 
 prefix = presel.split('&&')[0]+'_'
 
@@ -137,6 +146,9 @@ prefix = presel.split('&&')[0]+'_'
 
 #1D and 2D plots of RCS
 
+sampleList = [["W",cWJets]]
+#sampleList = [["W",cWJets],["tt", cTTJets]]
+
 print
 print 'Computing Rcs values now ...'
 print
@@ -157,7 +169,7 @@ for lep, pdgId in channels:
   h_nbj[lep] = {}
   h_2d[lep] = {}
   rcsDict[lep] = {}
-  for name, c in [["W",cWJets],["tt", cTTJets] ]:# [["tt", cTTJets] , ["W",cWJets] ]:
+  for name, c in sampleList:
     print 'Using sample', name
     print
     h_nj_pos[lep][name] = {}
@@ -236,26 +248,29 @@ for lep, pdgId in channels:
             #h_ht[name][stb][njb].SetBinError(i_htb+1, resErr)
             #h_2d[name][stb].SetBinContent(i_njb+1, i_htb+1, res) 
             #h_2d[name][stb].SetBinError(i_njb+1, i_htb+1, resErr) 
+        #print "Rcs values with respect to b-tag multiplicity"
         #for i_nbjb, bjb in enumerate(nbjreg):
-        #  h_nbj[name][stb][htb][bjb] = ROOT.TH1F("rcs_nbj","",len(njreg),0,len(njreg))
+        #  print "nbJet:",bjb
+        #  h_nbj[lep][name][stb][htb][bjb] = ROOT.TH1F("rcs_nbj","",len(njreg),0,len(njreg))
         #  for i_njb, njb in enumerate(njreg):
         #    cname, cut = nameAndCut(stb,htb,njb, btb=bjb ,presel=presel)
         #    dPhiCut = dynDeltaPhi(1.0,stb, htb, njb)
         #    rcs = getRCS(c, cut, dPhiCut)
-        #    print rcs, dPhiCut
+        #    print 'Results: Rcs:', round(rcs['rCS'],3), 'sim. Error:',round(rcs['rCSE_sim'],3)
+        #    #print rcs, dPhiCut
         #    res = rcs['rCS']
         #    resErrPred = rcs['rCSE_pred']
         #    resErr = rcs['rCSE_sim']
         #    #res, resErr = getRCS(c, cut,  dPhiCut)
-        #    h_nbj[name][stb][htb][bjb].GetXaxis().SetBinLabel(i_njb+1, nJetBinName(njb))
+        #    h_nbj[lep][name][stb][htb][bjb].GetXaxis().SetBinLabel(i_njb+1, nJetBinName(njb))
         #    if not math.isnan(res):
-        #      h_nbj[name][stb][htb][bjb].SetBinContent(i_njb+1, res)
-        #      h_nbj[name][stb][htb][bjb].SetBinError(i_njb+1, resErr) #maybe should be changed to predicted error (estimated error for poisson distributed values)
+        #      h_nbj[lep][name][stb][htb][bjb].SetBinContent(i_njb+1, res)
+        #      h_nbj[lep][name][stb][htb][bjb].SetBinError(i_njb+1, resErr) #maybe should be changed to predicted error (estimated error for poisson distributed values)
 
 
 #Draw plots binned in njets for all ST and HT bins
 for lep, pdgId in channels:
-  for name, c in [["W",cWJets],["tt", cTTJets] ]:#[["tt", cTTJets] , ["W",cWJets] ]:
+  for name, c in sampleList:
     for istb, [stb, dPhiCut] in enumerate(streg):
       c1 = ROOT.TCanvas('c1','c1',600,600)
       pad1 = ROOT.TPad('Pad','Pad',0.,0.0,1.,1.)
@@ -284,20 +299,21 @@ for lep, pdgId in channels:
             upperbound = i_njb+1
           else:
             break
-        h_nj[lep][name][stb][htb].Fit('pol1','','same',0,upperbound)
-        FitFunc     = h_nj[lep][name][stb][htb].GetFunction('pol1')
-        FitParD     = FitFunc.GetParameter(0)
-        FitParDError = FitFunc.GetParError(0)
-        FitParK = FitFunc.GetParameter(1)
-        FitParKError = FitFunc.GetParError(1)
-        FitFunc.SetLineColor(ROOT_colors[ihtb])
-        FitFunc.SetLineStyle(2)
-        FitFunc.SetLineWidth(2)
-        rcsDict[lep][name][stb][htb].update({'D':FitParD, 'DErr':FitParDError, 'K':FitParK, 'Kerr':FitParKError})
+        if useFits:
+          h_nj[lep][name][stb][htb].Fit('pol1','','same',0,upperbound)
+          FitFunc     = h_nj[lep][name][stb][htb].GetFunction('pol1')
+          FitParD     = FitFunc.GetParameter(0)
+          FitParDError = FitFunc.GetParError(0)
+          FitParK = FitFunc.GetParameter(1)
+          FitParKError = FitFunc.GetParError(1)
+          FitFunc.SetLineColor(ROOT_colors[ihtb])
+          FitFunc.SetLineStyle(2)
+          FitFunc.SetLineWidth(2)
+          rcsDict[lep][name][stb][htb].update({'D':FitParD, 'DErr':FitParDError, 'K':FitParK, 'Kerr':FitParKError})
         if name == 'tt':
           h_nj[lep][name][stb][htb].SetMaximum(0.25)
         else:
-          h_nj[lep][name][stb][htb].SetMaximum(0.08)
+          h_nj[lep][name][stb][htb].SetMaximum(0.15)#0.08)
   #      h_nj[name][stb][htb].GetYaxis().SetRangeUser(0, 0.1)
         h_nj[lep][name][stb][htb].SetLineColor(ROOT_colors[ihtb])
         h_nj[lep][name][stb][htb].SetLineWidth(2)
@@ -310,11 +326,12 @@ for lep, pdgId in channels:
         text.DrawLatex(0.6,0.8,varBinName(stb, 'L_{T}'))
         if first:
           first = False
-          h_nj[lep][name][stb][htb].Draw()
+          h_nj[lep][name][stb][htb].Draw(drawOption)
         else:
-          h_nj[lep][name][stb][htb].Draw('same')
-        text.DrawLatex(0.4,0.75-0.05*ihtb,str(round(FitParK*1000,2))+'#pm'+str(round(FitParKError*1000,2)))
-        FitFunc.Draw("same")
+          h_nj[lep][name][stb][htb].Draw(drawOptionSame)
+        if useFits:
+          text.DrawLatex(0.4,0.75-0.05*ihtb,str(round(FitParK*1000,2))+'#pm'+str(round(FitParKError*1000,2)))
+          FitFunc.Draw("same")
       l.Draw()
       c1.Print(path+prefix+'_rCS_njet_'+lep+'_'+name+'_'+nameAndCut(stb,htb=None,njetb=None, btb=btreg, presel=presel)[0]+".pdf")
       c1.Print(path+prefix+'_rCS_njet_'+lep+'_'+name+'_'+nameAndCut(stb,htb=None,njetb=None, btb=btreg, presel=presel)[0]+".png")
@@ -339,18 +356,19 @@ for lep, pdgId in channels:
         h_nj[lep][name][stb][htb].GetYaxis().SetTitleOffset(1.5)
         h_nj[lep][name][stb][htb].GetYaxis().SetTitle('R_{CS}')
         h_nj[lep][name][stb][htb].GetYaxis().SetRangeUser(0, 3*h_nj[lep][name][stb][htb].GetBinContent(h_nj[lep][name][stb][htb].GetMaximumBin()))
-        FitFunc     = h_nj[lep][name][stb][htb].GetFunction('pol1')
-        FitParD     = FitFunc.GetParameter(0)
-        FitParDError = FitFunc.GetParError(0)
-        FitParK = FitFunc.GetParameter(1)
-        FitParKError = FitFunc.GetParError(1)
-        FitFunc.SetLineColor(ROOT_colors[istb])
-        FitFunc.SetLineStyle(2)
-        FitFunc.SetLineWidth(2)
+        if useFits:
+          FitFunc     = h_nj[lep][name][stb][htb].GetFunction('pol1')
+          FitParD     = FitFunc.GetParameter(0)
+          FitParDError = FitFunc.GetParError(0)
+          FitParK = FitFunc.GetParameter(1)
+          FitParKError = FitFunc.GetParError(1)
+          FitFunc.SetLineColor(ROOT_colors[istb])
+          FitFunc.SetLineStyle(2)
+          FitFunc.SetLineWidth(2)
         if name == 'tt':
           h_nj[lep][name][stb][htb].SetMaximum(0.25)
         else:
-          h_nj[lep][name][stb][htb].SetMaximum(0.08)
+          h_nj[lep][name][stb][htb].SetMaximum(0.15)#0.08)
   #      h_nj[name][stb][htb].GetYaxis().SetRangeUser(0, 0.1)
         h_nj[lep][name][stb][htb].SetLineColor(ROOT_colors[istb])
         h_nj[lep][name][stb][htb].SetLineWidth(2)
@@ -363,135 +381,141 @@ for lep, pdgId in channels:
         text.DrawLatex(0.6,0.8,varBinName(htb, 'H_{T}'))
         if first:
           first = False
-          h_nj[lep][name][stb][htb].Draw()
+          h_nj[lep][name][stb][htb].Draw(drawOption)
         else:
-          h_nj[lep][name][stb][htb].Draw('same')
-        text.DrawLatex(0.4,0.75-0.05*istb,str(round(FitParK*1000,2))+'#pm'+str(round(FitParKError*1000,2)))
+          h_nj[lep][name][stb][htb].Draw(drawOptionSame)
+        if useFits:
+          text.DrawLatex(0.4,0.75-0.05*istb,str(round(FitParK*1000,2))+'#pm'+str(round(FitParKError*1000,2)))
       l.Draw()
       c1.Print(path+prefix+'_rCS_njet_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".pdf")
       c1.Print(path+prefix+'_rCS_njet_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".png")
       c1.Print(path+prefix+'_rCS_njet_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".root")
-#  for name, c in [["tt", cTTJets] , ["W",cWJets] ]:
-#    for htb in htreg:
-#      c1 = ROOT.TCanvas('c1','c1',600,600)
-#      pad1 = ROOT.TPad('Pad','Pad',0.,0.0,1.,1.)
-#      pad1.SetLeftMargin(0.15)
-#      pad1.Draw()
-#      pad1.cd()
-#      first = True
-#      l = ROOT.TLegend(0.6,0.65,0.9,0.78)#right aligned legend
-#      l.SetFillColor(ROOT.kWhite)
-#      l.SetShadowColor(ROOT.kWhite)
-#      l.SetBorderSize(0)
-#      for istb, [stb, dPhiCut] in enumerate(streg):
-#        h_nj_pos[lep][name][stb][htb].GetXaxis().SetLabelSize(0.06)
-#        h_nj_pos[lep][name][stb][htb].GetYaxis().SetLabelSize(0.04)
-#        h_nj_pos[lep][name][stb][htb].GetYaxis().SetTitleSize(0.04)
-#        h_nj_pos[lep][name][stb][htb].GetYaxis().SetTitleOffset(1.5)
-#        h_nj_pos[lep][name][stb][htb].GetYaxis().SetTitle('R_{CS}')
-#        h_nj_pos[lep][name][stb][htb].GetYaxis().SetRangeUser(0, 3*h_nj[lep][name][stb][htb].GetBinContent(h_nj[lep][name][stb][htb].GetMaximumBin()))
-#        upperbound = 0
-#        for i_njb, njb in enumerate(njreg):
-#          if h_nj_pos[lep][name][stb][htb].GetBinContent(i_njb+1)>0.:
-#            upperbound = i_njb+1
-#          else:
-#            break
-#        h_nj_pos[lep][name][stb][htb].Fit('pol1','','same',0,upperbound)
-#        FitFunc     = h_nj_pos[lep][name][stb][htb].GetFunction('pol1')
-#        FitParD     = FitFunc.GetParameter(0)
-#        FitParDError = FitFunc.GetParError(0)
-#        FitParK = FitFunc.GetParameter(1)
-#        FitParKError = FitFunc.GetParError(1)
-#        FitFunc.SetLineColor(ROOT_colors[istb])
-#        FitFunc.SetLineStyle(2)
-#        FitFunc.SetLineWidth(2)
-#        #rcsDict[lep][name][stb][htb].update({'D':FitParD, 'DErr':FitParDError, 'K':FitParK, 'Kerr':FitParKError})
-#        if name == 'tt':
-#          h_nj_pos[lep][name][stb][htb].SetMaximum(0.25)
-#        else:
-#          h_nj_pos[lep][name][stb][htb].SetMaximum(0.08)
-#        h_nj_pos[lep][name][stb][htb].SetLineColor(ROOT_colors[istb])
-#        h_nj_pos[lep][name][stb][htb].SetLineWidth(2)
-#        l.AddEntry(h_nj_pos[lep][name][stb][htb], varBinName(stb, 'L_{T}'))
-#        text=ROOT.TLatex()
-#        text.SetNDC()
-#        text.SetTextSize(0.04)
-#        text.SetTextAlign(11)
-#        text.DrawLatex(0.6,0.85,name+'+jets, - Charge')
-#        text.DrawLatex(0.6,0.8,varBinName(htb, 'H_{T}'))
-#        if first:
-#          first = False
-#          h_nj_pos[lep][name][stb][htb].Draw()
-#        else:
-#          h_nj_pos[lep][name][stb][htb].Draw('same')
-#        text.DrawLatex(0.4,0.75-0.05*istb,str(round(FitParK*1000,2))+'#pm'+str(round(FitParKError*1000,2)))
-#        FitFunc.Draw('same')
-#      l.Draw()
-#      c1.Print(path+prefix+'_rCS_njet_PosPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".pdf")
-#      c1.Print(path+prefix+'_rCS_njet_PosPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".png")
-#      c1.Print(path+prefix+'_rCS_njet_PosPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".root")
-#  for name, c in [["tt", cTTJets] , ["W",cWJets] ]:
-#    for htb in htreg:
-#      c1 = ROOT.TCanvas('c1','c1',600,600)
-#      pad1 = ROOT.TPad('Pad','Pad',0.,0.0,1.,1.)
-#      pad1.SetLeftMargin(0.15)
-#      pad1.Draw()
-#      pad1.cd()
-#      first = True
-#      l = ROOT.TLegend(0.6,0.65,0.9,0.78)#right aligned legend
-#      l.SetFillColor(ROOT.kWhite)
-#      l.SetShadowColor(ROOT.kWhite)
-#      l.SetBorderSize(0)
-#      for istb, [stb, dPhiCut] in enumerate(streg):
-#        h_nj_neg[lep][name][stb][htb].GetXaxis().SetLabelSize(0.06)
-#        h_nj_neg[lep][name][stb][htb].GetYaxis().SetLabelSize(0.04)
-#        h_nj_neg[lep][name][stb][htb].GetYaxis().SetTitleSize(0.04)
-#        h_nj_neg[lep][name][stb][htb].GetYaxis().SetTitleOffset(1.5)
-#        h_nj_neg[lep][name][stb][htb].GetYaxis().SetTitle('R_{CS}')
-#        h_nj_neg[lep][name][stb][htb].Fit('pol1','','same',0,upperbound)
-#        upperbound = 0
-#        for i_njb, njb in enumerate(njreg):
-#          if h_nj_neg[lep][name][stb][htb].GetBinContent(i_njb+1)>0.:
-#            upperbound = i_njb+1
-#          else:
-#            break
-#        FitFunc     = h_nj_neg[lep][name][stb][htb].GetFunction('pol1')
-#        FitParD     = FitFunc.GetParameter(0)
-#        FitParDError = FitFunc.GetParError(0)
-#        FitParK = FitFunc.GetParameter(1)
-#        FitParKError = FitFunc.GetParError(1)
-#        FitFunc.SetLineColor(ROOT_colors[istb])
-#        FitFunc.SetLineStyle(2)
-#        FitFunc.SetLineWidth(2)
-#        rcsDict[lep][name][stb][htb].update({'D':FitParD, 'DErr':FitParDError, 'K':FitParK, 'Kerr':FitParKError})
-#        if name == 'tt':
-#          h_nj_neg[lep][name][stb][htb].SetMaximum(0.25)
-#        else:
-#          h_nj_neg[lep][name][stb][htb].SetMaximum(0.08)
-#        FitFunc.Draw('same')
-#        h_nj_neg[lep][name][stb][htb].SetLineColor(ROOT_colors[istb])
-#        h_nj_neg[lep][name][stb][htb].SetLineWidth(2)
-#        l.AddEntry(h_nj_neg[lep][name][stb][htb], varBinName(stb, 'L_{T}'))
-#        text=ROOT.TLatex()
-#        text.SetNDC()
-#        text.SetTextSize(0.04)
-#        text.SetTextAlign(11)
-#        text.DrawLatex(0.6,0.85,name+'+jets, + Charge')
-#        text.DrawLatex(0.6,0.8,varBinName(htb, 'H_{T}'))
-#        if first:
-#          first = False
-#          h_nj_neg[lep][name][stb][htb].Draw()
-#        else:
-#          h_nj_neg[lep][name][stb][htb].Draw('same')
-#        
-#        text.DrawLatex(0.4,0.75-0.05*istb,str(round(FitParK*1000,2))+'#pm'+str(round(FitParKError*1000,2)))
-#      l.Draw()
-#      c1.Print(path+prefix+'_rCS_njet_NegPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".pdf")
-#      c1.Print(path+prefix+'_rCS_njet_NegPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".png")
-#      c1.Print(path+prefix+'_rCS_njet_NegPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".root")
+  for name, c in sampleList:
+    for htb in htreg:
+      c1 = ROOT.TCanvas('c1','c1',600,600)
+      pad1 = ROOT.TPad('Pad','Pad',0.,0.0,1.,1.)
+      pad1.SetLeftMargin(0.15)
+      pad1.Draw()
+      pad1.cd()
+      first = True
+      l = ROOT.TLegend(0.6,0.65,0.9,0.78)#right aligned legend
+      l.SetFillColor(ROOT.kWhite)
+      l.SetShadowColor(ROOT.kWhite)
+      l.SetBorderSize(0)
+      for istb, [stb, dPhiCut] in enumerate(streg):
+        h_nj_pos[lep][name][stb][htb].GetXaxis().SetLabelSize(0.06)
+        h_nj_pos[lep][name][stb][htb].GetYaxis().SetLabelSize(0.04)
+        h_nj_pos[lep][name][stb][htb].GetYaxis().SetTitleSize(0.04)
+        h_nj_pos[lep][name][stb][htb].GetYaxis().SetTitleOffset(1.5)
+        h_nj_pos[lep][name][stb][htb].GetYaxis().SetTitle('R_{CS}')
+        h_nj_pos[lep][name][stb][htb].GetYaxis().SetRangeUser(0, 3*h_nj[lep][name][stb][htb].GetBinContent(h_nj[lep][name][stb][htb].GetMaximumBin()))
+        upperbound = 0
+        for i_njb, njb in enumerate(njreg):
+          if h_nj_pos[lep][name][stb][htb].GetBinContent(i_njb+1)>0.:
+            upperbound = i_njb+1
+          else:
+            break
+        if useFits:
+          h_nj_pos[lep][name][stb][htb].Fit('pol1','','same',0,upperbound)
+          FitFunc     = h_nj_pos[lep][name][stb][htb].GetFunction('pol1')
+          FitParD     = FitFunc.GetParameter(0)
+          FitParDError = FitFunc.GetParError(0)
+          FitParK = FitFunc.GetParameter(1)
+          FitParKError = FitFunc.GetParError(1)
+          FitFunc.SetLineColor(ROOT_colors[istb])
+          FitFunc.SetLineStyle(2)
+          FitFunc.SetLineWidth(2)
+        #rcsDict[lep][name][stb][htb].update({'D':FitParD, 'DErr':FitParDError, 'K':FitParK, 'Kerr':FitParKError})
+        if name == 'tt':
+          h_nj_pos[lep][name][stb][htb].SetMaximum(0.25)
+        else:
+          h_nj_pos[lep][name][stb][htb].SetMaximum(0.15)#0.08)
+        h_nj_pos[lep][name][stb][htb].SetLineColor(ROOT_colors[istb])
+        h_nj_pos[lep][name][stb][htb].SetLineWidth(2)
+        l.AddEntry(h_nj_pos[lep][name][stb][htb], varBinName(stb, 'L_{T}'))
+        text=ROOT.TLatex()
+        text.SetNDC()
+        text.SetTextSize(0.04)
+        text.SetTextAlign(11)
+        text.DrawLatex(0.6,0.85,name+'+jets, - Charge')
+        text.DrawLatex(0.6,0.8,varBinName(htb, 'H_{T}'))
+        if first:
+          first = False
+          h_nj_pos[lep][name][stb][htb].Draw(drawOption)
+        else:
+          h_nj_pos[lep][name][stb][htb].Draw(drawOptionSame)
+        if useFits:
+          text.DrawLatex(0.4,0.75-0.05*istb,str(round(FitParK*1000,2))+'#pm'+str(round(FitParKError*1000,2)))
+          FitFunc.Draw('same')
+      l.Draw()
+      c1.Print(path+prefix+'_rCS_njet_PosPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".pdf")
+      c1.Print(path+prefix+'_rCS_njet_PosPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".png")
+      c1.Print(path+prefix+'_rCS_njet_PosPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".root")
+  for name, c in sampleList:
+    for htb in htreg:
+      c1 = ROOT.TCanvas('c1','c1',600,600)
+      pad1 = ROOT.TPad('Pad','Pad',0.,0.0,1.,1.)
+      pad1.SetLeftMargin(0.15)
+      pad1.Draw()
+      pad1.cd()
+      first = True
+      l = ROOT.TLegend(0.6,0.65,0.9,0.78)#right aligned legend
+      l.SetFillColor(ROOT.kWhite)
+      l.SetShadowColor(ROOT.kWhite)
+      l.SetBorderSize(0)
+      for istb, [stb, dPhiCut] in enumerate(streg):
+        h_nj_neg[lep][name][stb][htb].GetXaxis().SetLabelSize(0.06)
+        h_nj_neg[lep][name][stb][htb].GetYaxis().SetLabelSize(0.04)
+        h_nj_neg[lep][name][stb][htb].GetYaxis().SetTitleSize(0.04)
+        h_nj_neg[lep][name][stb][htb].GetYaxis().SetTitleOffset(1.5)
+        h_nj_neg[lep][name][stb][htb].GetYaxis().SetTitle('R_{CS}')
+        #h_nj_neg[lep][name][stb][htb].Fit('pol1','','same',0,upperbound)
+        upperbound = 0
+        for i_njb, njb in enumerate(njreg):
+          if h_nj_neg[lep][name][stb][htb].GetBinContent(i_njb+1)>0.:
+            upperbound = i_njb+1
+          else:
+            break
+        if useFits:
+          h_nj_neg[lep][name][stb][htb].Fit('pol1','','same',0,upperbound)
+          FitFunc     = h_nj_neg[lep][name][stb][htb].GetFunction('pol1')
+          FitParD     = FitFunc.GetParameter(0)
+          FitParDError = FitFunc.GetParError(0)
+          FitParK = FitFunc.GetParameter(1)
+          FitParKError = FitFunc.GetParError(1)
+          FitFunc.SetLineColor(ROOT_colors[istb])
+          FitFunc.SetLineStyle(2)
+          FitFunc.SetLineWidth(2)
+          rcsDict[lep][name][stb][htb].update({'D':FitParD, 'DErr':FitParDError, 'K':FitParK, 'Kerr':FitParKError})
+        if name == 'tt':
+          h_nj_neg[lep][name][stb][htb].SetMaximum(0.25)
+        else:
+          h_nj_neg[lep][name][stb][htb].SetMaximum(0.15)#0.08)
+        if useFits:
+          FitFunc.Draw('same')
+        h_nj_neg[lep][name][stb][htb].SetLineColor(ROOT_colors[istb])
+        h_nj_neg[lep][name][stb][htb].SetLineWidth(2)
+        l.AddEntry(h_nj_neg[lep][name][stb][htb], varBinName(stb, 'L_{T}'))
+        text=ROOT.TLatex()
+        text.SetNDC()
+        text.SetTextSize(0.04)
+        text.SetTextAlign(11)
+        text.DrawLatex(0.6,0.85,name+'+jets, + Charge')
+        text.DrawLatex(0.6,0.8,varBinName(htb, 'H_{T}'))
+        if first:
+          first = False
+          h_nj_neg[lep][name][stb][htb].Draw(drawOption)
+        else:
+          h_nj_neg[lep][name][stb][htb].Draw(drawOptionSame)
+        if useFits:
+          text.DrawLatex(0.4,0.75-0.05*istb,str(round(FitParK*1000,2))+'#pm'+str(round(FitParKError*1000,2)))
+      l.Draw()
+      c1.Print(path+prefix+'_rCS_njet_NegPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".pdf")
+      c1.Print(path+prefix+'_rCS_njet_NegPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".png")
+      c1.Print(path+prefix+'_rCS_njet_NegPDG_'+lep+'_'+name+'_'+nameAndCut(stb,htb=htb,njetb=None, btb=btreg, presel=presel)[0]+".root")
 
 ##Draw plots binned in HT for all ST and njet bins
-#for name, c in [ ["W",cWJets], ["tt", cTTJets]]:
+#for name, c in sampleList:
 #  for stb, dPhiCut in streg:
 #    c1 = ROOT.TCanvas()
 #    first = True 
@@ -537,7 +561,7 @@ for lep, pdgId in channels:
 
 
 
-#for name, c in [["tt", cTTJets] , ["W",cWJets] ]:
+#for name, c in sampleList:
 #  for stb, dPhiCut in streg:
 #    for htb in htreg:
 #      c1 = ROOT.TCanvas('c1','c1',600,600)

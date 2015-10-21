@@ -1,5 +1,5 @@
 import copy, os, sys
-dir = '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur/hard/' 
+dir = '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur_CBID/hard/' 
 
 TTJets_HTLO_25ns={\
 "name" : "tt+Jets_LO",
@@ -11,7 +11,7 @@ TTJets_HTLO_25ns={\
 "TTJets_HT1200to2500",
 "TTJets_HT2500toInf",
 ],
-'dir' : dir,
+'dir' : '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur_CBID/HT400/hard/',
 }
 
 WJetsHTToLNu_25ns={\
