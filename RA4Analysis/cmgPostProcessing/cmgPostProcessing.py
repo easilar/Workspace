@@ -13,15 +13,18 @@ ROOT.gSystem.Load("libFWCoreFWLite.so")
 ROOT.AutoLibraryLoader.enable()
 
 from Workspace.HEPHYPythonTools.helpers import getChunks
-from Workspace.RA4Analysis.cmgTuples_Spring15_25ns import *
-from Workspace.RA4Analysis.cmgTuples_Spring15_50ns import *
-from Workspace.RA4Analysis.cmgTuples_Data50ns_1l import *
-from Workspace.RA4Analysis.cmgTuples_Data25ns_0l import *
+#from Workspace.RA4Analysis.cmgTuples_Spring15_25ns import *
+#from Workspace.RA4Analysis.cmgTuples_Spring15_50ns import *
+#from Workspace.RA4Analysis.cmgTuples_Data50ns_1l import *
+#from Workspace.RA4Analysis.cmgTuples_Data25ns_0l import *
+from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_fromArtur import *
+#from Workspace.RA4Analysis.cmgTuples_data_25ns_fromArtur import *
+
 target_lumi = 3000 #pb-1
 
-defSampleStr = "TTJets_25ns"
+defSampleStr = "TTJets_LO_HT600to800_25ns"
 
-subDir = "postProcessed_Spring15"
+subDir = "postProcessed_Spring15_MC_from_Artur_CBID"
 
 #branches to be kept for data and MC
 branchKeepStrings_DATAMC = ["run", "lumi", "evt", "isData", "rho", "nVert", 
@@ -64,8 +67,10 @@ if options.skim.startswith('met'):
   skimCond = "met_pt>"+str(float(options.skim[3:]))
 if options.skim=='HT400':
   skimCond = "Sum$(Jet_pt)>400"
-if options.skim=='HT400ST200':   ##tuples have already ST200 skim
+if options.skim=='HT400ST200':  
   skimCond = "Sum$(Jet_pt)>400&&(LepGood_pt[0]+met_pt)>200"
+if options.skim=='LHEHT600':
+  skimCond = "lheHTIncoming<600"
 
 ##In case a lepton selection is required, loop only over events where there is one 
 if options.leptonSelection.lower()=='soft':
@@ -73,7 +78,8 @@ if options.leptonSelection.lower()=='soft':
   skimCond += "&&Sum$(LepGood_pt>5&&LepGood_pt<25&&abs(LepGood_eta)<2.4)>=1"
 if options.leptonSelection.lower()=='hard':
   #skimCond += "&&Sum$(LepGood_pt>25&&LepGood_relIso03<0.4&&abs(LepGood_eta)<2.4)>=1"
-  skimCond += "&&Sum$(LepGood_pt>25&&abs(LepGood_eta)<2.4)>=1"
+  #skimCond += "&&Sum$(LepGood_pt>25&&abs(LepGood_eta)<2.4)>=1"
+  skimCond += "&&Sum$(LepGood_pt>25&&abs(LepGood_eta)<2.5)>=0"
 if options.leptonSelection.lower()=='dilep':
   #skimCond += "&&Sum$(LepGood_pt>25&&LepGood_relIso03<0.4&&abs(LepGood_eta)<2.4)>=1"
   skimCond += "&&Sum$(LepGood_pt>15&&abs(LepGood_eta)<2.4)>1"
@@ -124,7 +130,8 @@ for isample, sample in enumerate(allSamples):
     lumiScaleFactor=1
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_DATA 
   else:
-    lumiScaleFactor = xsec[sample['dbsName']]*target_lumi/float(sumWeight)
+    #lumiScaleFactor = xsec[sample['dbsName']]*target_lumi/float(sumWeight)
+    lumiScaleFactor = target_lumi/float(sumWeight)
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_MC
 
   readVariables = ['met_pt/F', 'met_phi/F']
@@ -132,11 +139,11 @@ for isample, sample in enumerate(allSamples):
   aliases = [ "met:met_pt", "metPhi:met_phi"]
 
   readVectors = [\
-    {'prefix':'LepGood',  'nMax':8, 'vars':['pt/F', 'eta/F', 'phi/F', 'pdgId/I', 'relIso03/F', 'tightId/I', 'miniRelIso/F','mass/F','sip3d/F','mediumMuonId/I', 'mvaIdPhys14/F','mvaIdSpring15/F','lostHits/I', 'convVeto/I']},
+    {'prefix':'LepGood',  'nMax':8, 'vars':['pt/F', 'eta/F', 'phi/F', 'pdgId/I', 'relIso03/F','SPRING15_25ns_v1/F' ,'tightId/I', 'miniRelIso/F','mass/F','sip3d/F','mediumMuonId/I', 'mvaIdPhys14/F','mvaIdSpring15/F','lostHits/I', 'convVeto/I']},
     {'prefix':'Jet',  'nMax':100, 'vars':['pt/F', 'eta/F', 'phi/F', 'id/I','btagCSV/F', 'btagCMVA/F']},
   ]
   if not sample['isData']: 
-    newVariables.extend(['weight_XSecTTBar1p1/F','weight_XSecTTBar0p9/F'])
+    newVariables.extend(['weight_XSecTTBar1p1/F','weight_XSecTTBar0p9/F','weight_XSecWJets1p1/F','weight_XSecWJets0p9/F'])
     aliases.extend(['genMet:met_genPt', 'genMetPhi:met_genPhi'])
     #readVectors[1]['vars'].extend('partonId/I')
   if options.leptonSelection.lower() in ['soft', 'hard']:
@@ -197,7 +204,9 @@ for isample, sample in enumerate(allSamples):
         r.init()
         t.GetEntry(i)
         genWeight = 1 if sample['isData'] else t.GetLeaf('genWeight').GetValue()
-        s.weight = lumiScaleFactor*genWeight
+        xsectemp = t.GetLeaf('xsec').GetValue()
+        s.weight = xsectemp*lumiScaleFactor*genWeight
+        #s.weight = lumiScaleFactor*genWeight
 
         if not sample['isData']:
           if "TTJets" in sample['dbsName']:
@@ -206,7 +215,13 @@ for isample, sample in enumerate(allSamples):
           else :
             s.weight_XSecTTBar1p1 = s.weight
             s.weight_XSecTTBar0p9 = s.weight
-        
+          if "WJets" in sample['dbsName']:
+            s.weight_XSecWJets1p1 = s.weight*1.1
+            s.weight_XSecWJets0p9 = s.weight*0.9
+          else :
+            s.weight_XSecWJets1p1 = s.weight
+            s.weight_XSecWJets0p9 = s.weight             
+
         if options.leptonSelection.lower() in ['soft','hard']:
           #get all >=loose lepton indices
           looseLepInd = cmgLooseLepIndices(r) 

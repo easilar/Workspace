@@ -15,8 +15,12 @@ def cmgMVAEleID(r,nLep,mva_cuts):
 #ele_MVAID_cuts_tight = {(0,0.8):0.73 , (0.8, 1.44):0.57, (1.57, 999):  0.05}
 
 ###Spring15 MVAID#### https://twiki.cern.ch/twiki/bin/viewauth/CMS/SUSLeptonSF
-ele_MVAID_cuts_vloose = {(0,0.8): -0.16 , (0.8,  1.479):-0.65, (1.479, 999):-0.74}
-ele_MVAID_cuts_tight = {(0,0.8): 0.87   , (0.8,  1.479): 0.60, (1.479, 999): 0.17}
+###ele_MVAID_cuts_vloose = {(0,0.8): -0.16 , (0.8,  1.479):-0.65, (1.479, 999):-0.74}
+###ele_MVAID_cuts_tight = {(0,0.8): 0.87   , (0.8,  1.479): 0.60, (1.479, 999): 0.17}
+
+ele_MVAID_cuts_vloose = {(0,0.8):-0.11 , (0.8, 1.44):-0.55, (1.57, 999): -0.74}
+ele_MVAID_cuts_tight = {(0,0.8):0.73 , (0.8, 1.44):0.57, (1.57, 999):  0.05}
+
 
 def cmgLooseMuID(r, nLep):
   return r.LepGood_miniRelIso[nLep]<0.4 and r.LepGood_pt[nLep]>=10 and abs(r.LepGood_eta[nLep])<2.4
@@ -33,8 +37,9 @@ def cmgLooseEleID(r, nLep):
 def cmgTightEleID(r, nLep):
   return r.LepGood_pt[nLep]>=25 and abs(r.LepGood_eta[nLep])<2.5\
     and  r.LepGood_miniRelIso[nLep]<0.1  \
-    and cmgMVAEleID(r,nLep,ele_MVAID_cuts_tight) \
-    and r.LepGood_lostHits[nLep]<=0 and r.LepGood_convVeto[nLep] and abs(r.LepGood_sip3d[nLep])<4
+    and  r.LepGood_SPRING15_25ns_v1[nLep]==4
+#    and cmgMVAEleID(r,nLep,ele_MVAID_cuts_tight) \
+#    and r.LepGood_lostHits[nLep]<=0 and r.LepGood_convVeto[nLep] and abs(r.LepGood_sip3d[nLep])<4
 
 #and r.LepGood_lostHits[nLep]<=0 and r.LepGood_convVeto[nLep] 
 
