@@ -89,7 +89,7 @@ OneMu = "("+n_tight_mu+"==1"+")"
 OneMu_lepveto = "("+n_veto_mu+"==0&&"+n_veto_e+"==0&&"+n_tight_e+"==0"+")"
 OneE = "("+n_tight_e+"==1"+")"
 OneE_lepveto = "("+n_veto_e+"==0&&"+n_veto_mu+"==0&&"+n_tight_mu+"==0"+")"
-lep_hard  = "LepGood_pt[0]>25"
+lep_hard  = "(LepGood_pt>25)*"+"("+mu_tight+"||"+e_tight+")"
 ###OneLep_lepveto = "("+e_veto+"==0&&"+mu_veto+"==0)"
 OneLep_lepveto =  "(("+"abs(LepGood_pdgId)==11&&"+OneE_lepveto+")"+"||"+"("+"abs(LepGood_pdgId)==13&&"+OneMu_lepveto+"))"
 

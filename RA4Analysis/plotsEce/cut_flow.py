@@ -22,8 +22,8 @@ lumi = 3000 #pb-1
 
 lepSels = [
 #  {'cut':OneMu , 'veto':OneMu_lepveto, 'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '(HLT_MuHT350MET70 || HLT_Mu50)'},\
-###  {'cut':OneE ,  'veto':OneE_lepveto,  'label':'_ele_','str':'1 $e$', 'trigger': '(HLT_EleHT350MET70 || HLT_Ele105)'},\
-{'cut':OneLep ,'veto':OneLep_lepveto,'label':'_lep_','str':'1 $lepton$', 'trigger': '((HLT_EleHT350MET70 || HLT_Ele105)||(HLT_MuHT350MET70 || HLT_Mu50))' },\
+  {'cut':OneE ,  'veto':OneE_lepveto,  'label':'_ele_','str':'1 $e$', 'trigger': '(HLT_EleHT350MET70 || HLT_Ele105)'},\
+###{'cut':OneLep ,'veto':OneLep_lepveto,'label':'_lep_','str':'1 $lepton$', 'trigger': '((HLT_EleHT350MET70 || HLT_Ele105)||(HLT_MuHT350MET70 || HLT_Mu50))' },\
 ###{'cut':OneE ,  'veto':OneE_lepveto,  'label':'_ele_','str':'1 $e$', 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
 ##{'cut':OneMu , 'veto':OneMu_lepveto, 'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
 ]
@@ -70,7 +70,7 @@ for lepSel in lepSels:
 ###{'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_multi,dPhi_cut]), 'label':'$\\Delta\\Phi > 1$'},\
 ####{'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_multi,filters]), 'label':'Filters'},\
   ]
-  ofile = file(path+'cut_flow_'+str(lumi)+'pb_'+lepSel['label']+'_5jets_order_changed_hardfirst_ele_eta_2p4.tex','w')
+  ofile = file(path+'cut_flow_'+str(lumi)+'pb_'+lepSel['label']+'_5jets_order_changed_hardfirst.tex','w')
   #ofile = file(path+'cut_flow_'+str(lumi)+'pb_'+lepSel['label']+'_TEST_.tex','w')
   doc_header = '\\documentclass{article}\\usepackage[english]{babel}\\usepackage{graphicx}\\usepackage[margin=0.5in]{geometry}\\begin{document}'
   ofile.write(doc_header)
