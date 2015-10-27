@@ -8,6 +8,7 @@ from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName,nBTagBinName,v
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_Spring15_hard import *
 #from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
 from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur import *
+###from Workspace.RA4Analysis.cmgTuples_data_25ns_fromArtur import *
 
 from makeTTPrediction import makeTTPrediction
 from makeWPrediction import makeWPrediction
@@ -26,8 +27,9 @@ cWJets  = getChain(WJetsHTToLNu_25ns,histname='')
 cTTJets = getChain(TTJets_HTLO_25ns,histname='')
 #cRest = getChain([singleTop_25ns, DY_25ns, diBosons_25ns],histname='')#no QCD no TTVH no DY (too low statistics!)
 cRest = getChain([singleTop_25ns,TTV_25ns,DY_25ns],histname='')#no QCD
-cBkg = getChain([WJetsHTToLNu_25ns,TTJets_HTLO_25ns,singleTop_25ns, DY_25ns],histname='')#no QCD, no TTVH, no DY
-cData = getChain([WJetsHTToLNu_25ns,TTJets_HTLO_25ns,singleTop_25ns, DY_25ns] , histname='')
+cBkg = getChain([WJetsHTToLNu_25ns,TTJets_HTLO_25ns,singleTop_25ns, DY_25ns,TTV_25ns],histname='')#no QCD, no TTVH, no DY
+##cData = getChain([WJetsHTToLNu_25ns,TTJets_HTLO_25ns,singleTop_25ns, DY_25ns,TTV_25ns] , histname='')
+cData = getChain([data_mu_25ns , data_ele_25ns] , histname='')
 
 #cBkg = getChain([WJetsHTToLNu[lepSel], ttJets[lepSel], DY[lepSel], singleTop[lepSel], TTVH[lepSel]],histname='')#no QCD
 #cData = getChain([WJetsHTToLNu[lepSel], ttJets[lepSel], DY[lepSel], singleTop[lepSel], TTVH[lepSel]] , histname='')
@@ -40,23 +42,24 @@ small = False
 if small: signalRegions = smallRegion
 
 #DEFINE LUMI AND PLOTDIR
-lumi = 3.
+lumi = 1.260
 sampleLumi = 3.
 debugReweighting = False
 
 weights = [
 {'var':'weight','label':'original'},\
-{'var':'weight_XSecTTBar1p1','label':'_tt_Up_'},\
-{'var':'weight_XSecTTBar0p9','label':'_tt_Down_'},\
-{'var':'weight_XSecWJets1p1','label':'_wjets_Up_'},\
-{'var':'weight_XSecWJets0p9','label':'_wjets_Down_'}
+#{'var':'weight_XSecTTBar1p1','label':'_tt_Up_'},\
+#{'var':'weight_XSecTTBar0p9','label':'_tt_Down_'},\
+#{'var':'weight_XSecWJets1p1','label':'_wjets_Up_'},\
+#{'var':'weight_XSecWJets0p9','label':'_wjets_Down_'}
 ]
 
 for weight_dict in weights:
   print  'Estimation for weight : ' , weight_dict['label']
   
-  printDir = '/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Spring15/25ns/templateFit/'+weight_dict['label']+'/'
-  pickleDir = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'/'+weight_dict['label']+'/'
+  printDir = '/afs/hephy.at/user/'+username[0]+'/'+username+'/www/data/Run2015D/1p2fb/rCS/templateFit/'+weight_dict['label']+'/'
+  pickleDir = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_data_test/'+weight_dict['label']+'/'
+  #pickleDir = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'/'+weight_dict['label']+'/'
 
   if not os.path.exists(pickleDir):
     os.makedirs(pickleDir)

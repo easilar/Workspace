@@ -14,7 +14,7 @@ minRelIso_lep_loose=0.4
 minRelIso_e=0.1
 minRelIso_mu=0.2
 max_sip3d = 4.0
-min_njets = 4
+min_njets = 5
 min_st = 250
 min_ht = 500
 min_DPhi = 1
@@ -61,7 +61,7 @@ ele_Eta_acc_cut_str = "((abs(LepGood_eta)<1.44||abs(LepGood_eta)>1.57)&&abs(LepG
 
 #e_veto        = "(Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>="+str(minPt_e_veto)+"&&abs(LepGood_eta)<="+str(maxEta_e)+"&&"+"LepGood_miniRelIso<"+str(minRelIso_lep_loose)+"&&"+ele_MVAID_cutstr_loose+"))" #+"&&"+ele_Eta_acc_cut_str+"&&LepGood_miniRelIso<"+str(minRelIso_lep_loose)+"&&"+ele_MVAID_cutstr_loose+"))" 
 ###e_veto        = "(Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt_e_veto)+"&&abs(LepGood_eta)<"+str(maxEta_e)+"&&LepGood_miniRelIso<0.4&&LepGood_SPRING15_25ns_v1>=1))" #+"&&"+ele_Eta_acc_cut_str+"&&LepGood_miniRelIso<"+str(minRelIso_lep_loose)+"&&"+ele_MVAID_cutstr_loose+"))" 
-#e_veto        = "(Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt_e_veto)+"&&abs(LepGood_eta)<"+str(maxEta_e)+"&&LepGood_miniRelIso<0.4&&"+ele_MVAID_cutstr_vloose+"))" #+"&&"+ele_Eta_acc_cut_str+"&&LepGood_miniRelIso<"+str(minRelIso_lep_loose)+"&&"+ele_MVAID_cutstr_loose+"))" 
+###e_veto        = "(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt_e_veto)+"&&abs(LepGood_eta)<"+str(maxEta_e)+"&&LepGood_miniRelIso<0.4&&"+ele_MVAID_cutstr_vloose+")" #+"&&"+ele_Eta_acc_cut_str+"&&LepGood_miniRelIso<"+str(minRelIso_lep_loose)+"&&"+ele_MVAID_cutstr_loose+"))" 
 #e_tight       = "(Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt_Lep)+"&&abs(LepGood_eta)<"+str(maxEta_e)+"&&LepGood_miniRelIso<"+str(minRelIso_e)+"&&"+ele_MVAID_cutstr_tight+"&&"+"LepGood_lostHits<=0"+"&&"+"LepGood_convVeto"+"&&"+"LepGood_sip3d<"+str(max_sip3d)+"))" 
 e_tight       = "(abs(LepGood_pdgId)==11&&LepGood_pt>=10&&abs(LepGood_eta)<=2.5&&LepGood_miniRelIso<0.1&&LepGood_SPRING15_25ns_v1==4)" 
 n_tight_e =  "(Sum$("+e_tight+"))"
@@ -90,8 +90,8 @@ OneMu_lepveto = "("+n_veto_mu+"==0&&"+n_veto_e+"==0&&"+n_tight_e+"==0"+")"
 OneE = "("+n_tight_e+"==1"+")"
 OneE_lepveto = "("+n_veto_e+"==0&&"+n_veto_mu+"==0&&"+n_tight_mu+"==0"+")"
 lep_hard  = "LepGood_pt[0]>25"
-OneLep_lepveto = "("+e_veto+"==0&&"+mu_veto+"==0)"
-#OneLep_lepveto =  "(("+"abs(LepGood_pdgId)==11&&"+OneE_lepveto+")"+"||"+"("+"abs(LepGood_pdgId)==13&&"+OneMu_lepveto+"))"
+###OneLep_lepveto = "("+e_veto+"==0&&"+mu_veto+"==0)"
+OneLep_lepveto =  "(("+"abs(LepGood_pdgId)==11&&"+OneE_lepveto+")"+"||"+"("+"abs(LepGood_pdgId)==13&&"+OneMu_lepveto+"))"
 
 DiMu = "("+mu_tight+"==2"+")"
 DiMu_lepveto = "("+mu_veto+"==2&&"+e_veto+"==0"+")"

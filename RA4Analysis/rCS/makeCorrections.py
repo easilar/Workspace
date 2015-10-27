@@ -49,8 +49,8 @@ for weight_dict in weights:
   lumi = 3.
   sampleLumi = 3.
   printDir = '/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Spring15/25ns/templateFit/'+weight_dict['label']+'/'
-  pickleDir = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'/'+weight_dict['label']+'/'
-
+  #pickleDir = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'/'+weight_dict['label']+'/'
+  pickleDir = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_CBID/'+weight_dict['label']+'/'
 
   if not os.path.exists(pickleDir):
     os.makedirs(pickleDir)

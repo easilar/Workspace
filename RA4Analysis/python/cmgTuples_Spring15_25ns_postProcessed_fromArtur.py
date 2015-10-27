@@ -1,5 +1,25 @@
 import copy, os, sys
-dir = '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur_CBID/hard/' 
+###dir = '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur_CBID/hard/' 
+dir = '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur/hard/' 
+data_dir = '/data/easilar/cmgTuples/postProcessed_Spring15_Data_from_Artur_CBID/hard/'
+
+data_mu_25ns={\
+"name": "SingleMuon_Run2015D",
+"bins": [
+"SingleMuon_Run2015D_v4",
+"SingleMuon_Run2015D_05Oct"
+],
+"dir": data_dir,
+}
+
+data_ele_25ns={\
+"name": "SingleElectron_Run2015D",
+"bins": [
+"SingleElectron_Run2015D_v4",
+"SingleElectron_Run2015D_05Oct"
+],
+"dir": data_dir,
+}
 
 TTJets_HTLO_25ns={\
 "name" : "tt+Jets_LO",
@@ -11,7 +31,8 @@ TTJets_HTLO_25ns={\
 "TTJets_HT1200to2500",
 "TTJets_HT2500toInf",
 ],
-'dir' : '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur_CBID/HT400/hard/',
+#'dir' : '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur_CBID/HT400/hard/',
+'dir' : dir,
 }
 
 WJetsHTToLNu_25ns={\

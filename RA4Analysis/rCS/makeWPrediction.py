@@ -26,7 +26,7 @@ def makeWPrediction(weight_str, weight_err_str , bins, samples, htb, stb, srNJet
   
   #TT Jets yield in crNJet, no b-tag cut, low DPhi
   fit_crName, fit_crCut = nameAndCut(stb, htb, nJetCR, btb=None, presel=presel+'&&abs(leptonPdg)==13', btagVar = btagVarString) 
-  fit_crNJet_lowDPhi = binnedNBTagsFit(fit_crCut+"&&"+dPhiStr+"<"+str(dPhiCut), samples=samples, nBTagVar = btagVarString , lumi=lumi, prefix=fit_crName, printDir=printDir)
+  fit_crNJet_lowDPhi = binnedNBTagsFit(weight_str, weight_err_str,fit_crCut+"&&"+dPhiStr+"<"+str(dPhiCut), samples=samples, nBTagVar = btagVarString , lumi=lumi, prefix=fit_crName, printDir=printDir)
 #  fit_crNJet_lowDPhi = binnedNBTagsFit(fit_crCut+"&&"+dPhiStr+"<"+str(dPhiCut), samples = {'W':cWJets, 'TT':cTTJets}, nBTagVar = 'nBJetMedium25', prefix=fit_crName)
   rd['fit_crNJet_lowDPhi'] = fit_crNJet_lowDPhi
   
@@ -133,7 +133,7 @@ def makeWPrediction(weight_str, weight_err_str , bins, samples, htb, stb, srNJet
   rd['rCS_W_NegPdg_crNJet_0b_truth']  = getRCS(cWJets, 'leptonPdg<0&&'+crCut, dPhiCut)
 
   fit_srName, fit_srCut = nameAndCut(stb, htb, srNJet, btb=None, presel=presel,btagVar = btagVarString) 
-  fit_srNJet_lowDPhi = binnedNBTagsFit(fit_srCut+"&&"+dPhiStr+"<"+str(dPhiCut), samples = samples, nBTagVar = btagVarString, lumi=lumi, prefix=fit_srName, printDir=printDir)
+  fit_srNJet_lowDPhi = binnedNBTagsFit(weight_str, weight_err_str, fit_srCut+"&&"+dPhiStr+"<"+str(dPhiCut), samples = samples, nBTagVar = btagVarString, lumi=lumi, prefix=fit_srName, printDir=printDir)
 #  fit_srNJet_lowDPhi = binnedNBTagsFit(fit_srCut+"&&"+dPhiStr+"<"+str(dPhiCut), samples = {'W':cWJets, 'TT':cTTJets}, nBTagVar = 'nBJetMedium25', prefix=fit_srName)
 
   rd['fit_srNJet_lowDPhi'] = fit_srNJet_lowDPhi

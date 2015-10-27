@@ -12,7 +12,7 @@ dPhiStr='deltaPhi_Wl'
 ROOT.TH1F().SetDefaultSumw2()
 
 def makeTTPrediction(weight_str, weight_err_str, bins, samples, htb, stb, srNJet, presel, dPhiCut=1.0, btagVarString = "nBJetMediumCSV30", lumi=4., printDir='/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Spring15/defaultDir/templateFit/'):
-  print "in make tt prediction lumi is :" , lumi
+  print "in make tt prediction lumi is :" , lumi , " weight is : " , weight_str
   #weight_str, weight_err_str = makeWeight(lumi)
   #weight_str, weight_err_str = in_weight
   cWJets = samples['W']
@@ -24,7 +24,7 @@ def makeTTPrediction(weight_str, weight_err_str, bins, samples, htb, stb, srNJet
 
   #TT Jets yield in srNJet, no b-tag cut, low DPhi
   fit_srName, fit_srCut = nameAndCut(stb, htb, srNJet, btb=None, presel=presel, btagVar = btagVarString) 
-  fit_srNJet_lowDPhi = binnedNBTagsFit(fit_srCut+"&&"+dPhiStr+"<"+str(dPhiCut), samples = samples, nBTagVar = btagVarString, lumi=lumi, prefix=fit_srName, printDir=printDir)
+  fit_srNJet_lowDPhi = binnedNBTagsFit(weight_str, weight_err_str,fit_srCut+"&&"+dPhiStr+"<"+str(dPhiCut), samples = samples, nBTagVar = btagVarString, lumi=lumi, prefix=fit_srName, printDir=printDir)
 #  fit_srNJet_lowDPhi = binnedNBTagsFit(fit_srCut+"&&"+dPhiStr+"<"+str(dPhiCut), samples = {'W':cWJets, 'TT':cTTJets}, nBTagVar = 'nBJetMedium25', prefix=fit_srName)
   rd['fit_srNJet_lowDPhi'] = fit_srNJet_lowDPhi
 

@@ -18,14 +18,14 @@ maxN = 1
 small = False
 if not small : maxN = -1
 
-lumi = 133 #pb-1
+lumi = 3000 #pb-1
 
 lepSels = [
 #  {'cut':OneMu , 'veto':OneMu_lepveto, 'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '(HLT_MuHT350MET70 || HLT_Mu50)'},\
-#  {'cut':OneE ,  'veto':OneE_lepveto,  'label':'_ele_','str':'1 $e$', 'trigger': '(HLT_EleHT350MET70 || HLT_Ele105)'},\
-###  {'cut':OneLep ,'veto':OneLep_lepveto,'label':'_lep_','str':'1 $lepton$', 'trigger': '((HLT_EleHT350MET70 || HLT_Ele105)||(HLT_MuHT350MET70 || HLT_Mu50))' },\
+###  {'cut':OneE ,  'veto':OneE_lepveto,  'label':'_ele_','str':'1 $e$', 'trigger': '(HLT_EleHT350MET70 || HLT_Ele105)'},\
+{'cut':OneLep ,'veto':OneLep_lepveto,'label':'_lep_','str':'1 $lepton$', 'trigger': '((HLT_EleHT350MET70 || HLT_Ele105)||(HLT_MuHT350MET70 || HLT_Mu50))' },\
 ###{'cut':OneE ,  'veto':OneE_lepveto,  'label':'_ele_','str':'1 $e$', 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
-{'cut':OneMu , 'veto':OneMu_lepveto, 'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
+##{'cut':OneMu , 'veto':OneMu_lepveto, 'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
 ]
 
 
@@ -42,14 +42,20 @@ samples=[
 
 for lepSel in lepSels:
   cuts = [
-    {'cut':'(1)', 'label':'no cut'},\
-    {'cut':"&&".join([ht_cut]), 'label':'$H_T >$ 500 GeV'},\
-    {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard]), 'label': lepSel['str']},\
-    {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,"nJet>=4"]), 'label': 'nJet $\\geq$ 4'},\
-    {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,"nJet>=4",jets_2_80]), 'label': '2. jets ($\\geq$ 80 GeV)'},\
-    {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,"nJet>=4",jets_2_80,st]), 'label': '$L_T >$ 250 GeV'},\
-    {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,"nJet>=4",jets_2_80,st,nbjets_30_cut_zero,jets_2_80]), 'label': '0 b-jets (CSVv2)'},\
-    {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,"nJet>=4",jets_2_80,st,nbjets_30_cut_multi,jets_2_80]), 'label': '$>=1 b-jets (CSVv2)$'},\
+   {'cut':'(1)', 'label':'HT Skim'},\
+   #{'cut':"&&".join([ht_cut]), 'label':'$H_T >$ 500 GeV'},\
+   {'cut':"&&".join([lepSel['cut']]), 'label': lepSel['str']},\
+   {'cut':"&&".join([lepSel['cut'],lep_hard]), 'label': lepSel['str']+'_hard'},\
+   {'cut':"&&".join([lepSel['cut'],lep_hard,lepSel['veto']]), 'label': lepSel['str']+'_veto'},\
+  ### {'cut':"&&".join([lepSel['cut'],lepSel['veto'],lep_hard]), 'label': lepSel['str']+'_hard'},\
+  ###{'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5"]), 'label': 'nJet $\\geq$ 5'},\
+  ###{'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5",jets_2_80,jets_2_80]), 'label': '2. jets ($\\geq$ 80 GeV)'},\
+  ###{'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5",jets_2_80,st,jets_2_80]), 'label': '$L_T >$ 250 GeV'},\
+  ###{'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5",jets_2_80,st,nbjets_30_cut_zero,jets_2_80]), 'label': '0 b-jets (CSVv2)'},\
+  ###{'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5",jets_2_80,st,nbjets_30_cut_multi,jets_2_80]), 'label': '$>=1 b-jets (CSVv2)$'},\
+#   {'cut':"&&".join([lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5",jets_2_80,ht_cut,st,nbjets_30_cut_zero,jets_2_80,'(LepGood_pt[0]+met_pt)>=250&&(LepGood_pt[0]+met_pt)<350']), 'label': '$TEST$'},\
+#   {'cut':"&&".join([lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5",jets_2_80,ht_cut,st,nbjets_30_cut_zero,jets_2_80,'(LepGood_pt[0]+met_pt)>=250&&(LepGood_pt[0]+met_pt)<350',dPhi_cut]), 'label': '$deltaPhi>1$'},\
+    
 ###{'cut':'(1)', 'label':'no cut'},\
 ###{'cut':lepSel['cut'], 'label':lepSel['str']},\
 ###{'cut':"&&".join([lepSel['cut'],lepSel['veto']]), 'label':'lepton veto'},\
@@ -64,7 +70,8 @@ for lepSel in lepSels:
 ###{'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_multi,dPhi_cut]), 'label':'$\\Delta\\Phi > 1$'},\
 ####{'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_multi,filters]), 'label':'Filters'},\
   ]
-  ofile = file(path+'cut_flow_'+str(lumi)+'pb_'+lepSel['label']+'_4jets_.tex','w')
+  ofile = file(path+'cut_flow_'+str(lumi)+'pb_'+lepSel['label']+'_5jets_order_changed_hardfirst_ele_eta_2p4.tex','w')
+  #ofile = file(path+'cut_flow_'+str(lumi)+'pb_'+lepSel['label']+'_TEST_.tex','w')
   doc_header = '\\documentclass{article}\\usepackage[english]{babel}\\usepackage{graphicx}\\usepackage[margin=0.5in]{geometry}\\begin{document}'
   ofile.write(doc_header)
   ofile.write("\n")
