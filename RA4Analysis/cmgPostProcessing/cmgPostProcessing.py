@@ -67,8 +67,8 @@ if options.skim.startswith('met'):
   skimCond = "met_pt>"+str(float(options.skim[3:]))
 if options.skim=='HT400':
   skimCond = "Sum$(Jet_pt)>400"
-if options.skim=='HT400ST200':  
-  skimCond = "Sum$(Jet_pt)>400&&(LepGood_pt[0]+met_pt)>200"
+if options.skim=='HT500ST250':  
+  skimCond = "Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
 if options.skim=='LHEHT600':
   skimCond = "lheHTIncoming<600"
 
@@ -79,7 +79,7 @@ if options.leptonSelection.lower()=='soft':
 if options.leptonSelection.lower()=='hard':
   #skimCond += "&&Sum$(LepGood_pt>25&&LepGood_relIso03<0.4&&abs(LepGood_eta)<2.4)>=1"
   #skimCond += "&&Sum$(LepGood_pt>25&&abs(LepGood_eta)<2.4)>=1"
-  skimCond += "&&Sum$(LepGood_pt>25&&abs(LepGood_eta)<2.5)>=0"
+  skimCond += "&&Sum$(LepGood_pt>25&&abs(LepGood_eta)<2.5)>=1"
 if options.leptonSelection.lower()=='dilep':
   #skimCond += "&&Sum$(LepGood_pt>25&&LepGood_relIso03<0.4&&abs(LepGood_eta)<2.4)>=1"
   skimCond += "&&Sum$(LepGood_pt>15&&abs(LepGood_eta)<2.4)>1"
@@ -130,8 +130,10 @@ for isample, sample in enumerate(allSamples):
     lumiScaleFactor=1
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_DATA 
   else:
-    lumiScaleFactor = xsec[sample['dbsName']]*target_lumi/float(sumWeight)
+    if "TTJets" in sample['dbsName']: lumiScaleFactor = xsec[sample['dbsName']]*target_lumi/float(sumWeight)
     #lumiScaleFactor = target_lumi/float(sumWeight)
+     # branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_MC
+    else: lumiScaleFactor = target_lumi/float(sumWeight)
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_MC
 
   readVariables = ['met_pt/F', 'met_phi/F']
@@ -139,7 +141,7 @@ for isample, sample in enumerate(allSamples):
   aliases = [ "met:met_pt", "metPhi:met_phi"]
 
   readVectors = [\
-    {'prefix':'LepGood',  'nMax':8, 'vars':['pt/F', 'eta/F', 'phi/F', 'pdgId/I', 'relIso03/F','SPRING15_25ns_v1/F' ,'tightId/I', 'miniRelIso/F','mass/F','sip3d/F','mediumMuonId/I', 'mvaIdPhys14/F','mvaIdSpring15/F','lostHits/I', 'convVeto/I']},
+    {'prefix':'LepGood',  'nMax':8, 'vars':['pt/F', 'eta/F', 'phi/F', 'pdgId/I', 'relIso03/F','SPRING15_25ns_v1/I' ,'tightId/I', 'miniRelIso/F','mass/F','sip3d/F','mediumMuonId/I', 'mvaIdPhys14/F','mvaIdSpring15/F','lostHits/I', 'convVeto/I']},
     {'prefix':'Jet',  'nMax':100, 'vars':['pt/F', 'eta/F', 'phi/F', 'id/I','btagCSV/F', 'btagCMVA/F']},
   ]
   if not sample['isData']: 
@@ -148,7 +150,7 @@ for isample, sample in enumerate(allSamples):
     #readVectors[1]['vars'].extend('partonId/I')
   if options.leptonSelection.lower() in ['soft', 'hard']:
     newVariables.extend( ['nLooseSoftLeptons/I', 'nLooseHardLeptons/I', 'nTightSoftLeptons/I', 'nTightHardLeptons/I'] )
-    newVariables.extend( ['deltaPhi_Wl/F','nBJetMediumCSV30/I','nJet30/I','htJet30j/F','st/F', 'leptonPt/F','leptonMiniRelIso/F','leptonRelIso03/F' ,'leptonEta/F', 'leptonPhi/F', 'leptonPdg/I/0', 'leptonInd/I/-1', 'leptonMass/F', 'singleMuonic/I', 'singleElectronic/I', 'singleLeptonic/I' ]) #, 'mt2w/F'] )
+    newVariables.extend( ['deltaPhi_Wl/F','nBJetMediumCSV30/I','nJet30/I','htJet30j/F','st/F', 'leptonPt/F','leptonMiniRelIso/F','leptonRelIso03/F' ,'leptonEta/F', 'leptonPhi/F', 'leptonSPRING15_25ns_v1/I/-2','leptonPdg/I/0', 'leptonInd/I/-1', 'leptonMass/F', 'singleMuonic/I', 'singleElectronic/I', 'singleLeptonic/I' ]) #, 'mt2w/F'] )
   newVars = [readVar(v, allowRenaming=False, isWritten = True, isRead=False) for v in newVariables]
 
   
@@ -204,11 +206,12 @@ for isample, sample in enumerate(allSamples):
         r.init()
         t.GetEntry(i)
         genWeight = 1 if sample['isData'] else t.GetLeaf('genWeight').GetValue()
-        #xsectemp = t.GetLeaf('xsec').GetValue()
-        #s.weight = xsectemp*lumiScaleFactor*genWeight
+        xsectemp = 1 if sample['isData'] else t.GetLeaf('xsec').GetValue()
         s.weight = lumiScaleFactor*genWeight
 
         if not sample['isData']:
+          if "TTJets" in sample['dbsName']: s.weight = lumiScaleFactor*genWeight
+          else : s.weight = xsectemp*lumiScaleFactor*genWeight 
           if "TTJets" in sample['dbsName']:
             s.weight_XSecTTBar1p1 = s.weight*1.1 
             s.weight_XSecTTBar0p9 = s.weight*0.9
@@ -234,7 +237,6 @@ for isample, sample in enumerate(allSamples):
           ###                               or (abs(r.LepGood_pdgId[i])==13 and r.LepGood_relIso03[i]<0.12 and r.LepGood_tightId[i]), looseHardLepInd)
           tightHardLepInd = filter(lambda i:(abs(r.LepGood_pdgId[i])==11 and cmgTightEleID(r,i)) \
                                          or (abs(r.LepGood_pdgId[i])==13 and cmgTightMuID(r,i)), looseHardLepInd)  
-
 
           #print "s lepgood pt: " ,s.LepGood_pt[0]
           s.nLooseSoftLeptons = len(looseSoftLepInd)
@@ -263,7 +265,9 @@ for isample, sample in enumerate(allSamples):
             s.leptonPhi = r.LepGood_phi[leadingLepInd]
             s.leptonPdg = r.LepGood_pdgId[leadingLepInd]
             s.leptonMass= r.LepGood_mass[leadingLepInd]
+            s.leptonSPRING15_25ns_v1= r.LepGood_SPRING15_25ns_v1[leadingLepInd]
             s.st = r.met_pt + s.leptonPt
+            #print "tight lepton pdg:" , s.leptonPdg 
           s.singleLeptonic = s.nTightHardLeptons==1
           if s.singleLeptonic:
             s.singleMuonic      =  abs(s.leptonPdg)==13

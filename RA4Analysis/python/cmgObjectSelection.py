@@ -35,7 +35,8 @@ def cmgLooseEleID(r, nLep):
   return r.LepGood_pt[nLep]>=10 and abs(r.LepGood_eta[nLep])<2.5 #and r.LepGood_miniRelIso[nLep]<0.4 and cmgMVAEleID(r,nLep,ele_MVAID_cuts_vloose) 
 
 def cmgTightEleID(r, nLep):
-  return r.LepGood_pt[nLep]>=25 and abs(r.LepGood_eta[nLep])<2.5\
+  ###if r.LepGood_SPRING15_25ns_v1[nLep] == 4: print r.LepGood_SPRING15_25ns_v1[nLep]
+  return r.LepGood_pt[nLep]>=10 and abs(r.LepGood_eta[nLep])<2.5\
     and  r.LepGood_miniRelIso[nLep]<0.1  \
     and  r.LepGood_SPRING15_25ns_v1[nLep]==4
 #    and cmgMVAEleID(r,nLep,ele_MVAID_cuts_tight) \
