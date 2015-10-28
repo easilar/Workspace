@@ -18,13 +18,13 @@ from Workspace.HEPHYPythonTools.helpers import getChunks
 #from Workspace.RA4Analysis.cmgTuples_Data50ns_1l import *
 #from Workspace.RA4Analysis.cmgTuples_Data25ns_0l import *
 from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_fromArtur import *
-#from Workspace.RA4Analysis.cmgTuples_data_25ns_fromArtur import *
+from Workspace.RA4Analysis.cmgTuples_data_25ns_fromArtur import *
 
 target_lumi = 3000 #pb-1
 
 defSampleStr = "TTJets_LO_HT600to800_25ns"
 
-subDir = "postProcessed_Spring15_MC_from_Artur_CBID"
+subDir = "postProcessed_CBID"
 
 #branches to be kept for data and MC
 branchKeepStrings_DATAMC = ["run", "lumi", "evt", "isData", "rho", "nVert", 
@@ -130,8 +130,8 @@ for isample, sample in enumerate(allSamples):
     lumiScaleFactor=1
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_DATA 
   else:
-    #lumiScaleFactor = xsec[sample['dbsName']]*target_lumi/float(sumWeight)
-    lumiScaleFactor = target_lumi/float(sumWeight)
+    lumiScaleFactor = xsec[sample['dbsName']]*target_lumi/float(sumWeight)
+    #lumiScaleFactor = target_lumi/float(sumWeight)
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_MC
 
   readVariables = ['met_pt/F', 'met_phi/F']
@@ -204,9 +204,9 @@ for isample, sample in enumerate(allSamples):
         r.init()
         t.GetEntry(i)
         genWeight = 1 if sample['isData'] else t.GetLeaf('genWeight').GetValue()
-        xsectemp = t.GetLeaf('xsec').GetValue()
-        s.weight = xsectemp*lumiScaleFactor*genWeight
-        #s.weight = lumiScaleFactor*genWeight
+        #xsectemp = t.GetLeaf('xsec').GetValue()
+        #s.weight = xsectemp*lumiScaleFactor*genWeight
+        s.weight = lumiScaleFactor*genWeight
 
         if not sample['isData']:
           if "TTJets" in sample['dbsName']:
@@ -242,7 +242,7 @@ for isample, sample in enumerate(allSamples):
           s.nTightSoftLeptons = len(tightSoftLepInd)
           s.nTightHardLeptons = len(tightHardLepInd)
           #print "tightHardLepInd:" , tightHardLepInd
-          vars = ['pt', 'eta', 'phi', 'miniRelIso','relIso03', 'pdgId']
+          vars = ['pt', 'eta', 'phi', 'miniRelIso','relIso03', 'pdgId', 'SPRING15_25ns_v1']
           allLeptons = [getObjDict(t, 'LepGood_', vars, i) for i in looseLepInd]
           looseSoftLep = [getObjDict(t, 'LepGood_', vars, i) for i in looseSoftLepInd] 
           looseHardLep = [getObjDict(t, 'LepGood_', vars, i) for i in looseHardLepInd]
