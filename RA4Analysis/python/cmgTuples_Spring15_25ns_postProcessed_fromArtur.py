@@ -1,7 +1,9 @@
 import copy, os, sys
 ###dir = '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur_CBID/hard/' 
-dir = '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur/hard/' 
-data_dir = '/data/easilar/cmgTuples/postProcessed_Spring15_Data_from_Artur_CBID/hard/'
+#dir = '/data/easilar/cmgTuples/postProcessed_Spring15_MC_from_Artur/hard/' 
+#data_dir = '/data/easilar/cmgTuples/postProcessed_Spring15_Data_from_Artur_CBID/hard/'
+dir  = '/data/easilar/cmgTuples/postProcessed_CBID/HT500ST250/hard/'
+
 
 data_mu_25ns={\
 "name": "SingleMuon_Run2015D",
@@ -9,7 +11,7 @@ data_mu_25ns={\
 "SingleMuon_Run2015D_v4",
 "SingleMuon_Run2015D_05Oct"
 ],
-"dir": data_dir,
+"dir": dir,
 }
 
 data_ele_25ns={\
@@ -18,7 +20,7 @@ data_ele_25ns={\
 "SingleElectron_Run2015D_v4",
 "SingleElectron_Run2015D_05Oct"
 ],
-"dir": data_dir,
+"dir": dir,
 }
 
 TTJets_HTLO_25ns={\

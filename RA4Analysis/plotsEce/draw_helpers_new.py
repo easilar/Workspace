@@ -15,13 +15,13 @@ from cutFlow_helper import *
  
 def exactlyOneTightLepton(lepton="muon"):
   if lepton.lower()=="muon":
-    return OneMu
+    #return OneMu
     #return exactlyOneTightMuon(minPt=minPt, maxEta=maxEta, minID=minID, minRelIso=minRelIso)
-    #return "singleMuonic"
+    return "singleMuonic"
   if lepton.lower()=="electron":
     return OneE
     #return exactlyOneTightElectron(minPt=minPt, maxEta=maxEta, minID=minID, minRelIso=minRelIso)
-    #return "singleElectronic"
+    return "singleElectronic"
   if lepton.lower()=="both":
     #assert len(minPt)==2 and len(maxEta)==2 and len(minID)==2 and len(minRelIso)==2, "exactlyOneTightLepton: Not all args of length 2!"
     #return "(Sum$("+anyLeptonSelectionStr(minPt=minPt, maxEta=maxEta, minID=minID, minRelIso=minRelIso)+")==1)" 

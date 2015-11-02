@@ -80,8 +80,8 @@ if btb and stb:
       jet2Ptcut(),\
       nBTagCut(btb),
       stCut(stb=stb), \
-      #dPhiCut(1)\
-      dPhiCut_r(1)\
+      dPhiCut(1)\
+      #dPhiCut_r(1)\
       ])
   for s in samples:
     hName="yield_"+s['name']+'_'+name
@@ -135,9 +135,9 @@ if btb and stb:
   c1.RedrawAxis()
   #      l.Draw()
   #      c1.Update()
-  c1.Print(path+'/pieChart_njet_vs_ht_'+fname+"DPhiSm1.png")
-  c1.Print(path+'/pieChart_njet_vs_ht_'+fname+"DPhiSm1.pdf")
-  c1.Print(path+'/pieChart_njet_vs_ht_'+fname+"DPhiSm1.root")
+  c1.Print(path+'/pieChart_njet_vs_ht_'+fname+"DPhiLg1.png")
+  c1.Print(path+'/pieChart_njet_vs_ht_'+fname+"DPhiLg1.pdf")
+  c1.Print(path+'/pieChart_njet_vs_ht_'+fname+"DPhiLg1.root")
 if htb and stb:
   name = nameAndCut(stb, htb=htb, njetb=None, btb=None)[0]
   cut= "&&".join([
@@ -148,8 +148,8 @@ if htb and stb:
       htCut  (htb=htb), \
   #   nBTagCut(btb, minPt=30, maxEta=2.4, minCMVATag=0.732),
       stCut(stb=stb), \
-      #dPhiCut(1)\
-      dPhiCut_r(1)\
+      dPhiCut(1)\
+      #dPhiCut_r(1)\
       ])
   for s in samples:
     hName="yield_"+s['name']+'_'+name
@@ -201,7 +201,7 @@ if htb and stb:
       stuff.append(pad)
       c1.cd()
   c1.RedrawAxis()
-  c1.Print(path+'/pieChart_njet_vs_nbjet_'+fname+"DPhiSm1.png")
-  c1.Print(path+'/pieChart_njet_vs_nbjet_'+fname+"DPhiSm1.pdf")
-  c1.Print(path+'/pieChart_njet_vs_nbjet_'+fname+"DPhiSm1.root")
+  c1.Print(path+'/pieChart_njet_vs_nbjet_'+fname+"DPhiLg1.png")
+  c1.Print(path+'/pieChart_njet_vs_nbjet_'+fname+"DPhiLg1.pdf")
+  c1.Print(path+'/pieChart_njet_vs_nbjet_'+fname+"DPhiLg1.root")
 #      del hPie

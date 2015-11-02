@@ -21,9 +21,9 @@ if not small : maxN = -1
 lumi = 3000 #pb-1
 
 lepSels = [
-#  {'cut':OneMu , 'veto':OneMu_lepveto, 'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '(HLT_MuHT350MET70 || HLT_Mu50)'},\
-  {'cut':OneE ,  'veto':OneE_lepveto,  'label':'_ele_','str':'1 $e$', 'trigger': '(HLT_EleHT350MET70 || HLT_Ele105)'},\
-###{'cut':OneLep ,'veto':OneLep_lepveto,'label':'_lep_','str':'1 $lepton$', 'trigger': '((HLT_EleHT350MET70 || HLT_Ele105)||(HLT_MuHT350MET70 || HLT_Mu50))' },\
+###  {'cut':OneMu , 'veto':OneMu_lepveto, 'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '(HLT_MuHT350MET70 || HLT_Mu50)'},\
+#  {'cut':OneE ,  'veto':OneE_lepveto,  'label':'_ele_','str':'1 $e$', 'trigger': '(HLT_EleHT350MET70 || HLT_Ele105)'},\
+{'cut':OneLep ,'veto':OneLep_lepveto,'label':'_lep_','str':'1 $lepton$', 'trigger': '((HLT_EleHT350MET70 || HLT_Ele105)||(HLT_MuHT350MET70 || HLT_Mu50))' },\
 ###{'cut':OneE ,  'veto':OneE_lepveto,  'label':'_ele_','str':'1 $e$', 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
 ##{'cut':OneMu , 'veto':OneMu_lepveto, 'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
 ]
@@ -42,11 +42,16 @@ samples=[
 
 for lepSel in lepSels:
   cuts = [
-   {'cut':'(1)', 'label':'HT Skim'},\
-   #{'cut':"&&".join([ht_cut]), 'label':'$H_T >$ 500 GeV'},\
-   {'cut':"&&".join([lepSel['cut']]), 'label': lepSel['str']},\
-   {'cut':"&&".join([lepSel['cut'],lep_hard]), 'label': lepSel['str']+'_hard'},\
-   {'cut':"&&".join([lepSel['cut'],lep_hard,lepSel['veto']]), 'label': lepSel['str']+'_veto'},\
+  {'cut':'(1)', 'label':'HT Skim'},\
+  {'cut':"&&".join([ht_cut]), 'label':'$H_T >$ 500 GeV'},\
+  {'cut':"&&".join([ht_cut,lepSel['cut']]), 'label': lepSel['str']},\
+  {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto']]), 'label': lepSel['str']+' veto'},\
+  {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],njets_30+">=4",lep_hard]), 'label': 'nJet $\\geq$ 4'},\
+  {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],njets_30+">=4",jets_2_80,jets_2_80]), 'label': '2. jets ($\\geq$ 80 GeV)'},\
+  {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],njets_30+">=4",jets_2_80,st,jets_2_80]), 'label':'$L_T >$ 250 GeV'},\
+  {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],njets_30+">=4",jets_2_80,st,nbjets_30_cut_zero,jets_2_80]), 'label': '0 b-jets (CSVM)' },\
+  {'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],njets_30+">=4",jets_2_80,st,nbjets_30_cut_multi,jets_2_80]), 'label': '$>=1 b-jets (CSVM)$' },\
+  # {'cut':"&&".join([lepSel['cut'],lep_hard,lepSel['veto'],lep_hard]), 'label': lepSel['str']+'_veto'},\
   ### {'cut':"&&".join([lepSel['cut'],lepSel['veto'],lep_hard]), 'label': lepSel['str']+'_hard'},\
   ###{'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5"]), 'label': 'nJet $\\geq$ 5'},\
   ###{'cut':"&&".join([ht_cut,lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5",jets_2_80,jets_2_80]), 'label': '2. jets ($\\geq$ 80 GeV)'},\
@@ -70,7 +75,7 @@ for lepSel in lepSels:
 ###{'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_multi,dPhi_cut]), 'label':'$\\Delta\\Phi > 1$'},\
 ####{'cut':"&&".join([lepSel['cut'],lepSel['veto'],ht_cut,st,njets_30_cut,jets_2_80,nbjets_30_cut_multi,filters]), 'label':'Filters'},\
   ]
-  ofile = file(path+'cut_flow_'+str(lumi)+'pb_'+lepSel['label']+'_5jets_order_changed_hardfirst.tex','w')
+  ofile = file(path+'cut_flow_'+str(lumi)+'pb_'+lepSel['label']+'_4jets.tex','w')
   #ofile = file(path+'cut_flow_'+str(lumi)+'pb_'+lepSel['label']+'_TEST_.tex','w')
   doc_header = '\\documentclass{article}\\usepackage[english]{babel}\\usepackage{graphicx}\\usepackage[margin=0.5in]{geometry}\\begin{document}'
   ofile.write(doc_header)
@@ -105,6 +110,7 @@ for lepSel in lepSels:
         print "MC Events:" , chain.GetEntries(cut['cut'])
         #y_remain = chain.GetEntries(cut['cut'])
         y_remain = getYieldFromChain(chain,cutString = cut['cut'],weight = "(((xsec*genWeight)*"+str(lumi)+")/"+str(nEntry)+")")
+        #y_remain = getYieldFromChain(chain,cutString = cut['cut'],weight = "(((xsec)*"+str(lumi)+")/"+str(nEntry)+")")
         tot_yields += y_remain
       print tot_yields
       line_yield = '&' + str(format(tot_yields, '.1f'))

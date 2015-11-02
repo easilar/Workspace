@@ -197,7 +197,7 @@ def nameAndCut(stb, htb, njetb, btb=None, presel="(1)", charge="", btagVar = 'nB
   name=""
   if stb:
     cut+='&&'+stVar+'>='+str(stb[0])
-    name+='st'+str(stb[0])
+    name+='LT'+str(stb[0])
     if stb[1]>0:
       cut+='&&'+stVar+'<'+str(stb[1])
       name+='-'+str(stb[1])
