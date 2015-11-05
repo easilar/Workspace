@@ -24,7 +24,7 @@ target_lumi = 3000 #pb-1
 
 defSampleStr = "TTJets_LO_HT600to800_25ns"
 
-subDir = "postProcessed_CBID"
+subDir = "postProcessed_PUreweight"
 
 #branches to be kept for data and MC
 branchKeepStrings_DATAMC = ["run", "lumi", "evt", "isData", "rho", "nVert", 
@@ -68,7 +68,7 @@ if options.skim.startswith('met'):
 if options.skim=='HT400':
   skimCond = "Sum$(Jet_pt)>400"
 if options.skim=='HT500ST250':  
-  skimCond = "Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+  skimCond = "lheHTIncoming>=600&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
 if options.skim=='LHEHT600':
   skimCond = "lheHTIncoming<600"
 
@@ -79,7 +79,7 @@ if options.leptonSelection.lower()=='soft':
 if options.leptonSelection.lower()=='hard':
   #skimCond += "&&Sum$(LepGood_pt>25&&LepGood_relIso03<0.4&&abs(LepGood_eta)<2.4)>=1"
   #skimCond += "&&Sum$(LepGood_pt>25&&abs(LepGood_eta)<2.4)>=1"
-  skimCond += "&&Sum$(LepGood_pt>25&&abs(LepGood_eta)<2.5)>=1"
+  skimCond += "&&Sum$(LepGood_pt>25&&abs(LepGood_eta)<2.5)>=0"
 if options.leptonSelection.lower()=='dilep':
   #skimCond += "&&Sum$(LepGood_pt>25&&LepGood_relIso03<0.4&&abs(LepGood_eta)<2.4)>=1"
   skimCond += "&&Sum$(LepGood_pt>15&&abs(LepGood_eta)<2.4)>1"
@@ -89,6 +89,10 @@ if options.skim=='inc':
 
 if sys.argv[0].count('ipython'):
   options.small=True
+###For PU reweight###
+PU_File = ROOT.TFile("/data/easilar/tuples_from_Artur/METfromMINIAOD_eleID-Spring15MVAL_1260pb/PUhistos/ratio_PU.root")
+PU_histo = PU_File.Get("h_ratio")
+#####################
 
 def getTreeFromChunk(c, skimCond, iSplit, nSplit):
   if not c.has_key('file'):return
@@ -150,7 +154,7 @@ for isample, sample in enumerate(allSamples):
     #readVectors[1]['vars'].extend('partonId/I')
   if options.leptonSelection.lower() in ['soft', 'hard']:
     newVariables.extend( ['nLooseSoftLeptons/I', 'nLooseHardLeptons/I', 'nTightSoftLeptons/I', 'nTightHardLeptons/I'] )
-    newVariables.extend( ['deltaPhi_Wl/F','nBJetMediumCSV30/I','nJet30/I','htJet30j/F','st/F', 'leptonPt/F','leptonMiniRelIso/F','leptonRelIso03/F' ,'leptonEta/F', 'leptonPhi/F', 'leptonSPRING15_25ns_v1/I/-2','leptonPdg/I/0', 'leptonInd/I/-1', 'leptonMass/F', 'singleMuonic/I', 'singleElectronic/I', 'singleLeptonic/I' ]) #, 'mt2w/F'] )
+    newVariables.extend( ['puReweight_true/F','deltaPhi_Wl/F','nBJetMediumCSV30/I','nJet30/I','htJet30j/F','st/F', 'leptonPt/F','leptonMiniRelIso/F','leptonRelIso03/F' ,'leptonEta/F', 'leptonPhi/F', 'leptonSPRING15_25ns_v1/I/-2','leptonPdg/I/0', 'leptonInd/I/-1', 'leptonMass/F', 'singleMuonic/I', 'singleElectronic/I', 'singleLeptonic/I' ]) #, 'mt2w/F'] )
   newVars = [readVar(v, allowRenaming=False, isWritten = True, isRead=False) for v in newVariables]
 
   
@@ -208,7 +212,8 @@ for isample, sample in enumerate(allSamples):
         genWeight = 1 if sample['isData'] else t.GetLeaf('genWeight').GetValue()
         xsectemp = 1 if sample['isData'] else t.GetLeaf('xsec').GetValue()
         s.weight = lumiScaleFactor*genWeight
-
+        nVert = t.GetLeaf('nVert').GetValue()
+        s.puReweight_true = 1 if sample['isData'] else PU_histo.GetBinContent(PU_histo.FindBin(nVert))
         if not sample['isData']:
           if "TTJets" in sample['dbsName']: s.weight = lumiScaleFactor*genWeight
           else : s.weight = xsectemp*lumiScaleFactor*genWeight 
