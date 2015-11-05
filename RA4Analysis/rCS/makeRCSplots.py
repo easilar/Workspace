@@ -5,18 +5,18 @@ from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName, nBTagBinName,
 from rCShelpers import *
 import math
 from Workspace.HEPHYPythonTools.user import username
-from Workspace.RA4Analysis.signalRegions import *
+#from Workspace.RA4Analysis.signalRegions import *
 from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur import *
 from Workspace.RA4Analysis.cmgTuples_data_25ns_fromArtur import *
-
 ROOT.gROOT.LoadMacro("../../HEPHYPythonTools/scripts/root/tdrstyle.C")
 ROOT.setTDRStyle()
 ROOT.gStyle.SetOptStat(0)
 
 cWJets  = getChain(WJetsHTToLNu_25ns,histname='')
 cTTJets = getChain(TTJets_HTLO_25ns,histname='')
-cBkg = getChain([WJetsHTToLNu_25ns,TTJets_HTLO_25ns,singleTop_25ns,TTV_25ns,DY_25ns],histname='')#no QCD
-cData = getChain([data_mu_25ns , data_ele_25ns] , histname='')
+cBkg = getChain([WJetsHTToLNu_25ns,TTJets_HTLO_25ns,singleTop_25ns,TTV_25ns,DY_25ns,QCDHT_25ns],histname='')#no QCD
+#cData = getChain([data_mu_25ns , data_ele_25ns] , histname='')
+cData = getChain([data_mu_25ns] , histname='')
 
 def getRCS(c, cut, dPhiCut):
   h = getPlotFromChain(c, "deltaPhi_Wl", [0,dPhiCut,pi], cutString=cut, binningIsExplicit=True)
@@ -26,17 +26,18 @@ def getRCS(c, cut, dPhiCut):
     rCSE_pred = rcs*sqrt(1./h.GetBinContent(2) + 1./h.GetBinContent(1))
     del h
     return {'rCS':rcs, 'rCSE_pred':rCSE_pred, 'rCSE_sim':rCSE_sim}
+  else : return {'rCS':'Nan', 'rCSE_pred':'Nan', 'rCSE_sim':'Nan'}
   del h
 
-lumi = 3
+lumi = 1.26
 weights = [
 {'var':'weight','label':'original'},\
 ]
 diLep = "((ngenLep+ngenTau)==2)"
 prefix = 'singleLeptonic_Spring15_'
 path = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_CBID/'+weights[0]['label']+'/'
-presel = "singleLeptonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0&&Jet_pt[1]>80"
-data_presel = "singleLeptonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0&&((HLT_EleHT350)||(HLT_MuHT350))&&Jet_pt[1]>80" 
+presel = "singleMuonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0&&Jet_pt[1]>80"
+data_presel = "singleMuonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0&&((HLT_EleHT350)||(HLT_MuHT350))&&Jet_pt[1]>80" 
 btagString = 'nBJetMediumCSV30'
 weight_str, weight_err_str = makeWeight(lumi, sampleLumi=3.)
 lepSel = 'hard'
@@ -44,91 +45,174 @@ btagVarString = 'nBJetMediumCSV30'
 
 
 ###### data rCS plots ######
-nJet = (4,5)
-nbtag = [(1,1),(2,2)]
+nJet = (3,4)
+nbTags = (0,0)
+#nbtag = [(1,1),(2,2)]
 ht = 500
-sideBand3fb =     {(4, 5): {(250, 350): {(ht, -1):   {'deltaPhi': 1.0}},
-                            (350, 450): {(ht, -1):   {'deltaPhi': 1.0}},
-                            (450, -1):  {(ht, -1):   {'deltaPhi': 0.75}}}}
+#                                         (1000, -1):  {'deltaPhi': 0.75}}}}
+
+sideBand3fb = {(5, 5): {(250, 350): {(500, -1):   {'deltaPhi': 1.0}},
+                            (350, 450): {(500, -1):   {'deltaPhi': 1.0}},
+                            (450, -1): {(500, -1):    {'deltaPhi': 1.0}}},
+                   (6, 7): {(250, 350): {(500, 750):  {'deltaPhi': 1.0},
+                                         (750, -1):   {'deltaPhi': 1.0}},
+                            (350, 450): {(500, 750):  {'deltaPhi': 1.0},
+                                         (750, -1):   {'deltaPhi': 1.0}},
+                            (450, -1): {(500, 1000):   {'deltaPhi': 0.75},
+                                        (1000, -1):   {'deltaPhi': 0.75}}},
+                   (8, -1): {(250, 350): {(500, 750): {'deltaPhi': 1.0},
+                                          (750, -1):  {'deltaPhi': 1.0}},
+                             (350, 450): {(500, -1):  {'deltaPhi': 0.75}},
+                             (450, -1): {(500, -1):   {'deltaPhi': 0.75}}}}
+
 bin = {}
-for srNJet in sideBand3fb:
+for srNJet in sorted(sideBand3fb):
   bin[srNJet]={}
-  for stb in sideBand3fb[srNJet]:
+  for stb in sorted(sideBand3fb[srNJet]):
     bin[srNJet][stb] = {}
-    for htb in sideBand3fb[srNJet][stb]:
+    for htb in sorted(sideBand3fb[srNJet][stb]):
       bin[srNJet][stb][htb] = {}
       deltaPhiCut = sideBand3fb[srNJet][stb][htb]['deltaPhi']
-      rCS_Name_1b, rCS_Cut_1b = nameAndCut(stb, htb, srNJet, btb=(1,1), presel=data_presel, btagVar = btagVarString)
-      rCS_Name_2b, rCS_Cut_2b = nameAndCut(stb, htb, srNJet, btb=(2,2), presel=data_presel, btagVar = btagVarString)
+      rCS_Name_1b, rCS_Cut_1b = nameAndCut(stb, htb, nJet, btb=nbTags, presel=data_presel, btagVar = btagVarString)
+      rCS_Name_2b, rCS_Cut_2b = nameAndCut(stb, htb, nJet, btb=nbTags, presel=presel, btagVar = btagVarString)
+      s , bla = nameAndCut(stb, htb, srNJet, btb=(1,1), presel=presel, btagVar = btagVarString) 
+      name = "".join(s.split('_')[:-1])
       print rCS_Name_1b
-      print rCS_Name_2b
-      rCS_1b = getRCS(cData, rCS_Cut_1b,  deltaPhiCut)
-      rCS_2b = getRCS(cData, rCS_Cut_2b,  deltaPhiCut)
-      print "rCS 1b :" , rCS_1b['rCS'] ,"+-" ,rCS_1b['rCSE_sim']
-      print "rCS 2b :" , rCS_2b['rCS'] ,"+-" ,rCS_2b['rCSE_sim']
-      print "rCS 2b/1b : " , rCS_2b['rCS'] / rCS_1b['rCS']
-      bin[srNJet][stb][htb]['rCS_1b'] = rCS_1b
-      bin[srNJet][stb][htb]['rCS_2b'] = rCS_2b
-      bin[srNJet][stb][htb]['rCS_1b']['label'] = nBTagBinName((1,1))
-      bin[srNJet][stb][htb]['rCS_2b']['label'] = nBTagBinName((2,2))
+      #print rCS_Name_2b
+      rCS_data = getRCS(cData, rCS_Cut_1b,  deltaPhiCut)
+      rCS_bkg = getRCS(cBkg, rCS_Cut_2b,  deltaPhiCut)
+      #rCS_2b = getRCS(cData, rCS_Cut_2b,  deltaPhiCut)
+      if not  rCS_data['rCS']=='Nan':
+        print "rCS 1b :" , rCS_data['rCS'] ,"+-" ,rCS_data['rCSE_sim']
+      print "rCS 2b :" , rCS_bkg['rCS'] ,"+-" ,rCS_bkg['rCSE_sim']
+      #print "rCS 2b/1b : " , rCS_2b['rCS'] / rCS_1b['rCS']
+      bin[srNJet][stb][htb]['label'] = name
+      bin[srNJet][stb][htb]['rCS_1b'] = rCS_data
+      bin[srNJet][stb][htb]['rCS_2b'] = rCS_bkg
+      #bin[srNJet][stb][htb]['rCS_1b']['label'] = 'data' #nBTagBinName((1,1))
+      #bin[srNJet][stb][htb]['rCS_2b']['label'] = 'WJets'   #nBTagBinName((2,2))
 print bin
 cb = ROOT.TCanvas("cb","cb",800,800)
 cb.cd()
+#cb.SetLeftMargin(2)
+#cb.SetBottomMargin(10)
 ##cb.SetGrid()
 latex = ROOT.TLatex()
 latex.SetNDC()
 latex.SetTextSize(0.04)
 latex.SetTextAlign(11)
-leg = ROOT.TLegend(0.55,0.65,0.95,0.75)
+leg = ROOT.TLegend(0.55,0.65,0.8,0.75)
 leg.SetBorderSize(1)
+Pad1 = ROOT.TPad("Pad1", "Pad1", 0, 0.35, 1, 0.9)
+Pad1.SetTopMargin(0.06)
+Pad1.SetBottomMargin(0)
+Pad1.SetLeftMargin(0.16)
+Pad1.SetRightMargin(0.15)
+Pad1.Draw()
+Pad1.cd()
 ROOT.gStyle.SetHistMinimumZero()
-h0 = ROOT.TH1F("h0","h0",2,0,2)
-h1 = ROOT.TH1F("h1","h1",2,0,2)
-h2 = ROOT.TH1F("h2","h2",2,0,2)
-h0.SetMarkerColor(ROOT.kRed)
-h0.SetLineColor(ROOT.kRed)
-h0.SetLineWidth(3)
-h1.SetMarkerColor(ROOT.kBlue)
-h1.SetLineColor(ROOT.kBlue)
-h2.SetMarkerColor(ROOT.kBlack)
-h2.SetLineColor(ROOT.kBlack)
-#h0b.SetMaximum(0.2)
+h0 = ROOT.TH1F("h0","h0",13,0,13)
+h1 = ROOT.TH1F("h1","h1",13,0,13)
+h2 = ROOT.TH1F("h2","h2",13,0,13)
+h0.SetMarkerColor(ROOT.kBlack)
+h0.SetLineColor(ROOT.kBlack)
+h0.SetLineWidth(1)
+h2.SetMarkerColor(ROOT.kBlue)
+h2.SetLineColor(ROOT.kBlue)
+h2.SetLineWidth(1)
+h1.SetMarkerColor(ROOT.kRed)
+h1.SetLineColor(ROOT.kRed)
 h0.SetMaximum(0.2)
 h1.SetMaximum(0.2)
-h2.SetMaximum(0.2)
-for i , tag in enumerate(('_1b','_2b')):
-    h0.SetBinContent(i+1,         bin[nJet][(250,350)][(ht,-1)]['rCS'+tag]['rCS'])
-    h0.SetBinError(i+1,           bin[nJet][(250,350)][(ht,-1)]['rCS'+tag]['rCSE_sim'])
-    h0.GetXaxis().SetBinLabel(i+1,bin[nJet][(250,350)][(ht,-1)]['rCS'+tag]['label'])
-    h1.SetBinContent(i+1,         bin[nJet][(350,450)][(ht,-1)]['rCS'+tag]['rCS'])
-    h1.SetBinError(i+1,           bin[nJet][(350,450)][(ht,-1)]['rCS'+tag]['rCSE_sim'])
-    h1.GetXaxis().SetBinLabel(i+1,bin[nJet][(350,450)][(ht,-1)]['rCS'+tag]['label'])
-    h2.SetBinContent(i+1,         bin[nJet][(450,-1)][(ht,-1)]['rCS'+tag]['rCS'])
-    h2.SetBinError(i+1,           bin[nJet][(450,-1)][(ht,-1)]['rCS'+tag]['rCSE_sim'])
-    h2.GetXaxis().SetBinLabel(i+1,bin[nJet][(450,-1)][(ht,-1)]['rCS'+tag]['label'])
+h1.SetMinimum(0)
+h0.SetMinimum(0)
+index = 0
+for srNJet in sorted(sideBand3fb):
+  for stb in sorted(sideBand3fb[srNJet]):
+    for htb in sorted(sideBand3fb[srNJet][stb]):
+      print bin[srNJet][stb][htb]['label']
+      index +=1
+      if not bin[srNJet][stb][htb]['rCS_1b']['rCS']=='Nan':
+        h0.SetBinContent(index,         bin[srNJet][stb][htb]['rCS_1b']['rCS'])
+        h0.SetBinError(index,           bin[srNJet][stb][htb]['rCS_1b']['rCSE_sim'])
+      h0.GetXaxis().SetBinLabel(index,bin[srNJet][stb][htb]['label'])
+      h0.GetXaxis().SetLabelSize(0.02)
+      h1.SetBinContent(index,         bin[srNJet][stb][htb]['rCS_2b']['rCS'])
+      h1.SetBinError(index,           bin[srNJet][stb][htb]['rCS_2b']['rCSE_sim'])
+      h1.GetXaxis().SetLabelSize(0.02)
+      h1.GetXaxis().SetBinLabel(index,bin[srNJet][stb][htb]['label'])
+      h2.SetBinContent(index,1 )
+      h2.SetBinError(index, 0)
+      h2.GetXaxis().SetBinLabel(index,bin[srNJet][stb][htb]['label'])
+      
 h0.GetYaxis().SetTitle("R_{CS}")
 h1.GetYaxis().SetTitle("R_{CS}")
-h2.GetYaxis().SetTitle("R_{CS}")
 h0.Draw("EH1")
 h1.Draw("EH1 same")
-h2.Draw("EH1 same")
-leg.AddEntry(h0, "250 #leq L_{T} #leq350" ,"l")
-leg.AddEntry(h1, "350 #leq L_{T} #leq450" ,"l")
-leg.AddEntry(h2, "450 #leq L_{T}" ,"l")
+leg.AddEntry(h0, "Single Muon Data Set" ,"l")
+leg.AddEntry(h1, "MC" ,"l")
 leg.SetFillColor(0)
 leg.SetLineColor(0)
 leg.Draw()
-latex.DrawLatex(0.16,0.958,"#font[22]{CMS}"+" #font[12]{Pleriminary}")
+latex.DrawLatex(0.16,0.958,"#font[22]{CMS}"+" #font[12]{Preliminary}")
 latex.DrawLatex(0.68,0.958,"#bf{L=1.26 fb^{-1} (13 TeV)}")
-latex.DrawLatex(0.6,0.9,"H_{T}>"+str(ht))
-latex.DrawLatex(0.6,0.85,"4 #leq N_{Jets} #leq5" )
+#latex.DrawLatex(0.6,0.9,"H_{T}>"+str(ht))
+#latex.DrawLatex(0.6,0.85,"4 #leq N_{Jets} #leq5" )
+latex.DrawLatex(0.6,0.85,str(nJet[0])+"#leq N_{Jets} #leq"+str(nJet[1]) )
+#latex.DrawLatex(0.6,0.8,"N_{bTags}=1")
+latex.DrawLatex(0.6,0.8,"N_{bTags}="+str(nbTags[0]))
 #latex.DrawLatex(0.6,0.8,"Run 2015D")
 #latex.DrawLatex(0.3,0.8,"Semi Lepton")
+Pad1.RedrawAxis()
+cb.cd()
+Pad2 = ROOT.TPad("Pad2", "Pad2",  0, 0.04, 1, 0.35)
+Pad2.SetTopMargin(0)
+Pad2.SetBottomMargin(0.5)
+Pad2.SetLeftMargin(0.16)
+Pad2.SetRightMargin(0.15)
+Pad2.Draw()
+Pad2.cd()
+#Func = ROOT.TF1('Func',"[0]",0,13)
+#Func.SetParameter(0,1)
+#Func.SetLineColor(2)
+h_ratio = h0.Clone('h_ratio')
+h_ratio.SetMinimum(0.0)
+h_ratio.SetMaximum(3)
+h2.SetMinimum(0.0)
+h2.SetMaximum(3)
+h_ratio.Sumw2()
+h_ratio.Divide(h1)
+h_ratio.SetMarkerStyle(20)
+h_ratio.SetMarkerColor(ROOT.kBlack)
+h_ratio.SetTitle("")
+h_ratio.GetYaxis().SetTitle("Data/MC ")
+h_ratio.GetYaxis().SetTitleSize(0.1)
+h_ratio.GetXaxis().SetTitle("")
+h_ratio.GetYaxis().SetTitleFont(42)
+h_ratio.GetYaxis().SetTitleOffset(0.6)
+h_ratio.GetXaxis().SetTitleOffset(1)
+h_ratio.GetYaxis().SetNdivisions(505)
+h_ratio.GetXaxis().SetTitleSize(0.2)
+h_ratio.GetXaxis().SetLabelSize(0.1)
+h_ratio.GetXaxis().SetLabelOffset(0.03)
+h_ratio.GetYaxis().SetLabelSize(0.1)
+h2.GetYaxis().SetTitle("Data/MC ")
+h2.GetYaxis().SetTitleSize(0.1)
+h2.GetXaxis().SetTitle("")
+h2.GetYaxis().SetTitleFont(42)
+h2.GetYaxis().SetTitleOffset(0.6)
+h2.GetXaxis().SetTitleOffset(1)
+h2.GetYaxis().SetNdivisions(505)
+h2.GetXaxis().SetTitleSize(0.2)
+h2.GetXaxis().SetLabelSize(0.1)
+h2.GetXaxis().SetLabelOffset(0.03)
+h2.GetYaxis().SetLabelSize(0.1)
+h2.Draw()
+h_ratio.Draw("E1 same")
 cb.Draw()
-cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/cBkg_rCS_HT'+str(ht)+'.png')
-cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/cBkg_rCS_HT'+str(ht)+'.pdf')
-cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/cBkg_rCS_HT'+str(ht)+'.root')
-
+cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/cBkg_cData_rCS_'+str(nJet[0])+str(nJet[1])+'_'+str(nbTags[0])+'b.png')
+cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/cBkg_cData_rCS_'+str(nJet[0])+str(nJet[1])+'_'+str(nbTags[0])+'b.pdf')
+cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/cBkg_cData_rCS_'+str(nJet[0])+str(nJet[1])+'_'+str(nbTags[0])+'b.root')
 
 
 ###### WJets rCS Plots ##### 
