@@ -67,10 +67,12 @@ if options.skim.startswith('met'):
   skimCond = "met_pt>"+str(float(options.skim[3:]))
 if options.skim=='HT400':
   skimCond = "Sum$(Jet_pt)>400"
-if options.skim=='HT500ST250':  
+if options.skim=='HT500ST250LHE':  
   skimCond = "lheHTIncoming>=600&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+if options.skim=='HT500ST250':  
+  skimCond = "Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
 if options.skim=='LHEHT600':
-  skimCond = "lheHTIncoming<600"
+  skimCond = "lheHTIncoming<600&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
 
 ##In case a lepton selection is required, loop only over events where there is one 
 if options.leptonSelection.lower()=='soft':
@@ -141,7 +143,7 @@ for isample, sample in enumerate(allSamples):
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_MC
 
   readVariables = ['met_pt/F', 'met_phi/F']
-  newVariables = ['weight/F']
+  newVariables = ['weight/F','muonDataSet/I','eleDataSet/I']
   aliases = [ "met:met_pt", "metPhi:met_phi"]
 
   readVectors = [\
@@ -212,9 +214,20 @@ for isample, sample in enumerate(allSamples):
         genWeight = 1 if sample['isData'] else t.GetLeaf('genWeight').GetValue()
         xsectemp = 1 if sample['isData'] else t.GetLeaf('xsec').GetValue()
         s.weight = lumiScaleFactor*genWeight
-        nVert = t.GetLeaf('nVert').GetValue()
-        s.puReweight_true = 1 if sample['isData'] else PU_histo.GetBinContent(PU_histo.FindBin(nVert))
+        if sample['isData']:
+          s.puReweight_true = 1
+          if "Muon" in sample['name']:
+            s.muonDataSet = True
+            s.eleDataSet = False
+          if "Electron" in sample['name']:
+            s.muonDataSet = False
+            s.eleDataSet = True
+
         if not sample['isData']:
+          s.muonDataSet = False
+          s.eleDataSet = False
+          nTrueInt = t.GetLeaf('nTrueInt').GetValue()
+          s.puReweight_true = PU_histo.GetBinContent(PU_histo.FindBin(nTrueInt))
           if "TTJets" in sample['dbsName']: s.weight = lumiScaleFactor*genWeight
           else : s.weight = xsectemp*lumiScaleFactor*genWeight 
           if "TTJets" in sample['dbsName']:
