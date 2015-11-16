@@ -8,7 +8,8 @@ from Workspace.HEPHYPythonTools.helpers import getObjFromFile, getChain, getChun
 from Workspace.RA4Analysis.cmgTuples_data_25ns_fromArtur import *
 #from Workspace.RA4Analysis.cmgTuples_Spring15_50ns_postProcessed import *
 #from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
-from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur import *
+##from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur import *
+from Workspace.RA4Analysis.cmgTuples_Spring15_MiniAODv2_25ns_postProcessed  import *
 
 from cutFlow_helper import *
 from math import *
@@ -18,11 +19,11 @@ maxN = -1
 ROOT.gStyle.SetOptStat(0)
 
 #lumi = 204.2  ##pb
-lumi = 133  ##pb
-#lumi =1260 ##fb
+#lumi = 133  ##pb
+lumi =3000 ##fb
 #weight_str = '((xsec*genWeight)*'+str(lumi)+')'  ##for bkg
 lepSels = [
-{'cut':OneMu , 'veto':OneMu_lepveto, 'chain': data_mu_25ns ,'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
+#######{'cut':OneMu , 'veto':OneMu_lepveto, 'chain': data_mu_25ns ,'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
 #########{'cut':OneMu ,'veto':OneMu_lepveto, 'chunk':SingleMuon_Run2015D_133 ,'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
 #####'sample' : [\
 #####   {"sample":"data_mu",   "list":SingleMuon_Run2015D_v4     , "tex":"Single_Muon", "color":ROOT.kBlack},\
@@ -31,15 +32,15 @@ lepSels = [
 #####},\
 #####{'cut':OneE ,  'veto':OneE_lepveto, 'chain':data_ele_25ns ,'label':'_ele_','str':'1 $e$', 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
 ####{'cut':OneE ,  'veto':OneE_lepveto, 'chunk':SingleElectron_Run2015D_133 ,'label':'_ele_','str':'1 $e$', 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
-#####  {'cut':OneE ,  'veto':OneE_lepveto,  'label':'_ele_','str':'1 $e$', 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))',\
-#####'sample' : [\
-#####   {"sample":"data_ele",   "list":SingleElectron_Run2015D_v4  , "tex":"Single_Electron", "color":ROOT.kBlack},\
-#####   {"sample":"data_ele",   "list":SingleElectron_Run2015D_05Oct  , "tex":"Single_Electron", "color":ROOT.kBlack},\
-#####]\
-#####},\
+######{'cut':OneE ,  'veto':OneE_lepveto,  'label':'_ele_','str':'1 $e$', 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))',\
+######'sample' : [\
+###### #  {"sample":"data_ele",   "list":SingleElectron_Run2015D_v4  , "tex":"Single_Electron", "color":ROOT.kBlack},\
+###### #  {"sample":"data_ele",   "list":SingleElectron_Run2015D_05Oct  , "tex":"Single_Electron", "color":ROOT.kBlack},\
+######]\
+######},\
 #   {'cut':OneLep ,'veto':OneLep_lepveto,'label':'_lep_','str':'1 $lepton$', 'trigger': '((HLT_EleHT350MET70 || HLT_ElNoIso)||(HLT_MuHT350MET70 || HLT_Mu50NoIso))' }\
   #{'cut':OneLep ,'veto':OneLep_lepveto,'label':'_lep_','str':'1 $lepton$', 'trigger': '((HLT_ElNoIso||HLT_EleHT350)||(HLT_MuHT350||HLT_Mu50NoIso))' }\
-#  {'cut':OneLep ,'veto':OneLep_lepveto,'label':'_lep_','str':'1 $lepton$', 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))' }\
+  {'cut':OneLep ,'veto':OneLep_lepveto,'label':'_lep_','str':'1 $lepton$', 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))' }\
 ]
 #lepSel = lepSels[0]
 for lepSel in lepSels:
@@ -48,7 +49,7 @@ for lepSel in lepSels:
   ###path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/133pb/zeroB/"+lepSel['label']+"/"
   #######path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/1p2fb/fix/zeroB_0p5_CR/"+lepSel['label']+"/"
   ####path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/1p2fb/fix/1B_4_5jets_CR/"+lepSel['label']+"/"
-  path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/133pb/zeroB/"+lepSel['label']+"/"
+  path = "/afs/hephy.at/user/e/easilar/www/MC/3fb/"+lepSel['label']+"/"
   #path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/incB_Muonic_MCScaled/"
   #path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/incB/"
   #path = "/afs/hephy.at/user/e/easilar/www/data/25ns/4_Sep_2015_Json/SingleLeptonic_incb_MetNoHF_MCscaledtoData/"
@@ -104,16 +105,16 @@ for lepSel in lepSels:
   #    print s['chunk']
   #    print s['norm']
 
-  d_chunk , d_norm = getChunks(lepSel['chunk'],maxN=maxN)
+  ####d_chunk , d_norm = getChunks(lepSel['chunk'],maxN=maxN)
   #data_chunks = [s['chunk'][0] for s in samples ]
   #data_chunks = [s['chunk'] for s in samples ]
   #data_chain = getChain(data_chunks,maxN=maxN,histname="",treeName="tree")
   ####data_chain = getChain(samples[1]['chunk']+samples[0]['chunk'],maxN=maxN,histname="",treeName="tree")
   ####data_chain = getChain(lepSel['chain'],maxN=maxN,histname="",treeName="Events")
-  data_chain = getChain(d_chunk,maxN=maxN,histname="",treeName="tree")
-  print data_chain.GetEntries()
-  y_data = getYieldFromChain(data_chain, cutString = cut['cut'], weight = "(1)", returnError=False)
-  print "data yield after cut:" , y_data
+  ######data_chain = getChain(d_chunk,maxN=maxN,histname="",treeName="tree")
+  #######print data_chain.GetEntries()
+  #######y_data = getYieldFromChain(data_chain, cutString = cut['cut'], weight = "(1)", returnError=False)
+  #########print "data yield after cut:" , y_data
   #cp_data = data_chain.CopyTree(cut['cut'])
   #print "data cp created with cut :" , cut['cut']
 
@@ -151,10 +152,10 @@ for lepSel in lepSels:
   from array import array
   dPhiBins  = array('d', [float(x)/1000. for x in range(0,200,100)+range(200,400,200)+range(400,700,300)+range(700,1000,300)+range(1000,2000,1000)+range(2000,3141,1141)+range(3141,4141,1000)])
   plots =[\
-  {'ndiv':False,'yaxis':'Events','xaxis':'#Delta#Phi(W,l)','logy':'True' , 'var':dPhi,                 'varname':'deltaPhi_Wl',       'binlabel':1, 'bin': (len(dPhiBins)-1,dPhiBins)},\
+  #{'ndiv':False,'yaxis':'Events','xaxis':'#Delta#Phi(W,l)','logy':'True' , 'var':dPhi,                 'varname':'deltaPhi_Wl',       'binlabel':1, 'bin': (len(dPhiBins)-1,dPhiBins)},\
   # 'bin':(30,0,3.141)},\
   ##{'ndiv':True,'yaxis':'Events /','xaxis':'L_{T}','logy':'True' , 'var':  "(LepGood_pt[0]+met_pt)",                          'varname':'st',                  'binlabel':20,  'bin':(50,0,1000)},\
-  ##{'ndiv':True,'yaxis':'Events /','xaxis':'H_{T}','logy':'True' , 'var':ht,                    'varname':'htJet30j',            'binlabel':40,  'bin':(50,0,2000)},\
+  {'ndiv':True,'yaxis':'Events /','xaxis':'H_{T}','logy':'True' , 'var':ht,                    'varname':'htJet30j',            'binlabel':40,  'bin':(50,0,2000)},\
   ##{'ndiv':False,'yaxis':'Events','xaxis':'N_{Jets}','logy':'True' , 'var':njets_30,                      'varname':'nJet30',                   'binlabel':1,  'bin':(15,0,15)},\
   ###{'ndiv':False,'yaxis':'Events','xaxis':'N_{Jets}','logy':'True' , 'var':'nJet',                      'varname':'nJet30',                   'binlabel':1,  'bin':(15,0,15)},\
   ##{'ndiv':True,'yaxis':'Events /','xaxis':'p_{T}(l)','logy':'True' , 'var':'LepGood_pt[0]',                 'varname':'leptonPt',      'binlabel':15,  'bin':(40,25,625)},\
@@ -183,14 +184,14 @@ for lepSel in lepSels:
     latex.SetTextAlign(11)
     leg = ROOT.TLegend(0.75,0.6,0.9,0.9)
     leg.SetBorderSize(1)
-    Pad1 = ROOT.TPad("Pad1", "Pad1", 0, 0.35, 1, 0.9)
-    Pad1.SetLogy()
-    Pad1.SetTopMargin(0.06)
-    Pad1.SetBottomMargin(0)
-    Pad1.SetLeftMargin(0.16)
-    Pad1.SetRightMargin(0.05)
-    Pad1.Draw()
-    Pad1.cd()
+   ##Pad1 = ROOT.TPad("Pad1", "Pad1", 0, 0.35, 1, 0.9)
+   ##Pad1.SetLogy()
+   ##Pad1.SetTopMargin(0.06)
+   ##Pad1.SetBottomMargin(0)
+   ##Pad1.SetLeftMargin(0.16)
+   ##Pad1.SetRightMargin(0.05)
+   ##Pad1.Draw()
+   ##Pad1.cd()
     h_Stack = ROOT.THStack('h_Stack',p['varname'])
 
     for bkg in bkg_samples:
@@ -205,7 +206,7 @@ for lepSel in lepSels:
       #histo = ROOT.TH1F(str(histo) ,str(histo),*p['bin'])
       #chain.Draw('('+p['var']+')>>'+str(histoname),weight_str+"*(1)")
       #histo = getPlotFromChain(chain, p['var'], p['bin'], cutString = "(1)", weight = "weight*0.64*"+str(lumi)+"/3000", binningIsExplicit=False, addOverFlowBin='')
-      histo = getPlotFromChain(chain, p['var'], p['bin'], cutString = cut['bkgcut'], weight = "weight*0.71*"+str(lumi)+"/3000", binningIsExplicit=False, addOverFlowBin='both')
+      histo = getPlotFromChain(chain, p['var'], p['bin'], cutString = cut['bkgcut'], weight = "weight*"+str(lumi)+"/3000", binningIsExplicit=False, addOverFlowBin='both')
       print histo
       #histo.Draw("Bar")
       histo.SetFillColor(color)
@@ -226,45 +227,45 @@ for lepSel in lepSels:
     h_Stack.SetMinimum(0.11)
     #h_Stack.GetYaxis().SetTitleSize(2)
     #data =  cp_data
-    data =  data_chain
+    #data =  data_chain
     color = ROOT.kBlack
     histo = 'h_data'
     histoname = histo
     print histoname
     #print p['bin'],p['lowlimit'],p['limit']
     #histo = ROOT.TH1F(str(histo) ,str(histo),p['bin'][0],p['bin'][1],p['bin'][2])
-    histo = ROOT.TH1F(str(histo) ,str(histo),p['bin'][0],p['bin'][1])
-    data.Draw(p['var']+'>>'+str(histoname),cut['cut'])
+    #histo = ROOT.TH1F(str(histo) ,str(histo),p['bin'][0],p['bin'][1])
+    #data.Draw(p['var']+'>>'+str(histoname),cut['cut'])
     print "pass draw : ) "
-    histo.SetMarkerStyle(20)
-    histo.SetMarkerSize(1.8)
-    histo.SetLineColor(color)
-    histo.GetXaxis().SetTitle(p['xaxis'])
-    histo.SetTitle("")
-    histo.GetYaxis().SetTitleSize(0.05)
-    histo.GetYaxis().SetLabelSize(0.05)
+    #histo.SetMarkerStyle(20)
+    #histo.SetMarkerSize(1.8)
+    #histo.SetLineColor(color)
+    #histo.GetXaxis().SetTitle(p['xaxis'])
+    #histo.SetTitle("")
+    #histo.GetYaxis().SetTitleSize(0.05)
+    #histo.GetYaxis().SetLabelSize(0.05)
     #h_Stack.Draw()
-    histo.Draw("E1P")
-    histo.SetMaximum(2000)
-    histo.SetMinimum(0.11)
-    h_Stack.Draw("HistoSame")
-    histo.Draw("E1PSame")
+    #histo.Draw("E1P")
+    #histo.SetMaximum(2000)
+    #histo.SetMinimum(0.11)
+    h_Stack.Draw("Histo")
+    #histo.Draw("E1PSame")
     #print "data Integral" , histo.Integral()
     #h_Stack.GetXaxis().SetTitle(p['xaxis'])
-    if p['ndiv']:
-      histo.GetXaxis().SetNdivisions(505)
-      histo.GetYaxis().SetTitle(p['yaxis']+str(p['binlabel'])+'GeV')
+    #if p['ndiv']:
+    #  histo.GetXaxis().SetNdivisions(505)
+    #  histo.GetYaxis().SetTitle(p['yaxis']+str(p['binlabel'])+'GeV')
     #  h_Stack.GetXaxis().SetNdivisions(505)
     #  h_Stack.GetYaxis().SetTitle(p['yaxis']+str(p['binlabel'])+'GeV')
-    if not p['ndiv']:
-      histo.GetYaxis().SetTitle(p['yaxis'])
+    #if not p['ndiv']:
+    #  histo.GetYaxis().SetTitle(p['yaxis'])
     #  h_Stack.GetYaxis().SetTitle(p['yaxis'])
-    #stack_hist=ROOT.TH1F("stack_hist","stack_hist",p['bin'][0],p['bin'][1],p['bin'][2])
-    stack_hist=ROOT.TH1F("stack_hist","stack_hist",p['bin'][0],p['bin'][1])
+    stack_hist=ROOT.TH1F("stack_hist","stack_hist",p['bin'][0],p['bin'][1],p['bin'][2])
+    #stack_hist=ROOT.TH1F("stack_hist","stack_hist",p['bin'][0],p['bin'][1])
     stack_hist.Merge(h_Stack.GetHists())
     print "Integral of BKG:" , stack_hist.Integral()
-    print "Integral of Data:" , histo.Integral()
-    leg.AddEntry(histo, "data","PL")
+    #print "Integral of Data:" , histo.Integral()
+    #leg.AddEntry(histo, "data","PL")
     leg.SetFillColor(0)
     leg.Draw()
     latex.DrawLatex(0.16,0.958,"#font[22]{CMS}"+" #font[12]{Preliminary}")
@@ -274,42 +275,43 @@ for lepSel in lepSels:
     latex.DrawLatex(0.6,0.75,"#bf{L_{T}>250 GeV}")
     latex.DrawLatex(0.6,0.7,"#bf{N_{bjets}==0}")
     latex.DrawLatex(0.6,0.5,"#bf{MC scale=0.71}")
-    Pad1.RedrawAxis()
-    can.cd()
-    Pad2 = ROOT.TPad("Pad2", "Pad2",  0, 0.04, 1, 0.35)
-    Pad2.SetTopMargin(0)
-    Pad2.SetBottomMargin(0.5)
-    Pad2.SetLeftMargin(0.16)
-    Pad2.SetRightMargin(0.05)
-    Pad2.Draw()
-    Pad2.cd()
-    #Func = ROOT.TF1('Func',"[0]",p['bin'][1],p['bin'][2])
-    Func = ROOT.TF1('Func',"[0]",0,3.141)
-    Func.SetParameter(0,1)
-    Func.SetLineColor(2)
-    h_ratio = histo.Clone('h_ratio')
-    h_ratio.SetMinimum(0.0)
-    h_ratio.SetMaximum(1.99)
-    h_ratio.Sumw2()
-    h_ratio.SetStats(0)
-    h_ratio.Divide(stack_hist)
-    h_ratio.SetMarkerStyle(20)
-    h_ratio.SetMarkerColor(ROOT.kBlack)
-    h_ratio.SetTitle("")
-    h_ratio.GetYaxis().SetTitle("Data/Pred. ")
-    h_ratio.GetYaxis().SetTitleSize(0.1)
-    h_ratio.GetXaxis().SetTitle(p['xaxis'])
-    h_ratio.GetYaxis().SetTitleFont(42)
-    h_ratio.GetYaxis().SetTitleOffset(0.6)
-    h_ratio.GetXaxis().SetTitleOffset(1)
-    h_ratio.GetYaxis().SetNdivisions(505)
-    h_ratio.GetXaxis().SetTitleSize(0.2)
-    h_ratio.GetXaxis().SetLabelSize(0.13)
-    h_ratio.GetYaxis().SetLabelSize(0.1)
-    h_ratio.Draw("E1")
-    #h_ratio.Draw()
-    Func.Draw("same")
-    #Func.Draw()
+   ## Pad1.RedrawAxis()
+   ##can.cd()
+   ##Pad2 = ROOT.TPad("Pad2", "Pad2",  0, 0.04, 1, 0.35)
+   ##Pad2.SetTopMargin(0)
+   ##Pad2.SetBottomMargin(0.5)
+   ##Pad2.SetLeftMargin(0.16)
+   ##Pad2.SetRightMargin(0.05)
+   ##Pad2.Draw()
+   ##Pad2.cd()
+   ###Func = ROOT.TF1('Func',"[0]",p['bin'][1],p['bin'][2])
+   ##Func = ROOT.TF1('Func',"[0]",0,3.141)
+   ##Func.SetParameter(0,1)
+   ##Func.SetLineColor(2)
+   ##h_ratio = histo.Clone('h_ratio')
+   ##h_ratio.SetMinimum(0.0)
+   ##h_ratio.SetMaximum(1.99)
+   ##h_ratio.Sumw2()
+   ##h_ratio.SetStats(0)
+   ##h_ratio.Divide(stack_hist)
+   ##h_ratio.SetMarkerStyle(20)
+   ##h_ratio.SetMarkerColor(ROOT.kBlack)
+   ##h_ratio.SetTitle("")
+   ##h_ratio.GetYaxis().SetTitle("Data/Pred. ")
+   ##h_ratio.GetYaxis().SetTitleSize(0.1)
+   ##h_ratio.GetXaxis().SetTitle(p['xaxis'])
+   ##h_ratio.GetYaxis().SetTitleFont(42)
+   ##h_ratio.GetYaxis().SetTitleOffset(0.6)
+   ##h_ratio.GetXaxis().SetTitleOffset(1)
+   ##h_ratio.GetYaxis().SetNdivisions(505)
+   ##h_ratio.GetXaxis().SetTitleSize(0.2)
+   ##h_ratio.GetXaxis().SetLabelSize(0.13)
+   ##h_ratio.GetYaxis().SetLabelSize(0.1)
+   ##h_ratio.Draw("E1")
+   ###h_ratio.Draw()
+   ##Func.Draw("same")
+   ###Func.Draw()
+    can.SetLogy()
     can.Draw()
     can.SaveAs(path+p['varname']+'.png')
     can.SaveAs(path+p['varname']+'.pdf')
