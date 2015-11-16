@@ -17,14 +17,15 @@ from Workspace.HEPHYPythonTools.helpers import getChunks
 #from Workspace.RA4Analysis.cmgTuples_Spring15_50ns import *
 #from Workspace.RA4Analysis.cmgTuples_Data50ns_1l import *
 #from Workspace.RA4Analysis.cmgTuples_Data25ns_0l import *
-from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_fromArtur import *
-from Workspace.RA4Analysis.cmgTuples_data_25ns_fromArtur import *
-
+###from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_fromArtur import *
+####from Workspace.RA4Analysis.cmgTuples_data_25ns_fromArtur import *
+from Workspace.RA4Analysis.cmgTuples_Data25ns_miniAODv2 import *
+from Workspace.RA4Analysis.cmgTuples_Spring15_MiniAODv2_25ns import *
 target_lumi = 3000 #pb-1
 
 defSampleStr = "TTJets_LO_HT600to800_25ns"
 
-subDir = "postProcessed_PUreweight"
+subDir = "postProcessed_miniAODv2_fix"
 
 #branches to be kept for data and MC
 branchKeepStrings_DATAMC = ["run", "lumi", "evt", "isData", "rho", "nVert", 
@@ -68,11 +69,17 @@ if options.skim.startswith('met'):
 if options.skim=='HT400':
   skimCond = "Sum$(Jet_pt)>400"
 if options.skim=='HT500ST250LHE':  
-  skimCond = "lheHTIncoming>=600&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+  skimCond = "lheHTIncoming>600&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
 if options.skim=='HT500ST250':  
   skimCond = "Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+if options.skim=='HT500ST250diLep':
+  skimCond = "((ngenLep+ngenTau)==2)&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+if options.skim=='HT500ST250semiLep':
+  skimCond = "(!((ngenLep+ngenTau)==2))&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+if options.skim=='HT500ST250FullHadronic':
+  skimCond = "((ngenLep+ngenTau)==0)&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
 if options.skim=='LHEHT600':
-  skimCond = "lheHTIncoming<600&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+  skimCond = "lheHTIncoming<=600&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
 
 ##In case a lepton selection is required, loop only over events where there is one 
 if options.leptonSelection.lower()=='soft':
@@ -122,7 +129,8 @@ for isample, sample in enumerate(allSamples):
   chunks, sumWeight = getChunks(sample)
   #chunks, nTotEvents = getChunksFromDPM(sample, options.inputTreeName)
 #  print "Chunks:" , chunks 
-  outDir = options.targetDir+'/'+"/".join([options.skim, options.leptonSelection, sample['name']])
+  #outDir = options.targetDir+'/'+"/".join([options.skim, options.leptonSelection, sample['name']])
+  outDir = options.targetDir+'/'+"/".join(["HT500LT250", options.leptonSelection, sample['name'],'fullHadronic'])
   if os.path.exists(outDir) and os.listdir(outDir) != [] and not options.overwrite:
     print "Found non-empty directory: %s -> skipping!"%outDir
     continue
@@ -137,8 +145,6 @@ for isample, sample in enumerate(allSamples):
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_DATA 
   else:
     if "TTJets" in sample['dbsName']: lumiScaleFactor = xsec[sample['dbsName']]*target_lumi/float(sumWeight)
-    #lumiScaleFactor = target_lumi/float(sumWeight)
-     # branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_MC
     else: lumiScaleFactor = target_lumi/float(sumWeight)
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_MC
 
