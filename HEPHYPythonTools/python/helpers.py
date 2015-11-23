@@ -289,7 +289,7 @@ def getCutYieldFromChain(c, cutString = "(1)", cutFunc = None, weight = "weight"
   return res
 
 def getYieldFromChain(c, cutString = "(1)", weight = "weight", returnError=False):
-  h = ROOT.TH1F('h_tmp', 'h_tmp', 1,0,2)
+  h = ROOT.TH1D('h_tmp', 'h_tmp', 1,0,2)
   h.Sumw2()
   c.Draw("1>>h_tmp", "("+weight+")*("+cutString+")", 'goff')
   res = h.GetBinContent(1)
