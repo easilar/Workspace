@@ -25,7 +25,8 @@ target_lumi = 3000 #pb-1
 
 defSampleStr = "TTJets_LO_HT600to800_25ns"
 
-subDir = "postProcessed_miniAODv2_fix"
+#subDir = "postProcessed_miniAODv2_fix"
+subDir = "postProcessed_miniAODv2_combine2"
 
 #branches to be kept for data and MC
 branchKeepStrings_DATAMC = ["run", "lumi", "evt", "isData", "rho", "nVert", 
@@ -72,14 +73,21 @@ if options.skim=='HT500ST250LHE':
   skimCond = "lheHTIncoming>600&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
 if options.skim=='HT500ST250':  
   skimCond = "Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+###dilep skim##
 if options.skim=='HT500ST250diLep':
-  skimCond = "((ngenLep+ngenTau)==2)&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+  skimCond = "((ngenLep+ngenTau)==2)&&lheHTIncoming<=1000&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+###semilep skim###
 if options.skim=='HT500ST250semiLep':
-  skimCond = "(!((ngenLep+ngenTau)==2))&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
-if options.skim=='HT500ST250FullHadronic':
-  skimCond = "((ngenLep+ngenTau)==0)&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
-if options.skim=='LHEHT600':
-  skimCond = "lheHTIncoming<=600&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+  skimCond = "(!((ngenLep+ngenTau)==2))&&lheHTIncoming<=1000&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+###Full hadronic###
+if options.skim=='HT500ST250LHE_FullHadronic_inc':
+  skimCond = "lheHTIncoming<=600&&((ngenLep+ngenTau)==0)&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+###Full hadronic for the ht binned###
+if options.skim=='HT500ST250LHE_FullHadronic':  
+  skimCond = "lheHTIncoming>600&&lheHTIncoming<=1000&&((ngenLep+ngenTau)==0)&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
+###Full inclusive for high HT
+if options.skim=='LHEHT1000':
+  skimCond = "lheHTIncoming>1000&&Sum$(Jet_pt)>500&&(LepGood_pt[0]+met_pt)>250"
 
 ##In case a lepton selection is required, loop only over events where there is one 
 if options.leptonSelection.lower()=='soft':
@@ -102,7 +110,15 @@ if sys.argv[0].count('ipython'):
 PU_File = ROOT.TFile("/data/easilar/tuples_from_Artur/METfromMINIAOD_eleID-Spring15MVAL_1260pb/PUhistos/ratio_PU.root")
 PU_histo = PU_File.Get("h_ratio")
 #####################
+###For Lepton SF#####
+mu_mediumID_File = ROOT.TFile("/data/easilar/SF2015/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root")
+mu_miniIso02_File = ROOT.TFile("/data/easilar/SF2015/TnP_MuonID_NUM_MiniIsoTight_DENOM_LooseID_VAR_map_pt_eta.root")
+mu_sip3d_File = ROOT.TFile("/data/easilar/SF2015/TnP_MuonID_NUM_TightIP3D_DENOM_LooseID_VAR_map_pt_eta.root")
+mu_mediumID_histo = mu_mediumID_File.Get("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_tag_IsoMu20_pass")
+mu_miniIso02_histo = mu_miniIso02_File.Get("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass")
+mu_sip3d_histo = mu_sip3d_File.Get("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass")
 
+#####################
 def getTreeFromChunk(c, skimCond, iSplit, nSplit):
   if not c.has_key('file'):return
   rf = ROOT.TFile.Open(c['file'])
@@ -130,7 +146,7 @@ for isample, sample in enumerate(allSamples):
   #chunks, nTotEvents = getChunksFromDPM(sample, options.inputTreeName)
 #  print "Chunks:" , chunks 
   #outDir = options.targetDir+'/'+"/".join([options.skim, options.leptonSelection, sample['name']])
-  outDir = options.targetDir+'/'+"/".join(["HT500LT250", options.leptonSelection, sample['name'],'fullHadronic'])
+  outDir = options.targetDir+'/'+"/".join(["HT500LT250", options.leptonSelection, sample['name']])
   if os.path.exists(outDir) and os.listdir(outDir) != [] and not options.overwrite:
     print "Found non-empty directory: %s -> skipping!"%outDir
     continue
@@ -144,7 +160,7 @@ for isample, sample in enumerate(allSamples):
     lumiScaleFactor=1
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_DATA 
   else:
-    if "TTJets" in sample['dbsName']: lumiScaleFactor = xsec[sample['dbsName']]*target_lumi/float(sumWeight)
+    if ("TTJets" in sample['dbsName']) or ("diLep" in sample['dbsName']) or ("semiLepT" in sample['dbsName']): lumiScaleFactor = xsec[sample['dbsName']]*target_lumi/float(sumWeight)
     else: lumiScaleFactor = target_lumi/float(sumWeight)
     branchKeepStrings = branchKeepStrings_DATAMC + branchKeepStrings_MC
 
@@ -158,6 +174,7 @@ for isample, sample in enumerate(allSamples):
   ]
   if not sample['isData']: 
     newVariables.extend(['weight_XSecTTBar1p1/F','weight_XSecTTBar0p9/F','weight_XSecWJets1p1/F','weight_XSecWJets0p9/F'])
+    newVariables.extend(['muSF_mediumID/F','muSF_miniIso02/F','muSF_sip3d/F'])
     aliases.extend(['genMet:met_genPt', 'genMetPhi:met_genPhi'])
     #readVectors[1]['vars'].extend('partonId/I')
   if options.leptonSelection.lower() in ['soft', 'hard']:
@@ -235,8 +252,10 @@ for isample, sample in enumerate(allSamples):
           nTrueInt = t.GetLeaf('nTrueInt').GetValue()
           s.puReweight_true = PU_histo.GetBinContent(PU_histo.FindBin(nTrueInt))
           if "TTJets" in sample['dbsName']: s.weight = lumiScaleFactor*genWeight
+          if "diLep" in sample['dbsName']: s.weight = lumiScaleFactor*genWeight
+          if "semiLepT" in sample['dbsName']: s.weight = lumiScaleFactor*genWeight
           else : s.weight = xsectemp*lumiScaleFactor*genWeight 
-          if "TTJets" in sample['dbsName']:
+          if ("TTJets" in sample['dbsName']) or ("diLep" in sample['dbsName']) or ("semiLepT" in sample['dbsName']):
             s.weight_XSecTTBar1p1 = s.weight*1.1 
             s.weight_XSecTTBar0p9 = s.weight*0.9
           else :
@@ -299,6 +318,14 @@ for isample, sample in enumerate(allSamples):
           else:
             s.singleMuonic      = False 
             s.singleElectronic  = False 
+          if s.singleMuonic:
+            s.muSF_mediumID =  mu_mediumID_histo.GetBinContent(mu_mediumID_histo.FindBin(s.leptonPt,s.leptonEta)) 
+            s.muSF_miniIso02 =  mu_miniIso02_histo.GetBinContent(mu_miniIso02_histo.FindBin(s.leptonPt,s.leptonEta)) 
+            s.muSF_sip3d =  mu_sip3d_histo.GetBinContent(mu_sip3d_histo.FindBin(s.leptonPt,s.leptonEta)) 
+          if s.singleElectronic:
+            s.muSF_mediumID = 1
+            s.muSF_miniIso02 = 1
+            s.muSF_sip3d = 1
 
         if options.leptonSelection=='soft':
           #Select hardest tight lepton among soft leptons
@@ -367,7 +394,7 @@ for isample, sample in enumerate(allSamples):
       size+=os.path.getsize(tmpDir+'/'+f)
       files.append(f)
       if size>(0.5*(10**9)) or f==filesForHadd[-1] or len(files)>200:
-        ofile = outDir+'/'+sample['name']+'_'+str(counter)+'.root'
+        ofile = outDir+'/'+sample['name']+'_'+options.skim+'_'+str(counter)+'.root'
         print "Running hadd on", tmpDir, files
         os.system('cd '+tmpDir+';hadd -f '+ofile+' '+' '.join(files))
         print "Written", ofile
