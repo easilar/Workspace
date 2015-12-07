@@ -6,7 +6,8 @@ from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName,nBTagBinName,v
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_v8_Phys14V3_HT400ST200 import *
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_v9_Phys14V3_HT400ST200_ForTTJetsUnc import *
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_Spring15_hard import *
-from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur import *
+#from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur import *
+from Workspace.RA4Analysis.cmgTuples_Spring15_MiniAODv2_25ns_postProcessed import *
 #from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
 #from makeTTPrediction import makeTTPrediction
 #from makeWPrediction import makeWPrediction
@@ -21,8 +22,8 @@ ROOT.TH1F().SetDefaultSumw2()
 lepSel = 'hard'
 
 cWJets  = getChain(WJetsHTToLNu_25ns,histname='')
-cTTJets = getChain(TTJets_HTLO_25ns,histname='')
-cEWK = getChain([WJetsHTToLNu_25ns,TTJets_HTLO_25ns,DY_25ns,singleTop_25ns],histname='')
+cTTJets = getChain(TTJets_combined,histname='')
+cEWK = getChain([WJetsHTToLNu_25ns,TTJets_combined,DY_25ns,singleTop_25ns,TTV_25ns],histname='')
 
 #cBkg = getChain([WJetsHTToLNu[lepSel], ttJets[lepSel], DY[lepSel], singleTop[lepSel], TTVH[lepSel]],histname='')#no QCD
 #cData = getChain([WJetsHTToLNu[lepSel], ttJets[lepSel], DY[lepSel], singleTop[lepSel], TTVH[lepSel]] , histname='')
@@ -36,20 +37,24 @@ if small: signalRegions = smallRegion
 
 weights = [
 {'var':'weight','label':'original'},\
-{'var':'weight_XSecTTBar1p1','label':'_tt_Up_'},\
-{'var':'weight_XSecTTBar0p9','label':'_tt_Down_'},\
-{'var':'weight_XSecWJets1p1','label':'_wjets_Up_'},\
-{'var':'weight_XSecWJets0p9','label':'_wjets_Down_'}
+#{'var':'weight_XSecTTBar1p1','label':'_tt_Up_'},\
+#{'var':'weight_XSecTTBar0p9','label':'_tt_Down_'},\
+#{'var':'weight_XSecWJets1p1','label':'_wjets_Up_'},\
+#{'var':'weight_XSecWJets0p9','label':'_wjets_Down_'}
+{'var':'weight_diLepTTBar2p0','label':'_tt_DiLep_Up_2p0'},\
+{'var':'weight_diLepTTBar0p5','label':'_tt_DiLep_Down_2p0'},\
 ]
 
 for weight_dict in weights:
   print  'Estimation for weight : ' , weight_dict['label']
 
   #DEFINE LUMI AND PLOTDIR
-  lumi = 3
+  lumi = 2.1
   sampleLumi = 3
-  printDir = '/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Spring15/25ns/templateFit/'+weight_dict['label']+'/'
-  #pickleDir = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'/'+weight_dict['label']+'/'
+  #  printDir = '/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Spring15/25ns/templateFit/'+weight_dict['label']+'/'
+  #  pickleDir = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'/'+weight_dict['label']+'/'
+  #  pickleDir = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_CBID/'+weight_dict['label']+'/'
+  printDir = '/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Spring15/25ns/rCS/templateFit/'+weight_dict['label']+'/'
   pickleDir = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_CBID/'+weight_dict['label']+'/'
 
   if not os.path.exists(pickleDir):
@@ -105,8 +110,8 @@ for weight_dict in weights:
         #ttJets corrections
         cname1bCRtt, cut1bCRtt = nameAndCut(stb,htb,(4,5), btb=(1,1) ,presel=presel)
         cname0bCRtt, cut0bCRtt = nameAndCut(stb,htb,(4,5), btb=(0,0) ,presel=presel)
-        rcs1bCRtt = getRCS(cEWK, cut1bCRtt, dPhiCut)
-        rcs0bCRtt = getRCS(cTTJets, cut0bCRtt, dPhiCut)
+        rcs1bCRtt = getRCS(cEWK, cut1bCRtt, dPhiCut,weight= weight_str)
+        rcs0bCRtt = getRCS(cTTJets, cut0bCRtt, dPhiCut,weight= weight_str)
         #Kappa now calculated only in the SB bin (4,5) jets 1b allEWK MC vs 0b tt MC - no fit applied for the moment!
         kappaTT = divideRCSdict(rcs0bCRtt,rcs1bCRtt)
         
@@ -114,8 +119,8 @@ for weight_dict in weights:
         for i_njbTT, njbTT in enumerate(ttJetBins):
           cname, cut = nameAndCut(stb,htb,njbTT, btb=(0,0) ,presel=presel)
           cname1b, cut1b = nameAndCut(stb,htb,njbTT, btb=(1,1) ,presel=presel)
-          rcsD = getRCS(cTTJets, cut, dPhiCut)
-          rcsD1b = getRCS(cTTJets, cut1b, dPhiCut)
+          rcsD = getRCS(cTTJets, cut, dPhiCut,weight= weight_str)
+          rcsD1b = getRCS(cTTJets, cut1b, dPhiCut,weight= weight_str)
           #rcs = rcsD['rCS']
           #rcsErrPred = rcsD['rCSE_pred']
           #rcsErr = rcsD['rCSE_sim']
@@ -201,7 +206,7 @@ for weight_dict in weights:
           #fill histograms for linear fit to account for possible non-flat rcs values
           for i_njbW, njbW in enumerate(wJetBins):
             cname, cut = nameAndCut(stb,htb,njbW, btb=(0,0) ,presel=presel)
-            rcsD = getRCS(cWJets, cut+'&&'+Wc['cut'], dPhiCut)
+            rcsD = getRCS(cWJets, cut+'&&'+Wc['cut'], dPhiCut,weight= weight_str)
             #rcs = rcsD['rCS']
             #rcsErrPred = rcsD['rCSE_pred']
             #rcsErr = rcsD['rCSE_sim']
@@ -220,7 +225,7 @@ for weight_dict in weights:
           #difference of measured rcs and fit in 0b MC rcs
 
           cnameCRW, cutCRW = nameAndCut(stb,htb,(3,4), btb=(0,0) ,presel=presel)
-          rcsCRW = getRCS(cWJets, cutCRW, dPhiCut)
+          rcsCRW = getRCS(cWJets, cutCRW, dPhiCut,weight= weight_str)
           RcsKey = 'rCS_W'+Wc['string']+'_crNJet_0b_corr'
           #rcsWdiff = abs(res[njb][stb][htb][RcsKey] - (wD+wK*i_njb)) #difference of rcs
           rcsWdiff = abs(rcsCRW['rCS'] - (wD+wK*i_njb)) #difference of rcs

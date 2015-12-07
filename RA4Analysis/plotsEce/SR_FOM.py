@@ -82,7 +82,7 @@ for srNJet in sorted(signalRegions):
   rowsNJet[srNJet] = {'nST':len(signalRegions[srNJet]), 'n':rows}
 
 
-
+'''
 
 print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|rrr|rrr|rrr|rrr|c|}\\hline'
 print ' \\njet & \ST       & \HT       &\multicolumn{3}{c|}{$total bkg$}&\multicolumn{3}{c|}{$T5q^{4} 1.2/1.0/0.8$}&\multicolumn{3}{c|}{$T5q^{4} 1.0/0.8/0.7$}&\multicolumn{3}{c|}{$T5q^{4} 1.5/0.8/0.1$}&\\DF \\\%\hline'
@@ -230,4 +230,4 @@ print '\\hline\end{tabular}}\end{center}\caption{signal contaminations}\end{tabl
 #print '\end{tabular}}\end{center}\caption{$T5q^{4} 1.0/0.8/0.7$}\end{table}'
 
 
-
+'''

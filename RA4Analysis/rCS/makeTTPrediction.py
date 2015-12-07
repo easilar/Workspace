@@ -34,9 +34,9 @@ def makeTTPrediction(weight_str, weight_err_str, bins, samples, htb, stb, srNJet
   rCS_crLowNJet_Name_1b, rCS_crLowNJet_Cut_1b = nameAndCut(stb, htb, (4,5), btb=(1,1), presel=presel, btagVar = btagVarString) 
   rCS_sr_Name_0b, rCS_sr_Cut_0b = nameAndCut(stb, htb, srNJet, btb=(0,0), presel=presel, btagVar = btagVarString)#for Check 
   #rCS_crLowNJet_1b = getRCS(cBkg, rCS_crLowNJet_Cut_1b,  dPhiCut) #Low njet tt-jets CR to be orthoganl to DPhi 
-  rCS_crLowNJet_1b = getRCS(cData, rCS_crLowNJet_Cut_1b,  dPhiCut) #Low njet tt-jets CR to be orthoganl to DPhi 
-  rCS_crLowNJet_1b_onlyTT = getRCS(cTTJets, rCS_crLowNJet_Cut_1b,  dPhiCut) 
-  rCS_srNJet_0b_onlyTT = getRCS(cTTJets, rCS_sr_Cut_0b,  dPhiCut) #for check
+  rCS_crLowNJet_1b = getRCS(cData, rCS_crLowNJet_Cut_1b, dPhiCut, weight= weight_str) #Low njet tt-jets CR to be orthoganl to DPhi 
+  rCS_crLowNJet_1b_onlyTT = getRCS(cTTJets, rCS_crLowNJet_Cut_1b,  dPhiCut,weight= weight_str) 
+  rCS_srNJet_0b_onlyTT = getRCS(cTTJets, rCS_sr_Cut_0b,  dPhiCut,weight= weight_str) #for check
 
   #rCS_srPredErrorCandidates = [abs(1 - rCS_crLowNJet_1b['rCS']/rCS_srNJet_0b_onlyTT['rCS']), rCS_srNJet_0b_onlyTT['rCSE_sim']/rCS_srNJet_0b_onlyTT['rCS']]
   #rCS_srPredError = max(rCS_srPredErrorCandidates)

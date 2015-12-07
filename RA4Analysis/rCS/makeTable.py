@@ -19,13 +19,15 @@ useWcorrection = False
 useTTcorrection = False
 signal = False
 
-lumi = 3
+lumi = 2.1
 weights = [
 {'var':'weight','label':'original'},\
-{'var':'weight_XSecTTBar1p1','label':'_tt_Up_'},\
-{'var':'weight_XSecTTBar0p9','label':'_tt_Down_'},\
-{'var':'weight_XSecWJets1p1','label':'_wjets_Up_'},\
-{'var':'weight_XSecWJets0p9','label':'_wjets_Down_'}
+#{'var':'weight_XSecTTBar1p1','label':'_tt_Up_'},\
+#{'var':'weight_XSecTTBar0p9','label':'_tt_Down_'},\
+#{'var':'weight_XSecWJets1p1','label':'_wjets_Up_'},\
+#{'var':'weight_XSecWJets0p9','label':'_wjets_Down_'}
+{'var':'weight_diLepTTBar2p0','label':'_tt_DiLep_Up_2p0'},\
+{'var':'weight_diLepTTBar0p5','label':'_tt_DiLep_Down_2p0'},\
 ]
 
 ##for weight_dict in weights:
@@ -33,15 +35,15 @@ prefix = 'singleLeptonic_Spring15_'
 path = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_CBID/'+weights[0]['label']+'/' 
 path1 = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_CBID/'+weights[1]['label']+'/' 
 path2 = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_CBID/'+weights[2]['label']+'/' 
-path3 = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_CBID/'+weights[3]['label']+'/' 
-path4 = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_CBID/'+weights[4]['label']+'/' 
+#path3 = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_CBID/'+weights[3]['label']+'/' 
+#path4 = '/data/'+username+'/Spring15/25ns/rCS_0b_'+str(lumi)+'_CBID/'+weights[4]['label']+'/' 
 
 
 res        = pickle.load(file(path+prefix+'_estimationResults_pkl_kappa_corrected'))
 res_ttUp   = pickle.load(file(path1+prefix+'_estimationResults_pkl_kappa_corrected'))
 res_ttDown = pickle.load(file(path2+prefix+'_estimationResults_pkl_kappa_corrected'))
-res_WUp = pickle.load(file(path3+prefix+'_estimationResults_pkl_kappa_corrected'))
-res_WDown = pickle.load(file(path4+prefix+'_estimationResults_pkl_kappa_corrected'))
+#res_WUp = pickle.load(file(path3+prefix+'_estimationResults_pkl_kappa_corrected'))
+#res_WDown = pickle.load(file(path4+prefix+'_estimationResults_pkl_kappa_corrected'))
 
 if useTTcorrection: kcs = pickle.load(file('/data/dspitzbart/Spring15/25ns/rCS_0b_3.0/correction_pkl'))
 if useWcorrection:
@@ -54,7 +56,6 @@ presel = "singleLeptonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoft
 
 btagString = 'nBJetMediumCSV30'
 
-lumi = 3.
 weight_str, weight_err_str = makeWeight(lumi, sampleLumi=3.)
 lepSel = 'hard'
 
@@ -83,6 +84,8 @@ if signal:
 #                             (350, 450): {(500, -1):  {'deltaPhi': 0.75}},
 #                             (450, -1): {(500, -1):   {'deltaPhi': 0.75}}}}
 signalRegions = signalRegion3fb
+small = False
+if small: signalRegions = smallRegion
 
 #signalRegions = {(5, 5): {(250, 350): {(500, -1):   {'deltaPhi': 1.0}}}}
 
@@ -133,9 +136,9 @@ for srNJet in sorted(signalRegions):
            +' & '+getNumString(res_ttUp[srNJet][stb][htb]['TT_truth'], res[srNJet][stb][htb]['TT_truth_err'])\
            +' & '+getNumString(res_ttDown[srNJet][stb][htb]['TT_pred'], res[srNJet][stb][htb]['TT_pred_err'])\
            +' & '+getNumString(res_ttDown[srNJet][stb][htb]['TT_truth'], res[srNJet][stb][htb]['TT_truth_err'])\
-           +' & '+str(closure_Up)\
-           +' & '+str(closure_Down)\
-           +' & '+str(closure_unc)\
+           +' & '+str(format(closure_Up,'.2f'))\
+           +' & '+str(format(closure_Down,'.2f'))\
+           +' & '+str(format(closure_unc,'.2f'))\
            +'\\\\'
       if htb[1] == -1 : print '\\cline{2-30}'
 print '\\hline\end{tabular}}\end{center}\caption{tt Jets xsec unc. on ttJets in the 0-tag regions, 3$fb^{-1}$}\label{tab:0b_totalClosure}\end{table}'
@@ -267,37 +270,37 @@ print '\\hline\end{tabular}}\end{center}\caption{tt Jets xsec unc. on tot with r
 #print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|c|c|c|c|c|}\\hline'
 #print ' \\njet     & \ST & \HT     &(pred/truth) Up &(pred/truth) down& (pred/truth) org &delta Up & delta down \\\%\hline'
 #print ' & $[$GeV$]$ &$[$GeV$]$&                     &                 &                  &         &\\\\\hline'                                              ####closure table
-print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|rrr|rrr|rrr|c|c|}\\hline'
-print ' \\njet     & \ST & \HT     &\multicolumn{3}{c|}{(pred/truth) Up} &\multicolumn{3}{c|}{(pred/truth) down}&\multicolumn{3}{c|}{ (pred/truth) org} &delta Up & delta down \\\%\hline'
-print ' & $[$GeV$]$ &$[$GeV$]$&\multicolumn{3}{c|}{}                     &\multicolumn{3}{c|}{}                 &\multicolumn{3}{c|}{}                  &         &\\\\\hline'
-
-secondLine = False                                                                                                                                           ###print
-for srNJet in sorted(signalRegions):                                                                                                                         ###print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|rrr|rrr|rrr|rrr|rrr|rrr|rrr|}\\hline'
-  print '\\hline'                                                                                                                                            ###print ' \\njet     & \ST & \HT     &\multicolumn{6}{c|}{$tt+$Jets}&\multicolumn{6}{c|}{$W+$ Jets}&\multicolumn{3}{c|}{Other EW bkg.}&\multicolumn{6}{c|}{total bkg.}\\\%\hline'
-  if secondLine: print '\\hline'                                                                                                                             ###print ' & $[$GeV$]$ &$[$GeV$]$&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation}&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation}&\multicolumn{3}{c|}{simulation}&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation} \\\\\hline'
-  secondLine = True                                                                                                                                          ###
-  print '\multirow{'+str(rowsNJet[srNJet]['n'])+'}{*}{\\begin{sideways}$'+varBin(srNJet)+'$\end{sideways}}'                                                  ###secondLine = False
-  for stb in sorted(signalRegions[srNJet]):                                                                                                                  ###for srNJet in sorted(signalRegions):
-    print '&\multirow{'+str(rowsSt[srNJet][stb]['n'])+'}{*}{$'+varBin(stb)+'$}'                                                                              ###  print '\\hline'
-    first = True                                                                                                                                             ###  if secondLine: print '\\hline'
-    for htb in sorted(signalRegions[srNJet][stb]):                                                                                                           ###  secondLine = True
-      if not first: print '&'                                                                                                                                ###  print '\multirow{'+str(rowsNJet[srNJet]['n'])+'}{*}{\\begin{sideways}$'+varBin(srNJet)+'$\end{sideways}}'
-      first = False                                                                                                                                          ###  for stb in sorted(signalRegions[srNJet]):
-      W_totclosure_Up_r , W_totclosure_Up_Err = calc_ratio_err(res_WUp[srNJet][stb][htb]['tot_pred'],res_WUp[srNJet][stb][htb]['tot_truth'],res_WUp[srNJet][stb][htb]['tot_pred_err'],res_WUp[srNJet][stb][htb]['tot_truth_err'])
-      W_totclosure_org_r , W_totclosure_org_Err = calc_ratio_err(res[srNJet][stb][htb]['tot_pred'],res[srNJet][stb][htb]['tot_truth'],res[srNJet][stb][htb]['tot_pred_err'],res[srNJet][stb][htb]['tot_truth_err']) 
-      W_totclosure_Down_r , W_totclosure_Down_Err = calc_ratio_err(res_WDown[srNJet][stb][htb]['tot_pred'],res_WDown[srNJet][stb][htb]['tot_truth'],res_WDown[srNJet][stb][htb]['tot_pred_err'],res_WDown[srNJet][stb][htb]['tot_truth_err']) 
-      W_delta_closure_Up = ((W_totclosure_Up_r/W_totclosure_org_r)-1)                                                                                              ###      if not first: print '&'
-      W_delta_closure_Down = ((W_totclosure_Down_r/W_totclosure_org_r)-1)                                                                                          ###      first = False
-      #totclosure_unc_r = (totclosure_Up_r+totclosure_Down)/2                                                                                                ###      print '&$'+varBin(htb)+'$' 
-      print '&$'+varBin(htb)+'$'            
-      print ' & '+getNumString(W_totclosure_Up_r,W_totclosure_Up_Err)\
-           +' & '+getNumString(W_totclosure_Down_r,W_totclosure_Down_Err)\
-           +' & '+getNumString(W_totclosure_org_r,W_totclosure_org_Err)\
-           +' & '+str(format(W_delta_closure_Up, '.2f'))\
-           +' & '+str(format(W_delta_closure_Down, '.2f'))\
-           +'\\\\' 
-      if htb[1] == -1 : print '\\cline{2-14}'
-print '\\hline\end{tabular}}\end{center}\caption{W Jets xsec unc. on tot with ratio in the 0-tag regions, 3$fb^{-1}$}\label{tab:0b_totalClosure}\end{table}'
+##########print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|rrr|rrr|rrr|c|c|}\\hline'
+##########print ' \\njet     & \ST & \HT     &\multicolumn{3}{c|}{(pred/truth) Up} &\multicolumn{3}{c|}{(pred/truth) down}&\multicolumn{3}{c|}{ (pred/truth) org} &delta Up & delta down \\\%\hline'
+##########print ' & $[$GeV$]$ &$[$GeV$]$&\multicolumn{3}{c|}{}                     &\multicolumn{3}{c|}{}                 &\multicolumn{3}{c|}{}                  &         &\\\\\hline'
+##########
+##########secondLine = False                                                                                                                                           ###print
+##########for srNJet in sorted(signalRegions):                                                                                                                         ###print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|rrr|rrr|rrr|rrr|rrr|rrr|rrr|}\\hline'
+##########  print '\\hline'                                                                                                                                            ###print ' \\njet     & \ST & \HT     &\multicolumn{6}{c|}{$tt+$Jets}&\multicolumn{6}{c|}{$W+$ Jets}&\multicolumn{3}{c|}{Other EW bkg.}&\multicolumn{6}{c|}{total bkg.}\\\%\hline'
+##########  if secondLine: print '\\hline'                                                                                                                             ###print ' & $[$GeV$]$ &$[$GeV$]$&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation}&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation}&\multicolumn{3}{c|}{simulation}&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation} \\\\\hline'
+##########  secondLine = True                                                                                                                                          ###
+##########  print '\multirow{'+str(rowsNJet[srNJet]['n'])+'}{*}{\\begin{sideways}$'+varBin(srNJet)+'$\end{sideways}}'                                                  ###secondLine = False
+##########  for stb in sorted(signalRegions[srNJet]):                                                                                                                  ###for srNJet in sorted(signalRegions):
+##########    print '&\multirow{'+str(rowsSt[srNJet][stb]['n'])+'}{*}{$'+varBin(stb)+'$}'                                                                              ###  print '\\hline'
+##########    first = True                                                                                                                                             ###  if secondLine: print '\\hline'
+##########    for htb in sorted(signalRegions[srNJet][stb]):                                                                                                           ###  secondLine = True
+##########      if not first: print '&'                                                                                                                                ###  print '\multirow{'+str(rowsNJet[srNJet]['n'])+'}{*}{\\begin{sideways}$'+varBin(srNJet)+'$\end{sideways}}'
+##########      first = False                                                                                                                                          ###  for stb in sorted(signalRegions[srNJet]):
+##########      W_totclosure_Up_r , W_totclosure_Up_Err = calc_ratio_err(res_WUp[srNJet][stb][htb]['tot_pred'],res_WUp[srNJet][stb][htb]['tot_truth'],res_WUp[srNJet][stb][htb]['tot_pred_err'],res_WUp[srNJet][stb][htb]['tot_truth_err'])
+##########      W_totclosure_org_r , W_totclosure_org_Err = calc_ratio_err(res[srNJet][stb][htb]['tot_pred'],res[srNJet][stb][htb]['tot_truth'],res[srNJet][stb][htb]['tot_pred_err'],res[srNJet][stb][htb]['tot_truth_err']) 
+##########      W_totclosure_Down_r , W_totclosure_Down_Err = calc_ratio_err(res_WDown[srNJet][stb][htb]['tot_pred'],res_WDown[srNJet][stb][htb]['tot_truth'],res_WDown[srNJet][stb][htb]['tot_pred_err'],res_WDown[srNJet][stb][htb]['tot_truth_err']) 
+##########      W_delta_closure_Up = ((W_totclosure_Up_r/W_totclosure_org_r)-1)                                                                                              ###      if not first: print '&'
+##########      W_delta_closure_Down = ((W_totclosure_Down_r/W_totclosure_org_r)-1)                                                                                          ###      first = False
+##########      #totclosure_unc_r = (totclosure_Up_r+totclosure_Down)/2                                                                                                ###      print '&$'+varBin(htb)+'$' 
+##########      print '&$'+varBin(htb)+'$'            
+##########      print ' & '+getNumString(W_totclosure_Up_r,W_totclosure_Up_Err)\
+##########           +' & '+getNumString(W_totclosure_Down_r,W_totclosure_Down_Err)\
+##########           +' & '+getNumString(W_totclosure_org_r,W_totclosure_org_Err)\
+##########           +' & '+str(format(W_delta_closure_Up, '.2f'))\
+##########           +' & '+str(format(W_delta_closure_Down, '.2f'))\
+##########           +'\\\\' 
+##########      if htb[1] == -1 : print '\\cline{2-14}'
+##########print '\\hline\end{tabular}}\end{center}\caption{W Jets xsec unc. on tot with ratio in the 0-tag regions, 3$fb^{-1}$}\label{tab:0b_totalClosure}\end{table}'
 #####closure table
 #####closure table
 ####print "Closure table"
@@ -333,30 +336,78 @@ print '\\hline\end{tabular}}\end{center}\caption{W Jets xsec unc. on tot with ra
 ####print
 ####print "Rcs table"
 ####print
-####print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|rrr|rrr|rrr|rrr|}\\hline'
-####print ' \\njet     & \ST & \HT     &\multicolumn{6}{c|}{$tt+$Jets}&\multicolumn{6}{c|}{$W+$ Jets}\\\%\hline'
-####print ' & $[$GeV$]$ &$[$GeV$]$&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation}&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation} \\\\\hline'
+print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|rrr|rrr|rrr|rrr|}\\hline'
+print ' \\njet     & \ST & \HT     &\multicolumn{6}{c|}{$tt+$Jets}&\multicolumn{6}{c|}{$W+$ Jets}\\\%\hline'
+print ' & $[$GeV$]$ &$[$GeV$]$&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation}&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation} \\\\\hline'
+
+secondLine = False
+for srNJet in sorted(signalRegions):
+  print '\\hline'
+  if secondLine: print '\\hline'
+  secondLine = True
+  print '\multirow{'+str(rowsNJet[srNJet]['n'])+'}{*}{\\begin{sideways}$'+varBin(srNJet)+'$\end{sideways}}'
+  for stb in sorted(signalRegions[srNJet]):
+    print '&\multirow{'+str(rowsSt[srNJet][stb]['n'])+'}{*}{$'+varBin(stb)+'$}'
+    first = True
+    for htb in sorted(signalRegions[srNJet][stb]):
+      if not first: print '&'
+      first = False
+      print '&$'+varBin(htb)+'$'
+      print ' & '+getNumString(res[srNJet][stb][htb]['rCS_crLowNJet_1b']['rCS']*res[srNJet][stb][htb]['TT_rCS_fits_MC']['k_0b/1b'],  res[srNJet][stb][htb]['rCS_crLowNJet_1b']['rCSE_pred'],3)\
+           +' & '+getNumString(res[srNJet][stb][htb]['rCS_srNJet_0b_onlyTT']['rCS'], res[srNJet][stb][htb]['rCS_srNJet_0b_onlyTT']['rCSE_sim'],3)\
+           +' & '+getNumString(res[srNJet][stb][htb]['rCS_W_crNJet_0b_corr'],   sqrt(res[srNJet][stb][htb]['rCS_Var_W_crNJet_0b_corr']),3)\
+           +' & '+getNumString(res[srNJet][stb][htb]['rCS_srNJet_0b_onlyW']['rCS'],  res[srNJet][stb][htb]['rCS_srNJet_0b_onlyW']['rCSE_sim'],3) + '\\\\'
+      if htb[1] == -1 : print '\\cline{2-15}'
+print '\\hline\end{tabular}}\end{center}\caption{Rcs table for the two main backgrounds,original, 3$fb^{-1}$}\label{tab:0b_rcs}\end{table}'
 ####
-####secondLine = False
-####for srNJet in sorted(signalRegions):
-####  print '\\hline'
-####  if secondLine: print '\\hline'
-####  secondLine = True
-####  print '\multirow{'+str(rowsNJet[srNJet]['n'])+'}{*}{\\begin{sideways}$'+varBin(srNJet)+'$\end{sideways}}'
-####  for stb in sorted(signalRegions[srNJet]):
-####    print '&\multirow{'+str(rowsSt[srNJet][stb]['n'])+'}{*}{$'+varBin(stb)+'$}'
-####    first = True
-####    for htb in sorted(signalRegions[srNJet][stb]):
-####      if not first: print '&'
-####      first = False
-####      print '&$'+varBin(htb)+'$'
-####      print ' & '+getNumString(res[srNJet][stb][htb]['rCS_crLowNJet_1b']['rCS']*res[srNJet][stb][htb]['TT_rCS_fits_MC']['k_0b/1b'],  res[srNJet][stb][htb]['rCS_crLowNJet_1b']['rCSE_pred'],3)\
-####           +' & '+getNumString(res[srNJet][stb][htb]['rCS_srNJet_0b_onlyTT']['rCS'], res[srNJet][stb][htb]['rCS_srNJet_0b_onlyTT']['rCSE_sim'],3)\
-####           +' & '+getNumString(res[srNJet][stb][htb]['rCS_W_crNJet_0b_corr'],   sqrt(res[srNJet][stb][htb]['rCS_Var_W_crNJet_0b_corr']),3)\
-####           +' & '+getNumString(res[srNJet][stb][htb]['rCS_srNJet_0b_onlyW']['rCS'],  res[srNJet][stb][htb]['rCS_srNJet_0b_onlyW']['rCSE_sim'],3) + '\\\\'
-####      if htb[1] == -1 : print '\\cline{2-15}'
-####print '\\hline\end{tabular}}\end{center}\caption{Rcs table for the two main backgrounds, 3$fb^{-1}$}\label{tab:0b_rcs}\end{table}'
+
+print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|rrr|rrr|rrr|rrr|}\\hline'
+print ' \\njet     & \ST & \HT     &\multicolumn{6}{c|}{$tt+$Jets}&\multicolumn{6}{c|}{$W+$ Jets}\\\%\hline'
+print ' & $[$GeV$]$ &$[$GeV$]$&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation}&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation} \\\\\hline'
+
+secondLine = False
+for srNJet in sorted(signalRegions):
+  print '\\hline'
+  if secondLine: print '\\hline'
+  secondLine = True
+  print '\multirow{'+str(rowsNJet[srNJet]['n'])+'}{*}{\\begin{sideways}$'+varBin(srNJet)+'$\end{sideways}}'
+  for stb in sorted(signalRegions[srNJet]):
+    print '&\multirow{'+str(rowsSt[srNJet][stb]['n'])+'}{*}{$'+varBin(stb)+'$}'
+    first = True
+    for htb in sorted(signalRegions[srNJet][stb]):
+      if not first: print '&'
+      first = False
+      print '&$'+varBin(htb)+'$'
+      print ' & '+getNumString(res_ttDown[srNJet][stb][htb]['rCS_crLowNJet_1b']['rCS']*res_ttDown[srNJet][stb][htb]['TT_rCS_fits_MC']['k_0b/1b'],  res_ttDown[srNJet][stb][htb]['rCS_crLowNJet_1b']['rCSE_pred'],3)\
+           +' & '+getNumString(res_ttDown[srNJet][stb][htb]['rCS_srNJet_0b_onlyTT']['rCS'], res_ttDown[srNJet][stb][htb]['rCS_srNJet_0b_onlyTT']['rCSE_sim'],3)\
+           +' & '+getNumString(res_ttDown[srNJet][stb][htb]['rCS_W_crNJet_0b_corr'],   sqrt(res_ttDown[srNJet][stb][htb]['rCS_Var_W_crNJet_0b_corr']),3)\
+           +' & '+getNumString(res_ttDown[srNJet][stb][htb]['rCS_srNJet_0b_onlyW']['rCS'],  res_ttDown[srNJet][stb][htb]['rCS_srNJet_0b_onlyW']['rCSE_sim'],3) + '\\\\'
+      if htb[1] == -1 : print '\\cline{2-15}'
+print '\\hline\end{tabular}}\end{center}\caption{Rcs table for the two main backgrounds,down, 3$fb^{-1}$}\label{tab:0b_rcs}\end{table}'
 ####
+print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|rrr|rrr|rrr|rrr|}\\hline'
+print ' \\njet     & \ST & \HT     &\multicolumn{6}{c|}{$tt+$Jets}&\multicolumn{6}{c|}{$W+$ Jets}\\\%\hline'
+print ' & $[$GeV$]$ &$[$GeV$]$&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation}&\multicolumn{3}{c}{prediction}&\multicolumn{3}{c|}{simulation} \\\\\hline'
+
+secondLine = False
+for srNJet in sorted(signalRegions):
+  print '\\hline'
+  if secondLine: print '\\hline'
+  secondLine = True
+  print '\multirow{'+str(rowsNJet[srNJet]['n'])+'}{*}{\\begin{sideways}$'+varBin(srNJet)+'$\end{sideways}}'
+  for stb in sorted(signalRegions[srNJet]):
+    print '&\multirow{'+str(rowsSt[srNJet][stb]['n'])+'}{*}{$'+varBin(stb)+'$}'
+    first = True
+    for htb in sorted(signalRegions[srNJet][stb]):
+      if not first: print '&'
+      first = False
+      print '&$'+varBin(htb)+'$'
+      print ' & '+getNumString(res_ttUp[srNJet][stb][htb]['rCS_crLowNJet_1b']['rCS']*res_ttUp[srNJet][stb][htb]['TT_rCS_fits_MC']['k_0b/1b'],  res_ttUp[srNJet][stb][htb]['rCS_crLowNJet_1b']['rCSE_pred'],3)\
+           +' & '+getNumString(res_ttUp[srNJet][stb][htb]['rCS_srNJet_0b_onlyTT']['rCS'], res_ttUp[srNJet][stb][htb]['rCS_srNJet_0b_onlyTT']['rCSE_sim'],3)\
+           +' & '+getNumString(res_ttUp[srNJet][stb][htb]['rCS_W_crNJet_0b_corr'],   sqrt(res_ttUp[srNJet][stb][htb]['rCS_Var_W_crNJet_0b_corr']),3)\
+           +' & '+getNumString(res_ttUp[srNJet][stb][htb]['rCS_srNJet_0b_onlyW']['rCS'],  res_ttUp[srNJet][stb][htb]['rCS_srNJet_0b_onlyW']['rCSE_sim'],3) + '\\\\'
+      if htb[1] == -1 : print '\\cline{2-15}'
+print '\\hline\end{tabular}}\end{center}\caption{Rcs table for the two main backgrounds,Up, 3$fb^{-1}$}\label{tab:0b_rcs}\end{table}'
 ####
 ##### W closure table
 #####res = pickle.load(file(path+prefix+'_estimationResults_pkl_updated'))
@@ -422,26 +473,26 @@ print '\\hline\end{tabular}}\end{center}\caption{W Jets xsec unc. on tot with ra
 ##
 ##
 ##
-print "Results Kappa"
-print
-print '\\begin{table}[ht]\\begin{center}\\begin{tabular}{|c|c|c|rrr|}\\hline'
-print ' \\njet & \ST & \HT     &\multicolumn{3}{c|}{$\kappa_{CS}$}\\\%\hline'
-print ' & $[$GeV$]$ &$[$GeV$]$&\multicolumn{3}{c|}{0b/1b}\\\ '
-secondLine = False
-for srNJet in sorted(signalRegions):
-  print '\\hline'
-  if secondLine: print '\\hline'
-  secondLine = True
-  print '\multirow{'+str(rowsNJet[srNJet]['n'])+'}{*}{\\begin{sideways}$'+varBin(srNJet)+'$\end{sideways}}'
-  for stb in sorted(signalRegions[srNJet]):
-    print '&\multirow{'+str(rowsSt[srNJet][stb]['n'])+'}{*}{$'+varBin(stb)+'$}'
-    first = True
-    for htb in sorted(signalRegions[srNJet][stb]):
-      if not first: print '&'
-      first = False
-      print '&$'+varBin(htb)+'$'
-      print ' & '+getNumString(res[srNJet][stb][htb]['TT_rCS_fits_MC']['k_0b/1b'], res[srNJet][stb][htb]['TT_rCS_fits_MC']['k_0b/1b_err'])+'\\\\ '
-print '\\hline\end{tabular}\end{center}\caption{Correction factors for \\ttJets background, 3$fb^{-1}$}\label{tab:0b_rcscorr_Wbkg}\end{table}'
+############print "Results Kappa"
+############print
+############print '\\begin{table}[ht]\\begin{center}\\begin{tabular}{|c|c|c|rrr|}\\hline'
+############print ' \\njet & \ST & \HT     &\multicolumn{3}{c|}{$\kappa_{CS}$}\\\%\hline'
+############print ' & $[$GeV$]$ &$[$GeV$]$&\multicolumn{3}{c|}{0b/1b}\\\ '
+############secondLine = False
+############for srNJet in sorted(signalRegions):
+############  print '\\hline'
+############  if secondLine: print '\\hline'
+############  secondLine = True
+############  print '\multirow{'+str(rowsNJet[srNJet]['n'])+'}{*}{\\begin{sideways}$'+varBin(srNJet)+'$\end{sideways}}'
+############  for stb in sorted(signalRegions[srNJet]):
+############    print '&\multirow{'+str(rowsSt[srNJet][stb]['n'])+'}{*}{$'+varBin(stb)+'$}'
+############    first = True
+############    for htb in sorted(signalRegions[srNJet][stb]):
+############      if not first: print '&'
+############      first = False
+############      print '&$'+varBin(htb)+'$'
+############      print ' & '+getNumString(res[srNJet][stb][htb]['TT_rCS_fits_MC']['k_0b/1b'], res[srNJet][stb][htb]['TT_rCS_fits_MC']['k_0b/1b_err'])+'\\\\ '
+############print '\\hline\end{tabular}\end{center}\caption{Correction factors for \\ttJets background, 3$fb^{-1}$}\label{tab:0b_rcscorr_Wbkg}\end{table}'
 
 
 ##closure table, calculate old corrections and errors (phys14)

@@ -34,9 +34,9 @@ def makeWPrediction(weight_str, weight_err_str , bins, samples, htb, stb, srNJet
   rCS_cr_Name_0b, rCS_cr_Cut_0b = nameAndCut(stb, htb, nJetCR, btb=(0,0), presel=presel+'&&abs(leptonPdg)==13', btagVar = btagVarString) #THIS ONE GOT CHANGED FROM 2-3 TO 2-4!
   #rCS_cr_Name_0b, rCS_cr_Cut_0b = nameAndCut(stb, htb, (2,3), btb=(0,0), presel=presel, btagVar = btagVarString)
   #rCS_crNJet_1b = getRCS(cBkg, rCS_cr_Cut_1b,  dPhiCut) 
-  rCS_crNJet_1b = getRCS(cData, rCS_cr_Cut_1b,  dPhiCut) 
-  rCS_crNJet_1b_onlyTT = getRCS(cTTJets, rCS_cr_Cut_1b,  dPhiCut) 
-  rCS_crNJet_0b_onlyTT = getRCS(cTTJets, rCS_cr_Cut_0b,  dPhiCut) 
+  rCS_crNJet_1b = getRCS(cData, rCS_cr_Cut_1b,  dPhiCut, weight= weight_str) 
+  rCS_crNJet_1b_onlyTT = getRCS(cTTJets, rCS_cr_Cut_1b,  dPhiCut, weight= weight_str) 
+  rCS_crNJet_0b_onlyTT = getRCS(cTTJets, rCS_cr_Cut_0b,  dPhiCut, weight= weight_str) 
   rd['rCS_crNJet_1b'] = rCS_crNJet_1b
   rd['rCS_crNJet_1b_onlyTT'] = rCS_crNJet_1b_onlyTT
   rd['rCS_crNJet_0b_onlyTT'] = rCS_crNJet_0b_onlyTT
@@ -110,7 +110,7 @@ def makeWPrediction(weight_str, weight_err_str , bins, samples, htb, stb, srNJet
   rd['rCS_Var_W_crNJet_0b_corr']   = rCS_Var_W_crNJet_0b_corr
   rd['rCS_W_crNJet_0b_notcorr']       = rCS_W_crNJet_0b_notcorr
   rd['rCS_Var_W_crNJet_0b_notcorr']   = rCS_Var_W_crNJet_0b_notcorr
-  rd['rCS_W_crNJet_0b_truth']       = getRCS(cWJets, crCut,  dPhiCut)
+  rd['rCS_W_crNJet_0b_truth']       = getRCS(cWJets, crCut,  dPhiCut, weight= weight_str)
   #PosPdg
   rd['y_crNJet_0b_highDPhi_PosPdg']       = y_crNJet_0b_highDPhi_PosPdg
   rd['y_Var_crNJet_0b_highDPhi_PosPdg']   = y_Var_crNJet_0b_highDPhi_PosPdg
@@ -120,7 +120,7 @@ def makeWPrediction(weight_str, weight_err_str , bins, samples, htb, stb, srNJet
   rd['rCS_Var_W_PosPdg_crNJet_0b_corr']   = rCS_Var_W_PosPdg_crNJet_0b_corr
   rd['rCS_W_PosPdg_crNJet_0b_notcorr']       = rCS_W_PosPdg_crNJet_0b_notcorr
   rd['rCS_Var_W_PosPdg_crNJet_0b_notcorr']   = rCS_Var_W_PosPdg_crNJet_0b_notcorr
-  rd['rCS_W_PosPdg_crNJet_0b_truth']  = getRCS(cWJets, 'leptonPdg>0&&'+crCut, dPhiCut)
+  rd['rCS_W_PosPdg_crNJet_0b_truth']  = getRCS(cWJets, 'leptonPdg>0&&'+crCut, dPhiCut,weight= weight_str)
   #NegPdg
   rd['y_crNJet_0b_highDPhi_NegPdg']       = y_crNJet_0b_highDPhi_NegPdg
   rd['y_Var_crNJet_0b_highDPhi_NegPdg']   = y_Var_crNJet_0b_highDPhi_NegPdg
@@ -130,7 +130,7 @@ def makeWPrediction(weight_str, weight_err_str , bins, samples, htb, stb, srNJet
   rd['rCS_Var_W_NegPdg_crNJet_0b_corr']   = rCS_Var_W_NegPdg_crNJet_0b_corr
   rd['rCS_W_NegPdg_crNJet_0b_notcorr']       = rCS_W_NegPdg_crNJet_0b_notcorr
   rd['rCS_Var_W_NegPdg_crNJet_0b_notcorr']   = rCS_Var_W_NegPdg_crNJet_0b_notcorr
-  rd['rCS_W_NegPdg_crNJet_0b_truth']  = getRCS(cWJets, 'leptonPdg<0&&'+crCut, dPhiCut)
+  rd['rCS_W_NegPdg_crNJet_0b_truth']  = getRCS(cWJets, 'leptonPdg<0&&'+crCut, dPhiCut,weight= weight_str)
 
   fit_srName, fit_srCut = nameAndCut(stb, htb, srNJet, btb=None, presel=presel,btagVar = btagVarString) 
   fit_srNJet_lowDPhi = binnedNBTagsFit(weight_str, weight_err_str, fit_srCut+"&&"+dPhiStr+"<"+str(dPhiCut), samples = samples, nBTagVar = btagVarString, lumi=lumi, prefix=fit_srName, printDir=printDir)
@@ -151,12 +151,12 @@ def makeWPrediction(weight_str, weight_err_str , bins, samples, htb, stb, srNJet
   yW_NegPdg_Var_srNJet_0b_lowDPhi = fit_srNJet_lowDPhi['W_NegPdg']['yieldVar']*fit_srNJet_lowDPhi['W_NegPdg']['template'].GetBinContent(1)**2
 
   # for systematics
-  rCS_crLowNJet_0b_onlyW = getRCS(cWJets, crCut, dPhiCut)
-  rCS_crLowNJet_0b_onlyW_PosPdg = getRCS(cWJets, 'leptonPdg>0&&'+crCut, dPhiCut)
-  rCS_crLowNJet_0b_onlyW_NegPdg = getRCS(cWJets, 'leptonPdg<0&&'+crCut, dPhiCut)
-  rCS_crLowNJet_0b_onlyW_mu = getRCS(cWJets, crCut+'&&abs(leptonPdg)==13', dPhiCut)
-  rCS_crLowNJet_0b_onlyW_mu_PosPdg = getRCS(cWJets, crCut+'&&leptonPdg>0&&abs(leptonPdg)==13', dPhiCut)
-  rCS_crLowNJet_0b_onlyW_mu_NegPdg = getRCS(cWJets, crCut+'&&leptonPdg<0&&abs(leptonPdg)==13', dPhiCut)  
+  rCS_crLowNJet_0b_onlyW = getRCS(cWJets, crCut, dPhiCut,weight= weight_str)
+  rCS_crLowNJet_0b_onlyW_PosPdg = getRCS(cWJets, 'leptonPdg>0&&'+crCut, dPhiCut,weight= weight_str)
+  rCS_crLowNJet_0b_onlyW_NegPdg = getRCS(cWJets, 'leptonPdg<0&&'+crCut, dPhiCut,weight= weight_str)
+  rCS_crLowNJet_0b_onlyW_mu = getRCS(cWJets, crCut+'&&abs(leptonPdg)==13', dPhiCut,weight= weight_str)
+  rCS_crLowNJet_0b_onlyW_mu_PosPdg = getRCS(cWJets, crCut+'&&leptonPdg>0&&abs(leptonPdg)==13', dPhiCut,weight= weight_str)
+  rCS_crLowNJet_0b_onlyW_mu_NegPdg = getRCS(cWJets, crCut+'&&leptonPdg<0&&abs(leptonPdg)==13', dPhiCut,weight= weight_str)  
   rd['rCS_crLowNJet_0b_onlyW'] = rCS_crLowNJet_0b_onlyW
   rd['rCS_crLowNJet_0b_onlyW_PosPdg'] = rCS_crLowNJet_0b_onlyW_PosPdg
   rd['rCS_crLowNJet_0b_onlyW_NegPdg'] = rCS_crLowNJet_0b_onlyW_NegPdg
@@ -165,15 +165,15 @@ def makeWPrediction(weight_str, weight_err_str , bins, samples, htb, stb, srNJet
   rd['rCS_crLowNJet_0b_onlyW_mu_NegPdg'] = rCS_crLowNJet_0b_onlyW_mu_NegPdg
   
   rCS_sr_Name_0b, rCS_sr_Cut_0b = nameAndCut(stb, htb, srNJet, btb=(0,0), presel=presel, btagVar = btagVarString)#for Check 
-  rCS_srNJet_0b_onlyW = getRCS(cWJets, rCS_sr_Cut_0b,  dPhiCut) #for check
-  rCS_srNJet_0b_onlyW_mu = getRCS(cWJets, rCS_sr_Cut_0b+'&&abs(leptonPdg)==13',  dPhiCut) #for check
-  rCS_srNJet_0b_onlyW_ele = getRCS(cWJets, rCS_sr_Cut_0b+'&&abs(leptonPdg)==11',  dPhiCut) #for check
-  rCS_srNJet_0b_onlyW_PosPdg = getRCS(cWJets, 'leptonPdg>0&&'+rCS_sr_Cut_0b,  dPhiCut) #for check
-  rCS_srNJet_0b_onlyW_NegPdg = getRCS(cWJets, 'leptonPdg<0&&'+rCS_sr_Cut_0b,  dPhiCut) #for check
-  rCS_srNJet_0b_onlyW_mu_PosPdg = getRCS(cWJets, 'leptonPdg>0&&abs(leptonPdg)==13&&'+rCS_sr_Cut_0b,  dPhiCut) #for check
-  rCS_srNJet_0b_onlyW_mu_NegPdg = getRCS(cWJets, 'leptonPdg<0&&abs(leptonPdg)==13&&'+rCS_sr_Cut_0b,  dPhiCut) #for check
-  rCS_srNJet_0b_onlyW_ele_PosPdg = getRCS(cWJets, 'leptonPdg>0&&abs(leptonPdg)==11&&'+rCS_sr_Cut_0b,  dPhiCut) #for check
-  rCS_srNJet_0b_onlyW_ele_NegPdg = getRCS(cWJets, 'leptonPdg<0&&abs(leptonPdg)==11&&'+rCS_sr_Cut_0b,  dPhiCut) #for check
+  rCS_srNJet_0b_onlyW = getRCS(cWJets, rCS_sr_Cut_0b,  dPhiCut,weight= weight_str) #for check
+  rCS_srNJet_0b_onlyW_mu = getRCS(cWJets, rCS_sr_Cut_0b+'&&abs(leptonPdg)==13',  dPhiCut,weight= weight_str) #for check
+  rCS_srNJet_0b_onlyW_ele = getRCS(cWJets, rCS_sr_Cut_0b+'&&abs(leptonPdg)==11',  dPhiCut,weight= weight_str) #for check
+  rCS_srNJet_0b_onlyW_PosPdg = getRCS(cWJets, 'leptonPdg>0&&'+rCS_sr_Cut_0b,  dPhiCut,weight= weight_str) #for check
+  rCS_srNJet_0b_onlyW_NegPdg = getRCS(cWJets, 'leptonPdg<0&&'+rCS_sr_Cut_0b,  dPhiCut,weight= weight_str) #for check
+  rCS_srNJet_0b_onlyW_mu_PosPdg = getRCS(cWJets, 'leptonPdg>0&&abs(leptonPdg)==13&&'+rCS_sr_Cut_0b,  dPhiCut,weight= weight_str) #for check
+  rCS_srNJet_0b_onlyW_mu_NegPdg = getRCS(cWJets, 'leptonPdg<0&&abs(leptonPdg)==13&&'+rCS_sr_Cut_0b,  dPhiCut,weight= weight_str) #for check
+  rCS_srNJet_0b_onlyW_ele_PosPdg = getRCS(cWJets, 'leptonPdg>0&&abs(leptonPdg)==11&&'+rCS_sr_Cut_0b,  dPhiCut,weight= weight_str) #for check
+  rCS_srNJet_0b_onlyW_ele_NegPdg = getRCS(cWJets, 'leptonPdg<0&&abs(leptonPdg)==11&&'+rCS_sr_Cut_0b,  dPhiCut,weight= weight_str) #for check
   rd['yW_srNJet_0b_lowDPhi'] = yW_srNJet_0b_lowDPhi  
   rd['yW_Var_srNJet_0b_lowDPhi'] = yW_Var_srNJet_0b_lowDPhi 
   rd['yW_PosPdg_srNJet_0b_lowDPhi'] = yW_PosPdg_srNJet_0b_lowDPhi
