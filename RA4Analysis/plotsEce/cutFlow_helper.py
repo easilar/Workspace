@@ -4,7 +4,7 @@ minPt_e_loose = 10
 minPt_e_veto = 10
 minPt_mu_veto = 10
 minPt_mu_loose = 10
-maxEta_e = 2.5
+maxEta_e = 2.4
 maxEta_mu = 2.4
 minPt_Jet = 30
 maxEta_Jet = 2.4
@@ -57,26 +57,46 @@ ele_Eta_acc_cut_str = "((abs(LepGood_eta)<1.44||abs(LepGood_eta)>1.57)&&abs(LepG
 ###e_veto        = "(Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt_e_veto)+"&&abs(LepGood_eta)<"+str(maxEta_e)+"&&LepGood_miniRelIso<0.4&&LepGood_SPRING15_25ns_v1>=1))" #+"&&"+ele_Eta_acc_cut_str+"&&LepGood_miniRelIso<"+str(minRelIso_lep_loose)+"&&"+ele_MVAID_cutstr_loose+"))" 
 ###e_veto        = "(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt_e_veto)+"&&abs(LepGood_eta)<"+str(maxEta_e)+"&&LepGood_miniRelIso<0.4&&"+ele_MVAID_cutstr_vloose+")" #+"&&"+ele_Eta_acc_cut_str+"&&LepGood_miniRelIso<"+str(minRelIso_lep_loose)+"&&"+ele_MVAID_cutstr_loose+"))" 
 #e_tight       = "(Sum$(abs(LepGood_pdgId)==11&&LepGood_pt>"+str(minPt_Lep)+"&&abs(LepGood_eta)<"+str(maxEta_e)+"&&LepGood_miniRelIso<"+str(minRelIso_e)+"&&"+ele_MVAID_cutstr_tight+"&&"+"LepGood_lostHits<=0"+"&&"+"LepGood_convVeto"+"&&"+"LepGood_sip3d<"+str(max_sip3d)+"))" 
-e_tight       = "(abs(LepGood_pdgId)==11&&LepGood_pt>=25&&abs(LepGood_eta)<=2.5&&LepGood_miniRelIso<0.1&&LepGood_SPRING15_25ns_v1==4)" 
-##e_tight       = "(abs(LepGood_pdgId)==11&&LepGood_pt>=25&&abs(LepGood_eta)<=2.5&&LepGood_miniRelIso<0.1&&LepGood_SPRING15_25ns_v1==4)" 
+e_tight       = "(abs(LepGood_pdgId)==11&&LepGood_pt>=25&&abs(LepGood_eta)<=2.4&&LepGood_miniRelIso<0.1&&LepGood_SPRING15_25ns_v1==4)" 
+##e_tight       = "(abs(LepGood_pdgId)==11&&LepGood_pt>=25&&abs(LepGood_eta)<=2.4&&LepGood_miniRelIso<0.1&&LepGood_SPRING15_25ns_v1==4)" 
 n_tight_e =  "(Sum$("+e_tight+"))"
-e_veto = "(abs(LepGood_pdgId)==11&&LepGood_pt>=10&&abs(LepGood_eta)<=2.5&&!("+e_tight+"))"
+e_veto = "(abs(LepGood_pdgId)==11&&LepGood_pt>=10&&abs(LepGood_eta)<=2.4&&!("+e_tight+"))"
 n_veto_e ="(Sum$("+e_veto+"))"
+
+e_anti_tight = "(abs(LepGood_pdgId)==11&&LepGood_pt>=25&&abs(LepGood_eta)<=2.4&&LepGood_miniRelIso<0.4&&LepGood_hOverE>0.01&&!(LepGood_SPRING15_25ns_v1>=3))"
+n_e_anti_tight ="(Sum$("+e_anti_tight+"))"
+e_anti_veto = "(abs(LepGood_pdgId)==11&&LepGood_pt>=10&&abs(LepGood_eta)<=2.4&&!("+e_anti_tight+"))"
+n_e_anti_veto = "(Sum$("+e_anti_veto+"))"
+
 
 ###mu_veto       = "(Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>"+str(minPt_mu_veto)+"&&LepGood_miniRelIso<"+str(minRelIso_lep_loose)+"&&abs(LepGood_eta)<="+str(maxEta_mu)+"&&LepGood_miniRelIso<"+str(minRelIso_lep_loose)+"&&LepGood_mediumMuonId=="+str(ID_mu)+"))"
 #mu_veto       = "(Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>"+str(minPt_mu_veto)+"))"
 ##mu_tight      = "(Sum$(abs(LepGood_pdgId)==13&&LepGood_pt>"+str(minPt_Lep)+"&&abs(LepGood_eta)<="+str(maxEta_mu)+"&&LepGood_miniRelIso<"+str(minRelIso_mu)+"&&LepGood_mediumMuonId=="+str(ID_mu)+"&&LepGood_sip3d<"+str(max_sip3d)+"))"
 mu_tight = "(abs(LepGood_pdgId)==13&&LepGood_pt>=25&&abs(LepGood_eta)<=2.4&&LepGood_mediumMuonId==1&&LepGood_sip3d<4&&LepGood_miniRelIso<0.2)"
 n_tight_mu = "(Sum$("+mu_tight+"))"
-mu_veto  = "(abs(LepGood_pdgId)==13&&LepGood_pt>=10&&abs(LepGood_eta)<=2.5&&!("+mu_tight+"))"
+mu_veto  = "(abs(LepGood_pdgId)==13&&LepGood_pt>=10&&abs(LepGood_eta)<=2.4&&!("+mu_tight+"))"
 n_veto_mu = "(Sum$("+mu_veto+"))"
 
+mu_anti_tight = "(abs(LepGood_pdgId)==13&&LepGood_pt>=25&&abs(LepGood_eta)<=2.4&&!(LepGood_miniRelIso<0.2))"
+n_mu_anti_tight = "(Sum$("+mu_anti_tight+"))"
+mu_anti_veto = "(abs(LepGood_pdgId)==13&&LepGood_pt>=10&&abs(LepGood_eta)<=2.4&&!("+mu_anti_tight+"))"
+n_mu_anti_veto = "(Sum$("+mu_anti_veto+"))"
 #OneMu = "("+mu_tight+"==1"+")"
 #OneMu_lepveto = "("+mu_veto+"==1&&"+e_veto+"==0"+")"
 #OneE = "("+e_tight+"==1"+")"
 #OneE_lepveto ="("+mu_veto+"==0&&"+e_veto+"==1"+")"
 #OneLep ="("+mu_tight+"+"+e_tight+"==1"+")"
 #OneLep_lepveto =  "(("+"abs(LepGood_pdgId)==11&&"+OneE_lepveto+")"+"||"+"("+"abs(LepGood_pdgId)==13&&"+OneMu_lepveto+"))"
+
+###for lep other####
+mu_anti_tight_other = "(abs(LepOther_pdgId)==13&&LepOther_pt>=25&&abs(LepOther_eta)<=2.4&&LepOther_miniRelIso<0.8&&!(LepOther_miniRelIso<0.2))" 
+n_mu_anti_tight_other = "(Sum$("+mu_anti_tight_other+"))"
+mu_anti_veto_other= "(abs(LepOther_pdgId)==13&&LepOther_pt>=10&&abs(LepOther_eta)<=2.4&&LepOther_miniRelIso<0.8&&!("+mu_anti_tight_other+"))"
+n_mu_anti_veto_other="(Sum$("+mu_anti_veto_other+"))"
+ele_anti_tight_other = "(abs(LepOther_pdgId)==11&&LepOther_pt>=25&&abs(LepOther_eta)<=2.4&&LepOther_miniRelIso<0.4&&LepOther_hOverE>0.01&&!(LepOther_eleCBID_SPRING15_25ns>=3))"
+n_ele_anti_tight_other="(Sum$("+ele_anti_tight_other+"))"
+ele_anti_veto_other = "(abs(LepOther_pdgId)==11&&LepOther_pt>=10&&abs(LepOther_eta)<=2.4&&LepOther_miniRelIso<0.4&&!("+ele_anti_tight_other+"))"
+n_ele_anti_veto_other ="(Sum$("+ele_anti_veto_other+"))"
 
 ###OneLep = "("+mu_tight+"+"+e_tight+"==1"+")"
 OneLep = "("+n_tight_mu+"+"+n_tight_e+"==1)" 
@@ -89,6 +109,11 @@ lep_hard  = "(LepGood_pt[0]>25)"
 OneLep_lepveto = "("+n_veto_e+"==0&&"+n_veto_mu+"==0)"
 ###OneLep_lepveto =  "(("+"abs(LepGood_pdgId)==11&&"+OneE_lepveto+")"+"||"+"("+"abs(LepGood_pdgId)==13&&"+OneMu_lepveto+"))"
 #####OneLep_lepveto =  "(("+"abs(LepGood_pdgId)==11&&"+OneE_lepveto+")"+"||"+"("+"abs(LepGood_pdgId)==13&&"+OneMu_lepveto+"))"
+
+OneLepAnti = "("+n_mu_anti_tight+"+"+n_e_anti_tight+"+"+n_mu_anti_tight_other+"+"+n_ele_anti_tight_other+"==1)"
+OneLepAntiveto = "("+n_mu_anti_veto_other+"==0&&"+n_mu_anti_veto+"==0&&"+n_ele_anti_veto_other+"==0&&"+n_e_anti_veto+"==0"+")"
+
+
 
 DiMu = "("+mu_tight+"==2"+")"
 DiMu_lepveto = "("+mu_veto+"==2&&"+e_veto+"==0"+")"
