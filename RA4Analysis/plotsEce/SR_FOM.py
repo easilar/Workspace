@@ -3,7 +3,7 @@ import pickle
 import operator
 from Workspace.HEPHYPythonTools.helpers import getChain, getPlotFromChain, getYieldFromChain
 from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName, nBTagBinName, varBinName, varBin, UncertaintyDivision
-from Workspace.RA4Analysis.cmgTuplesPostProcessed_v8_Phys14V3_HT400ST200 import *
+#from Workspace.RA4Analysis.cmgTuplesPostProcessed_v8_Phys14V3_HT400ST200 import *
 from Workspace.RA4Analysis.cmgTuples_Spring15_MiniAODv2_25ns_postProcessed import *
 #from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur import *
 from Workspace.RA4Analysis.signalRegions import *
@@ -13,7 +13,7 @@ from Workspace.HEPHYPythonTools.user import username
 from math import sqrt, pi
 ROOT.TH1F().SetDefaultSumw2()
 
-weight_str = "((weight*3)/4)"
+weight_str = "((weight*2.2)/3)"
 
 
 def getFOM(Ysig ,Ysig_Var, Ybkg,  Ybkg_Var):
@@ -39,34 +39,36 @@ lepSel = 'hard'
 btag_str = 'nBJetMediumCSV30'
 #cBkg = getChain([WJetsHTToLNu[lepSel], ttJets[lepSel],DY[lepSel],TTVH[lepSel],singleTop[lepSel]],histname='')
 cBkg = getChain([WJetsHTToLNu_25ns,TTJets_combined,singleTop_25ns, DY_25ns,TTV_25ns,QCDHT_25ns],histname='')
-cS1200 = getChain(T5qqqqWW_mGo1200_mCh1000_mChi800[lepSel],histname='')
-cS1500 = getChain(T5qqqqWW_mGo1500_mCh800_mChi100[lepSel],histname='')
-cS1000 = getChain(T5qqqqWW_mGo1000_mCh800_mChi700[lepSel],histname='')
+#cS1200 = getChain(T5qqqqWW_mGo1200_mCh1000_mChi800[lepSel],histname='')
+#cS1500 = getChain(T5qqqqWW_mGo1500_mCh800_mChi100[lepSel],histname='')
+cS1000 = getChain(T5qqqqVV_mGluino_1000To1075_mLSP_1To950[1000][700],histname='')
+cS1200 = getChain(T5qqqqVV_mGluino_1200To1275_mLSP_1to1150[1200][800],histname='')
+cS1500 = getChain(T5qqqqVV_mGluino_1400To1550_mLSP_1To1275[1500][100],histname='')
 
 btagString = "nBJetMediumCSV30"
 
 presel_bkg = 'singleLeptonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0&&Jet_pt[1]>80&&Flag_CSCTightHaloFilter&&Flag_HBHENoiseFilter_fix&&Flag_HBHENoiseFilter&&Flag_goodVertices&&Flag_eeBadScFilter&&Flag_EcalDeadCellTriggerPrimitiveFilter'
-presel = "singleLeptonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftPt10Leptons==0&&Jet_pt[1]>80"
-prefix = presel.split('&&')[0]+'_SRfinder_Phys14V3'
+presel = "singleLeptonic&&nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0&&Jet_pt[1]>80"
+prefix = presel.split('&&')[0]+'_SRfinder_miniAODv2'
 
-path = '/data/'+username+'/PHYS14v3/SRfinder/'
+path = '/data/'+username+'/Spring15/25ns/SRfinder/'
 if not os.path.exists(path):
   os.makedirs(path)
 
-#signalRegion3fbReduced = {(5, 5):  {(250, 350): {(500, -1):  {'deltaPhi': 1.0}},
-#                                    (350, 450): {(500, -1):  {'deltaPhi': 1.0}},
-#                                    (450, -1):  {(500, -1):  {'deltaPhi': 0.75}}},
-#                          (6, 7):  {(250, 350): {(500, 750): {'deltaPhi': 1.0},
-#                                                 (750, -1):  {'deltaPhi': 1.0}},
-#                                    (350, 450): {(500, 750): {'deltaPhi': 1.0},
-#                                                 (750, -1):  {'deltaPhi': 1.0}},
-#                                    (450, -1):  {(500, 750): {'deltaPhi': 0.75},
-#                                                 (750, -1):  {'deltaPhi': 0.75}}},
-#                          (8, -1): {(250, 350): {(500, 750): {'deltaPhi': 1.0},
-#                                                 (750, -1):  {'deltaPhi': 1.0}},
-#                                    (350, -1):  {(500, -1):  {'deltaPhi': 0.75}}}}
-#signalRegions = signalRegion3fbReduced
-signalRegions = signalRegion3fb
+signalRegion3fbReduced = {(5, 5):  {(250, 350): {(500, -1):  {'deltaPhi': 1.0}},
+                                    (350, 450): {(500, -1):  {'deltaPhi': 1.0}},
+                                    (450, -1):  {(500, -1):  {'deltaPhi': 0.75}}},
+                          (6, 7):  {(250, 350): {(500, 750): {'deltaPhi': 1.0},
+                                                 (750, -1):  {'deltaPhi': 1.0}},
+                                    (350, 450): {(500, 750): {'deltaPhi': 1.0},
+                                                 (750, -1):  {'deltaPhi': 1.0}},
+                                    (450, -1):  {(500, 750): {'deltaPhi': 0.75},
+                                                 (750, -1):  {'deltaPhi': 0.75}}},
+                          (8, -1): {(250, 350): {(500, 750): {'deltaPhi': 1.0},
+                                                 (750, -1):  {'deltaPhi': 1.0}},
+                                    (350, -1):  {(500, -1):  {'deltaPhi': 0.75}}}}
+signalRegions = signalRegion3fbReduced
+#signalRegions = signalRegion3fb
 
 
 
@@ -82,10 +84,9 @@ for srNJet in sorted(signalRegions):
   rowsNJet[srNJet] = {'nST':len(signalRegions[srNJet]), 'n':rows}
 
 
-'''
 
 print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|rrr|rrr|rrr|rrr|c|}\\hline'
-print ' \\njet & \ST       & \HT       &\multicolumn{3}{c|}{$total bkg$}&\multicolumn{3}{c|}{$T5q^{4} 1.2/1.0/0.8$}&\multicolumn{3}{c|}{$T5q^{4} 1.0/0.8/0.7$}&\multicolumn{3}{c|}{$T5q^{4} 1.5/0.8/0.1$}&\\DF \\\%\hline'
+print ' \\njet & \ST       & \HT       &\multicolumn{3}{c|}{$total bkg$}&\multicolumn{3}{c|}{$T5q^{4} 1.0/0.8/0.7$}&\multicolumn{3}{c|}{$T5q^{4} 1.2/1.0/0.8$}&\multicolumn{3}{c|}{$T5q^{4} 1.5/0.8/0.1$}&\\DF \\\%\hline'
 print '        & $[$GeV$]$ & $[$GeV$]$ &    \multicolumn{3}{c|}{simulation}&\multicolumn{3}{c|}{simulation}         & \multicolumn{3}{c|}{simulation}        &   \multicolumn{3}{c|}{simulation}  & \\\\\hline '
 bin = {}
 secondLine = False
@@ -117,8 +118,8 @@ for srNJet in sorted(signalRegions):
       FOM1500 = getFOM(S1500,S1500_Err, B, B_Err)
       FOM1000 = getFOM(S1000,S1000_Err, B, B_Err)
       print ' & '+getNumString(B, B_Err)\
-           +' & '+getNumString(S1200,S1200_Err)\
            +' & '+getNumString(S1000,S1000_Err)\
+           +' & '+getNumString(S1200,S1200_Err)\
            +' & '+getNumString(S1500,S1500_Err)\
            +' & '+str(deltaPhiCut)\
            +'\\\\'
@@ -126,9 +127,7 @@ for srNJet in sorted(signalRegions):
 print
 print '\\hline\end{tabular}}\end{center}\caption{signal contaminations}\end{table}'
 
-#+' & '+str(format(FOM1200,'.2f'))\
-#+' & '+str(format(FOM1500,'.2f'))\
-#+' & '+str(format(FOM1000,'.2f'))\
+#+' & '+getNumString(S1200,S1200_Err)\
 
 #streg = [[(250, 350), 1.], [(350, 450), 1.],[(450, -1), 1.]]
 #htreg = [(500,750), (750,1000), (1000,1250), (1250,-1)]
@@ -230,4 +229,3 @@ print '\\hline\end{tabular}}\end{center}\caption{signal contaminations}\end{tabl
 #print '\end{tabular}}\end{center}\caption{$T5q^{4} 1.0/0.8/0.7$}\end{table}'
 
 
-'''

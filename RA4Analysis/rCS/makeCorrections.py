@@ -7,7 +7,7 @@ from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName,nBTagBinName,v
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_v9_Phys14V3_HT400ST200_ForTTJetsUnc import *
 #from Workspace.RA4Analysis.cmgTuplesPostProcessed_Spring15_hard import *
 #from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur import *
-from Workspace.RA4Analysis.cmgTuples_Spring15_MiniAODv2_25ns_postProcessed import *
+from Workspace.RA4Analysis.cmgTuples_Spring15_MiniAODv2_25ns_postProcessed_1 import *
 #from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed import *
 #from makeTTPrediction import makeTTPrediction
 #from makeWPrediction import makeWPrediction
@@ -36,13 +36,19 @@ small = False
 if small: signalRegions = smallRegion
 
 weights = [
-{'var':'weight','label':'original'},\
+#{'var':'weight','label':'original'},\
 #{'var':'weight_XSecTTBar1p1','label':'_tt_Up_'},\
 #{'var':'weight_XSecTTBar0p9','label':'_tt_Down_'},\
 #{'var':'weight_XSecWJets1p1','label':'_wjets_Up_'},\
 #{'var':'weight_XSecWJets0p9','label':'_wjets_Down_'}
-{'var':'weight_diLepTTBar2p0','label':'_tt_DiLep_Up_2p0'},\
-{'var':'weight_diLepTTBar0p5','label':'_tt_DiLep_Down_2p0'},\
+#{'var':'weight_diLepTTBar2p0','label':'_tt_DiLep_Up_2p0'},\
+#{'var':'weight_diLepTTBar0p5','label':'_tt_DiLep_Down_2p0'},\
+{'var':'weight*lepton_eleSF_miniIso01*lepton_eleSF_cutbasedID*lepton_muSF_sip3d*lepton_muSF_miniIso02*lepton_muSF_mediumID','label':'ls_original'},\
+{'var':'weight*(lepton_eleSF_miniIso01+lepton_eleSF_miniIso01_err)*(lepton_eleSF_cutbasedID+lepton_eleSF_cutbasedID_err)*(lepton_muSF_sip3d+lepton_muSF_sip3d_err)*(lepton_muSF_miniIso02+lepton_muSF_miniIso02_err)*(lepton_muSF_mediumID+lepton_muSF_mediumID_err)','label':'ls_UP'},\
+{'var':'weight*(lepton_eleSF_miniIso01-lepton_eleSF_miniIso01_err)*(lepton_eleSF_cutbasedID-lepton_eleSF_cutbasedID_err)*(lepton_muSF_sip3d-lepton_muSF_sip3d_err)*(lepton_muSF_miniIso02-lepton_muSF_miniIso02_err)*(lepton_muSF_mediumID-lepton_muSF_mediumID_err)','label':'ls_DOWN'},\
+{'var':'weight*puReweight_true','label':'PU_original'},\
+{'var':'weight*puReweight_true_Down','label':'PU_DOWN'},\
+{'var':'weight*puReweight_true_Up','label':'PU_UP'},\
 ]
 
 for weight_dict in weights:

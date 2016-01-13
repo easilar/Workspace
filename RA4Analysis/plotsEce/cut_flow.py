@@ -39,10 +39,12 @@ samples=[
 ##{"sample":"ttJets",       "list":[TTJets], "tex":"ttbar + jets",'color':ROOT.kBlue-4},
 #{"sample":"ttJets",       "list":[TTJets_LO_25ns,TTJets_LO_HT600to800_25ns,TTJets_LO_HT800to1200_25ns,TTJets_LO_HT1200to2500_25ns,TTJets_LO_HT2500toInf_25ns], "tex":"ttbar + jets",'color':ROOT.kBlue-4},
 ##{"sample":"ttJets",       "list":[TTJets_LO], "tex":"ttbar + jets",'color':ROOT.kBlue-4},
+{"sample":"signal_1",       "list":[T5qqqqVV_mGluino_1000To1075_mLSP_1To950], "tex":"1000-100",'color':ROOT.kBlue-4},
 ]
 
 for lepSel in lepSels:
   cuts = [
+ {'cut':'(1)', 'label':'no cut'},\
  #{'cut':'(1)', 'label':'HT Skim'},\
  #{'cut':"&&".join([lepSel['cut']]), 'label': lepSel['str']},\
  #{'cut':"&&".join([lepSel['cut'],lepSel['veto']]), 'label': lepSel['str']+' veto'},\
