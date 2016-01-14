@@ -31,15 +31,14 @@ lepSels = [
 
 
 samples=[
-##{"sample":"DY",           "list":[DYJetsToLL_M_50_HT100to200_25ns,DYJetsToLL_M_50_HT200to400_25ns,DYJetsToLL_M_50_HT400to600_25ns,DYJetsToLL_M_50_HT600toInf_25ns],"tex":"DY + jets",'color':ROOT.kRed-6},
-##{"sample":"singleTop",    "list":[TToLeptons_sch,TToLeptons_tch,TBar_tWch,T_tWch],"tex":"single top",'color': ROOT.kViolet+5},
+{"sample":"DY",           "list":[DYJetsToLL_M_50_HT100to200_25ns,DYJetsToLL_M_50_HT200to400_25ns,DYJetsToLL_M_50_HT400to600_25ns,DYJetsToLL_M_50_HT600toInf_25ns],"tex":"DY + jets",'color':ROOT.kRed-6},
+{"sample":"singleTop",    "list":[TToLeptons_sch,TToLeptons_tch,TBar_tWch,T_tWch],"tex":"single top",'color': ROOT.kViolet+5},
 {"sample":"QCD",          "list":[QCD_HT300to500_25ns,QCD_HT500to700_25ns,QCD_HT700to1000_25ns,QCD_HT1000to1500_25ns,QCD_HT1500to2000_25ns,QCD_HT2000toInf_25ns], "tex":"QCD","color":ROOT.kCyan-6},        
-##{"sample":"TTVH",          "list":[TTZToQQ_25ns , TTZToLLNuNu_25ns , TTWJetsToQQ_25ns, TTWJetsToLNu_25ns], "tex":"TTVH","color":ROOT.kCyan-6},        
-##{"sample":"WJets",        "list":[WJetsToLNu_HT100to200_25ns,WJetsToLNu_HT200to400_25ns,WJetsToLNu_HT400to600_25ns,WJetsToLNu_HT600to800_25ns,WJetsToLNu_HT800to1200_25ns,WJetsToLNu_HT1200to2500_25ns,WJetsToLNu_HT2500toInf_25ns],"tex":"W + jets","color":ROOT.kGreen-2},
-##{"sample":"ttJets",       "list":[TTJets], "tex":"ttbar + jets",'color':ROOT.kBlue-4},
+{"sample":"TTVH",          "list":[TTZToQQ_25ns , TTZToLLNuNu_25ns , TTWJetsToQQ_25ns, TTWJetsToLNu_25ns], "tex":"TTVH","color":ROOT.kCyan-6},        
+{"sample":"WJets",        "list":[WJetsToLNu_HT100to200_25ns,WJetsToLNu_HT200to400_25ns,WJetsToLNu_HT400to600_25ns,WJetsToLNu_HT600to800_25ns,WJetsToLNu_HT800to1200_25ns,WJetsToLNu_HT1200to2500_25ns,WJetsToLNu_HT2500toInf_25ns],"tex":"W + jets","color":ROOT.kGreen-2},
+#{"sample":"ttJets",       "list":[TTJets], "tex":"ttbar + jets",'color':ROOT.kBlue-4},
 #{"sample":"ttJets",       "list":[TTJets_LO_25ns,TTJets_LO_HT600to800_25ns,TTJets_LO_HT800to1200_25ns,TTJets_LO_HT1200to2500_25ns,TTJets_LO_HT2500toInf_25ns], "tex":"ttbar + jets",'color':ROOT.kBlue-4},
 ##{"sample":"ttJets",       "list":[TTJets_LO], "tex":"ttbar + jets",'color':ROOT.kBlue-4},
-{"sample":"signal_1",       "list":[T5qqqqVV_mGluino_1000To1075_mLSP_1To950], "tex":"1000-100",'color':ROOT.kBlue-4},
 ]
 
 for lepSel in lepSels:

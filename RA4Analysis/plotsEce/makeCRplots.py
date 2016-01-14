@@ -39,14 +39,14 @@ btagVarString = 'nBJetMediumCSV30'
 #btagString = 'nBJetMediumCSV30'
 
 lepSels = [
-{'cut':'(singleMuonic&&(!isData||(isData&&muonDataSet)))' , 'veto':'nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0',\
- 'chain': getChain(single_mu_Run2015D,maxN=maxN,histname="",treeName="Events") ,\
- 'trigWeight': "0.942" ,\
-  'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
-#{'cut':'singleElectronic&&(!isData||(isData&&eleDataSet))' , 'veto':'nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0',\
-# 'chain': getChain(single_ele_Run2015D,maxN=maxN,histname="",treeName="Events") ,\
-# 'trigWeight': "0.949" ,\
-#  'label':'_ele_', 'str':'1 $\\e$' , 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
+#{'cut':'(singleMuonic&&(!isData||(isData&&muonDataSet)))' , 'veto':'nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0',\
+# 'chain': getChain(single_mu_Run2015D,maxN=maxN,histname="",treeName="Events") ,\
+# 'trigWeight': "0.942" ,\
+#  'label':'_mu_', 'str':'1 $\\mu$' , 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
+{'cut':'singleElectronic&&(!isData||(isData&&eleDataSet))' , 'veto':'nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0',\
+ 'chain': getChain(single_ele_Run2015D,maxN=maxN,histname="",treeName="Events") ,\
+ 'trigWeight': "0.949" ,\
+  'label':'_ele_', 'str':'1 $\\e$' , 'trigger': '((HLT_EleHT350)||(HLT_MuHT350))'},\
 #{'cut':'((!isData&&singleLeptonic)||(isData&&((eleDataSet&&singleElectronic)||(muonDataSet&&singleMuonic))))' , 'veto':'nLooseHardLeptons==1&&nTightHardLeptons==1&&nLooseSoftLeptons==0',\
 # 'chain': getChain([single_ele_Run2015D,single_mu_Run2015D],maxN=maxN,histname="",treeName="Events") ,\
 # 'trigWeight': "0.945" ,\
@@ -69,19 +69,19 @@ cS1200 = getChain(T5qqqqVV_mGluino_1200To1275_mLSP_1to1150[1200][800],histname='
 cS1500 = getChain(T5qqqqVV_mGluino_1400To1550_mLSP_1To1275[1500][100],histname='')
 
 signals = [\
-{"chain":cS1000,"name":"s1000","color":ROOT.kBlue},\
-{"chain":cS1200,"name":"s1200","color":ROOT.kRed},\
-{"chain":cS1500,"name":"s1500","color":ROOT.kBlack},\
+{"chain":cS1000,"name":"s1000","tex":"T5q^{4}WW 1.0/0.7","color":ROOT.kBlack},\
+{"chain":cS1200,"name":"s1200","tex":"T5q^{4}WW 1.2/0.8","color":ROOT.kRed},\
+{"chain":cS1500,"name":"s1500","tex":"T5q^{4}WW 1.5/0.1","color":ROOT.kBlue},\
 ]
 
 plots =[\
-{'ndiv':False,'yaxis':'Events','xaxis':'#Delta#Phi(W,l)','logy':'True' , 'var':'deltaPhi_Wl',                 'varname':'deltaPhi_Wl',       'binlabel':1, 'bin':(30,0,3.141)},\
+#{'ndiv':False,'yaxis':'Events','xaxis':'#Delta#Phi(W,l)','logy':'True' , 'var':'deltaPhi_Wl',                 'varname':'deltaPhi_Wl',       'binlabel':1, 'bin':(30,0,3.141)},\
 {'ndiv':True,'yaxis':'Events /','xaxis':'L_{T}','logy':'True' , 'var':  'st',                          'varname':'LT',                  'binlabel':20,  'bin':(45,100,1000)},\
-# {'ndiv':True,'yaxis':'Events /','xaxis':'H_{T}','logy':'True' , 'var':'htJet30j',                    'varname':'htJet30j',            'binlabel':50,  'bin':(44,300,2500)},\
+{'ndiv':True,'yaxis':'Events /','xaxis':'H_{T}','logy':'True' , 'var':'htJet30j',                    'varname':'htJet30j',            'binlabel':50,  'bin':(44,300,2500)},\
 {'ndiv':False,'yaxis':'Events','xaxis':'N_{Jets}','logy':'True' , 'var':'nJet30',                      'varname':'nJet30',                   'binlabel':1,  'bin':(15,0,15)},\
-#{'ndiv':True,'yaxis':'Events /','xaxis':'p_{T}(l)','logy':'True' , 'var':'LepGood_pt[0]',                 'varname':'leptonPt',      'binlabel':15,  'bin':(40,25,625)},\
+{'ndiv':True,'yaxis':'Events /','xaxis':'p_{T}(l)','logy':'True' , 'var':'LepGood_pt[0]',                 'varname':'leptonPt',      'binlabel':15,  'bin':(40,25,625)},\
 {'ndiv':False,'yaxis':'Events','xaxis':'N_{bJetsCSV}','logy':'True' , 'var':'nBJetMediumCSV30',           'varname':'nBJetMediumCSV30',      'binlabel':1,  'bin':(8,0,8),       'lowlimit':0,  'limit':8},\
-#{'ndiv':True,'yaxis':'Events /','xaxis':'p_{T}(leading jet)','logy':'True' , 'var':'Jet_pt[0]',               'varname':'leading_JetPt',  'binlabel':30,  'bin':(67,0,2010)},\
+{'ndiv':True,'yaxis':'Events /','xaxis':'p_{T}(leading jet)','logy':'True' , 'var':'Jet_pt[0]',               'varname':'leading_JetPt',  'binlabel':30,  'bin':(67,0,2010)},\
 #{'ndiv':False,'yaxis':'Events','xaxis':'#eta(l)','logy':'True' , 'var':'LepGood_eta[0]',                 'varname':'leptonEta',      'binlabel':25,  'bin':(40,-4,4)},\
 #{'ndiv':True,'yaxis':'Events /','xaxis':'#slash{E}_{T}','logy':'True' , 'var':'met_pt',                         'varname':'met',         'binlabel':50,  'bin':(28,0,1400)},\
 #{'ndiv':False,'yaxis':'Events /','xaxis':'#slash{E}_{T} #Phi','logy':'True' , 'var':'met_phi',                         'varname':'met_phi',         'binlabel':50,  'bin':(30,-3.14,3.14)},\
@@ -92,14 +92,15 @@ plots =[\
   ]
 
 SBs = [\
-     {'nJet':(3,4),'nBJet':(0,0)},\
-     #{'nJet':(5,-1),'nBJet':(0,0)},\
+     #{'nJet':(3,4),'nBJet':(0,0)},\
+     {'nJet':(5,-1),'nBJet':(0,0)},\
      #{'nJet':(4,5),'nBJet':(1,1)},\
       ]
 
 for lepSel in lepSels:
   #path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/2p1fb/SRplots/tests/"+lepSel['label']
-  path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/2p2fb/Tests/"+lepSel['label']
+  #path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/2p2fb/SBregions/"+lepSel['label']
+  path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/2p2fb/presel/"+lepSel['label']
   #path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/2p1fb/CRplots/withPU_BtagSF/"+lepSel['label']
   if not os.path.exists(path):
     os.makedirs(path)
@@ -112,7 +113,7 @@ for lepSel in lepSels:
     #presel = "&&".join([lepSel['cut'],lepSel['veto'],"Jet_pt[1]>80&&abs(LepGood_eta[0])<2.4&&deltaPhi_Wl<0.5"])
     presel = "&&".join([lepSel['cut'],lepSel['veto'],filters,"Jet_pt[1]>80&&abs(LepGood_eta[0])<2.4"])
     sig_presel = "&&".join([lepSel['cut'],lepSel['veto'],"Jet_pt[1]>80&&abs(LepGood_eta[0])<2.4"])
-    data_presel = "&&".join([lepSel['cut'],lepSel['veto'],lepSel['trigger'],"Jet_pt[1]>80&&abs(LepGood_eta[0])<2.4"])
+    data_presel = "&&".join([lepSel['cut'],lepSel['veto'],lepSel['trigger'],filters,"Jet_pt[1]>80&&abs(LepGood_eta[0])<2.4"])
     bin = {}
     for srNJet in sorted(SR):
       bin[srNJet]={}
@@ -140,10 +141,11 @@ for lepSel in lepSels:
              # bin[srNJet][stb][htb][p['varname']][bkg['sample']] = getPlotFromChain(bkg['chain'], p['var'], p['bin'], cutString = "&&".join([presel,Cut]), weight = bkg['weight']+"*puReweight_true*weight*"+str(lumi)+"/3000", binningIsExplicit=False, addOverFlowBin='both')
               #bin[srNJet][stb][htb][p['varname']][bkg['sample']] = getPlotFromChain(bkg['chain'], p['var'], p['bin'], cutString = "&&".join([presel,Cut]), weight = "weight*"+str(lumi)+"/3000", binningIsExplicit=False, addOverFlowBin='both')
             bla_Name, Cut = nameAndCut(stb, htb, nJet, btb=nbTags, presel="(1)", btagVar =  btagVarString)
-            bin[srNJet][stb][htb][p['varname']]['signals']
+            bin[srNJet][stb][htb][p['varname']]['signals'] = {}
             for sig in signals:
-              bin[srNJet][stb][htb][p['varname']]['signals'][sig["name"]] = getPlotFromChain(sig['chain'], p['var'], p['bin'], cutString = "&&".join([sig_presel,Cut]) , weight = "weight", binningIsExplicit=False, addOverFlowBin='both') 
-            bin[srNJet][stb][htb][p['varname']]['data'] = getPlotFromChain(lepSel['chain'], p['var'], p['bin'], cutString = "&&".join([data_presel,Cut]) , weight = "(1)", binningIsExplicit=False, addOverFlowBin='both')
+            #sig = signals[0]
+              bin[srNJet][stb][htb][p['varname']]['signals'][sig["name"]] = getPlotFromChain(sig['chain'], p['var'], p['bin'], cutString = "&&".join([sig_presel,Cut]) , weight = "weight*"+str(lumi)+"/3000", binningIsExplicit=False, addOverFlowBin='both') 
+            bin[srNJet][stb][htb][p['varname']]['data'] = getPlotFromChain(lepSel['chain'], p['var'], p['bin'], cutString = "&&".join([data_presel,Cut,"deltaPhi_Wl<0.5"]) , weight = "(1)", binningIsExplicit=False, addOverFlowBin='both')
             bin[srNJet][stb][htb]['label'] = Name         
             bin[srNJet][stb][htb]['path'] = CR_path        
 
@@ -165,6 +167,8 @@ for lepSel in lepSels:
       #      leg = ROOT.TLegend(0.45,0.8,0.65,0.94)
             leg = ROOT.TLegend(0.75,0.6,0.9,0.9)
             leg.SetBorderSize(1)
+            leg_sig = ROOT.TLegend(0.55,0.6,0.74,0.8)
+            leg_sig.SetBorderSize(1)
             Pad1 = ROOT.TPad("Pad1", "Pad1", 0, 0.35, 1, 0.9)
             Pad1.SetLogy()
             Pad1.SetTopMargin(0.06)
@@ -195,15 +199,6 @@ for lepSel in lepSels:
             h_Stack.Draw("Bar")
             h_Stack.SetMaximum(4000)
             h_Stack.SetMinimum(0.11)
-            h_Stack_sig = ROOT.THStack('h_Stack_sig','h_Stack_sig')
-            for sig in signals:
-              h_sig = bin[srNJet][stb][htb][p['varname']][sig["name"]]
-              h_sig.SetLineColor(sig["color"])
-              h_sig.SetTitle("")
-              h_sig.draw("hist")
-              leg.AddEntry(h_sig, sig['name'],"l")
-              h_Stack_sig.Add(h_sig)
-              del h_sig
             
             color = ROOT.kBlack
             h_data = bin[srNJet][stb][htb][p['varname']]['data']
@@ -218,8 +213,15 @@ for lepSel in lepSels:
             h_data.SetMaximum(4000)
             h_data.SetMinimum(0.11)
             h_Stack.Draw("HistoSame")
+            for sig in signals:
+              h_sig = bin[srNJet][stb][htb][p['varname']]['signals'][sig["name"]]
+              h_sig.SetLineColor(sig["color"])
+              h_sig.SetLineWidth(2)
+              h_sig.SetTitle("")
+              h_sig.Draw("HistoSame")
+              leg_sig.AddEntry(h_sig, sig['tex'],"l")
+              del h_sig
             h_data.Draw("E1PSame")
-            h_Stack_sig.Draw("nostack Same")
             if p['ndiv']:
               h_data.GetXaxis().SetNdivisions(505)
               h_data.GetYaxis().SetTitle(p['yaxis']+str(p['binlabel'])+'GeV')
@@ -232,14 +234,16 @@ for lepSel in lepSels:
             leg.AddEntry(h_data, "data","PL")
             leg.SetFillColor(0)
             leg.Draw()
+            leg_sig.SetFillColor(0)
+            leg_sig.Draw()
             latex.DrawLatex(0.16,0.958,"#font[22]{CMS}"+" #font[12]{Preliminary}")
             #latex.DrawLatex(0.72,0.958,"#bf{L="+str(lumi)+" pb^{-1} (13 TeV)}")
-            latex.DrawLatex(0.72,0.958,"#bf{L=2.1 fb^{-1} (13 TeV)}")
-            #latex.DrawLatex(0.6,0.8,str(nJet[0])+"#leqN_{Jets}#leq"+str(nJet[1]))
-            latex.DrawLatex(0.6,0.8,"N_{Jets}#geq"+str(nJet[0]))
-            latex.DrawLatex(0.6,0.75,"#bf{N_{bjets}="+str(nbTags[0])+"}")
-            latex.DrawLatex(0.4,0.8,"MC Yield:"+str(format(stack_hist.Integral(),'.2f')) )
-            latex.DrawLatex(0.4,0.75,"data Yield:"+str(h_data.Integral()) )
+            latex.DrawLatex(0.75,0.958,"#bf{L=2.2 fb^{-1} (13 TeV)}")
+            #latex.DrawLatex(0.4,0.8,str(nJet[0])+"#leqN_{Jets}#leq"+str(nJet[1]))
+            latex.DrawLatex(0.6,0.83,"N_{Jets}#geq"+str(nJet[0]))
+            latex.DrawLatex(0.6,0.88,"#bf{N_{bjets}="+str(nbTags[0])+"}")
+            #latex.DrawLatex(0.4,0.8,"MC Yield:"+str(format(stack_hist.Integral(),'.2f')) )
+            #latex.DrawLatex(0.4,0.75,"data Yield:"+str(h_data.Integral()) )
             #latex.DrawLatex(0.6,0.5,"#bf{MC scale=0.71}")
             Pad1.RedrawAxis()
             cb.cd()
