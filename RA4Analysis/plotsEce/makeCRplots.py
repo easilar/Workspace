@@ -17,7 +17,7 @@ ROOT.gROOT.LoadMacro("../../HEPHYPythonTools/scripts/root/tdrstyle.C")
 ROOT.setTDRStyle()
 maxN = -1
 ROOT.gStyle.SetOptStat(0)
-lumi = 2100##pb
+lumi = 2200##pb
 #SR = signalRegion3fb
 signalRegion3fbReduced = {(5, -1):  {(250, -1): {(500, -1):  {'deltaPhi': 1.0}}}}
 #signalRegion3fbReduced = {(5, 5):  {(250, 350): {(500, -1):  {'deltaPhi': 1.0}}}}
@@ -64,6 +64,16 @@ bkg_samples=[
 for bkg in bkg_samples:
     bkg['chain'] = getChain(bkg['name'],maxN=maxN,histname="",treeName="Events")
 
+cS1000 = getChain(T5qqqqVV_mGluino_1000To1075_mLSP_1To950[1000][700],histname='')
+cS1200 = getChain(T5qqqqVV_mGluino_1200To1275_mLSP_1to1150[1200][800],histname='')
+cS1500 = getChain(T5qqqqVV_mGluino_1400To1550_mLSP_1To1275[1500][100],histname='')
+
+signals = [\
+{"chain":cS1000,"name":"s1000","color":ROOT.kBlue},\
+{"chain":cS1200,"name":"s1200","color":ROOT.kRed},\
+{"chain":cS1500,"name":"s1500","color":ROOT.kBlack},\
+]
+
 plots =[\
 {'ndiv':False,'yaxis':'Events','xaxis':'#Delta#Phi(W,l)','logy':'True' , 'var':'deltaPhi_Wl',                 'varname':'deltaPhi_Wl',       'binlabel':1, 'bin':(30,0,3.141)},\
 {'ndiv':True,'yaxis':'Events /','xaxis':'L_{T}','logy':'True' , 'var':  'st',                          'varname':'LT',                  'binlabel':20,  'bin':(45,100,1000)},\
@@ -89,7 +99,7 @@ SBs = [\
 
 for lepSel in lepSels:
   #path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/2p1fb/SRplots/tests/"+lepSel['label']
-  path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/2p1fb/Tests/"+lepSel['label']
+  path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/2p2fb/Tests/"+lepSel['label']
   #path = "/afs/hephy.at/user/e/easilar/www/data/Run2015D/2p1fb/CRplots/withPU_BtagSF/"+lepSel['label']
   if not os.path.exists(path):
     os.makedirs(path)
@@ -100,8 +110,9 @@ for lepSel in lepSels:
     nbTags = SB['nBJet']
     print "nJet:" , nJet , "nBJet:" , nbTags
     #presel = "&&".join([lepSel['cut'],lepSel['veto'],"Jet_pt[1]>80&&abs(LepGood_eta[0])<2.4&&deltaPhi_Wl<0.5"])
-    presel = "&&".join([lepSel['cut'],lepSel['veto'],"Jet_pt[1]>80&&abs(LepGood_eta[0])<2.4"])
-    data_presel = "&&".join([lepSel['cut'],lepSel['veto'],lepSel['trigger'],filters,"Jet_pt[1]>80&&abs(LepGood_eta[0])<2.4"])
+    presel = "&&".join([lepSel['cut'],lepSel['veto'],filters,"Jet_pt[1]>80&&abs(LepGood_eta[0])<2.4"])
+    sig_presel = "&&".join([lepSel['cut'],lepSel['veto'],"Jet_pt[1]>80&&abs(LepGood_eta[0])<2.4"])
+    data_presel = "&&".join([lepSel['cut'],lepSel['veto'],lepSel['trigger'],"Jet_pt[1]>80&&abs(LepGood_eta[0])<2.4"])
     bin = {}
     for srNJet in sorted(SR):
       bin[srNJet]={}
@@ -128,7 +139,10 @@ for lepSel in lepSels:
               bin[srNJet][stb][htb][p['varname']][bkg['sample']] = getPlotFromChain(bkg['chain'], p['var'], p['bin'], cutString = "&&".join([presel,Cut]), weight = lepSel['trigWeight']+"*"+bkg['weight']+"*lepton_eleSF_miniIso01*lepton_eleSF_cutbasedID*lepton_muSF_sip3d*lepton_muSF_miniIso02*lepton_muSF_mediumID*puReweight_true*weight*"+str(lumi)+"/3000", binningIsExplicit=False, addOverFlowBin='both')
              # bin[srNJet][stb][htb][p['varname']][bkg['sample']] = getPlotFromChain(bkg['chain'], p['var'], p['bin'], cutString = "&&".join([presel,Cut]), weight = bkg['weight']+"*puReweight_true*weight*"+str(lumi)+"/3000", binningIsExplicit=False, addOverFlowBin='both')
               #bin[srNJet][stb][htb][p['varname']][bkg['sample']] = getPlotFromChain(bkg['chain'], p['var'], p['bin'], cutString = "&&".join([presel,Cut]), weight = "weight*"+str(lumi)+"/3000", binningIsExplicit=False, addOverFlowBin='both')
-            bla_Name, Cut = nameAndCut(stb, htb, nJet, btb=nbTags, presel=presel, btagVar =  btagVarString)
+            bla_Name, Cut = nameAndCut(stb, htb, nJet, btb=nbTags, presel="(1)", btagVar =  btagVarString)
+            bin[srNJet][stb][htb][p['varname']]['signals']
+            for sig in signals:
+              bin[srNJet][stb][htb][p['varname']]['signals'][sig["name"]] = getPlotFromChain(sig['chain'], p['var'], p['bin'], cutString = "&&".join([sig_presel,Cut]) , weight = "weight", binningIsExplicit=False, addOverFlowBin='both') 
             bin[srNJet][stb][htb][p['varname']]['data'] = getPlotFromChain(lepSel['chain'], p['var'], p['bin'], cutString = "&&".join([data_presel,Cut]) , weight = "(1)", binningIsExplicit=False, addOverFlowBin='both')
             bin[srNJet][stb][htb]['label'] = Name         
             bin[srNJet][stb][htb]['path'] = CR_path        
@@ -181,6 +195,16 @@ for lepSel in lepSels:
             h_Stack.Draw("Bar")
             h_Stack.SetMaximum(4000)
             h_Stack.SetMinimum(0.11)
+            h_Stack_sig = ROOT.THStack('h_Stack_sig','h_Stack_sig')
+            for sig in signals:
+              h_sig = bin[srNJet][stb][htb][p['varname']][sig["name"]]
+              h_sig.SetLineColor(sig["color"])
+              h_sig.SetTitle("")
+              h_sig.draw("hist")
+              leg.AddEntry(h_sig, sig['name'],"l")
+              h_Stack_sig.Add(h_sig)
+              del h_sig
+            
             color = ROOT.kBlack
             h_data = bin[srNJet][stb][htb][p['varname']]['data']
             h_data.SetMarkerStyle(20)
@@ -195,6 +219,7 @@ for lepSel in lepSels:
             h_data.SetMinimum(0.11)
             h_Stack.Draw("HistoSame")
             h_data.Draw("E1PSame")
+            h_Stack_sig.Draw("nostack Same")
             if p['ndiv']:
               h_data.GetXaxis().SetNdivisions(505)
               h_data.GetYaxis().SetTitle(p['yaxis']+str(p['binlabel'])+'GeV')
