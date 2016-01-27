@@ -43,17 +43,17 @@ samples=[
 
 for lepSel in lepSels:
   cuts = [
- {'cut':'(1)', 'label':'no cut'},\
+ #{'cut':'(1)', 'label':'no cut'},\
  #{'cut':'(1)', 'label':'HT Skim'},\
  #{'cut':"&&".join([lepSel['cut']]), 'label': lepSel['str']},\
  #{'cut':"&&".join([lepSel['cut'],lepSel['veto']]), 'label': lepSel['str']+' veto'},\
-  {'cut':"&&".join([lepSel['cut'],OneLepAnti]), 'label': lepSel['str']+' Anti + veto'},\
+ # {'cut':"&&".join([lepSel['cut'],OneLepAnti]), 'label': lepSel['str']+' Anti + veto'},\
  # {'cut':"&&".join([lepSel['cut'],lepSel['veto'],njets_30+">=5",lep_hard]), 'label': 'nJet $\\geq$ 5'},\
  # {'cut':"&&".join([lepSel['cut'],lepSel['veto'],njets_30+">=5",jets_2_80,jets_2_80]), 'label': '2. jets ($\\geq$ 80 GeV)'},\
  # {'cut':"&&".join([lepSel['cut'],lepSel['veto'],njets_30+">=5",jets_2_80,jets_2_80,ht_cut]), 'label':'$H_T >$ 500 GeV'},\
  # {'cut':"&&".join([lepSel['cut'],lepSel['veto'],njets_30+">=5",jets_2_80,ht_cut,st,jets_2_80]), 'label':'$L_T >$ 250 GeV'},\
  # {'cut':"&&".join([lepSel['cut'],lepSel['veto'],njets_30+">=5",jets_2_80,ht_cut,st,nbjets_30_cut_zero,jets_2_80]), 'label': '0 b-jets (CSVM)' },\
- # {'cut':"&&".join([lepSel['cut'],lepSel['veto'],njets_30+">=5",jets_2_80,ht_cut,st,nbjets_30_cut_multi,jets_2_80]), 'label': '$>=1 b-jets (CSVM)$' },\
+  {'cut':"&&".join([lepSel['cut'],lepSel['veto'],njets_30+">=5",jets_2_80,ht_cut,st,nbjets_30_cut_multi,jets_2_80]), 'label': '$>=1 b-jets (CSVM)$' },\
   ###{'cut':"&&".join([lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5",jets_2_80,ht_cut,st,nbjets_30_cut_zero,jets_2_80,njets_30+"==5",jets_2_80]), 'label': 'SR 1 $nJet = 5$'},\
   ###{'cut':"&&".join([lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5",jets_2_80,ht_cut,st,nbjets_30_cut_zero,jets_2_80,njets_30+"==5",'(LepGood_pt[0]+met_pt)>250&&(LepGood_pt[0]+met_pt)<350',jets_2_80]), 'label': 'SR 1 $LT 250-350$'},\
   ###{'cut':"&&".join([lepSel['cut'],lepSel['veto'],lep_hard,njets_30+">=5",jets_2_80,ht_cut,st,nbjets_30_cut_zero,jets_2_80,njets_30+"==5",'(LepGood_pt[0]+met_pt)>250&&(LepGood_pt[0]+met_pt)<350',ht_cut,jets_2_80]), 'label': 'SR 1 $HT > 500$'},\

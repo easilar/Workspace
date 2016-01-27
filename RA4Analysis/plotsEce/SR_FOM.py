@@ -13,8 +13,8 @@ from Workspace.HEPHYPythonTools.user import username
 from math import sqrt, pi
 ROOT.TH1F().SetDefaultSumw2()
 
-weight_str = "((weight*2.2)/3)"
-
+weight_str = "((weight*2.25)/3)"
+weight_str_bkg =  "0.94*lepton_eleSF_miniIso01*lepton_eleSF_cutbasedID*lepton_muSF_sip3d*lepton_muSF_miniIso02*lepton_muSF_mediumID*puReweight_true_max4*TopPtWeight*weight*2.25/3"
 
 def getFOM(Ysig ,Ysig_Var, Ybkg,  Ybkg_Var):
   if Ybkg>0.0:
@@ -32,13 +32,16 @@ def getNumString(n,ne, acc=2, systematic=False):    ##For printing table
       return str(round(n,acc))+'&$\pm$&'+str(round(ne,acc))
   #if type(n) is str and type(ne) is str: 
   else:
-    return n +'&$\pm$&'+ ne
+    return str(n) +'&$\pm$&'+ str(ne)
 
 lepSel = 'hard'
 #dPhiJJStr='acos((Jet_pt[1]+Jet_pt[0]*cos(Jet_phi[1]-Jet_phi[0]))/sqrt(Jet_pt[1]**2+Jet_pt[0]**2+2*Jet_pt[0]*Jet_pt[1]*cos(Jet_phi[1]-Jet_phi[0])))'
 btag_str = 'nBJetMediumCSV30'
 #cBkg = getChain([WJetsHTToLNu[lepSel], ttJets[lepSel],DY[lepSel],TTVH[lepSel],singleTop[lepSel]],histname='')
-cBkg = getChain([WJetsHTToLNu_25ns,TTJets_combined,singleTop_25ns, DY_25ns,TTV_25ns,QCDHT_25ns],histname='')
+cBkg = getChain([TTJets_combined,WJetsHTToLNu_25ns,singleTop_25ns, DY_25ns,TTV_25ns],histname='')
+#cW = getChain(WJetsHTToLNu_25ns,histname='')
+#cTT =getChain(TTJets_combined,histname='') 
+cQCD = getChain(QCDHT_25ns,histname='')
 #cS1200 = getChain(T5qqqqWW_mGo1200_mCh1000_mChi800[lepSel],histname='')
 #cS1500 = getChain(T5qqqqWW_mGo1500_mCh800_mChi100[lepSel],histname='')
 cS1000 = getChain(T5qqqqVV_mGluino_1000To1075_mLSP_1To950[1000][700],histname='')
@@ -67,8 +70,8 @@ signalRegion3fbReduced = {(5, 5):  {(250, 350): {(500, -1):  {'deltaPhi': 1.0}},
                           (8, -1): {(250, 350): {(500, 750): {'deltaPhi': 1.0},
                                                  (750, -1):  {'deltaPhi': 1.0}},
                                     (350, -1):  {(500, -1):  {'deltaPhi': 0.75}}}}
-signalRegions = signalRegion3fbReduced
-#signalRegions = signalRegion3fb
+#signalRegions = signalRegion3fbReduced
+signalRegions = signalRegion3fb
 
 
 
@@ -86,7 +89,7 @@ for srNJet in sorted(signalRegions):
 
 
 print '\\begin{table}[ht]\\begin{center}\\resizebox{\\textwidth}{!}{\\begin{tabular}{|c|c|c|rrr|rrr|rrr|rrr|c|}\\hline'
-print ' \\njet & \ST       & \HT       &\multicolumn{3}{c|}{$total bkg$}&\multicolumn{3}{c|}{$T5q^{4} 1.0/0.8/0.7$}&\multicolumn{3}{c|}{$T5q^{4} 1.2/1.0/0.8$}&\multicolumn{3}{c|}{$T5q^{4} 1.5/0.8/0.1$}&\\DF \\\%\hline'
+print ' \\njet & \ST       & \HT       &\multicolumn{3}{c|}{$total bkg$}&\multicolumn{3}{c|}{$T5q^{4} 1.0/0.7$}&\multicolumn{3}{c|}{$T5q^{4} 1.2/0.8$}&\multicolumn{3}{c|}{$T5q^{4} 1.5/0.1$}&\\DF \\\%\hline'
 print '        & $[$GeV$]$ & $[$GeV$]$ &    \multicolumn{3}{c|}{simulation}&\multicolumn{3}{c|}{simulation}         & \multicolumn{3}{c|}{simulation}        &   \multicolumn{3}{c|}{simulation}  & \\\\\hline '
 bin = {}
 secondLine = False
@@ -102,12 +105,18 @@ for srNJet in sorted(signalRegions):
     for htb in sorted(signalRegions[srNJet][stb]):
       deltaPhiCut = signalRegions[srNJet][stb][htb]['deltaPhi']
       name, cut =  nameAndCut(stb, htb, srNJet, btb=(0,0), presel=presel+"&&deltaPhi_Wl>"+str(deltaPhiCut), btagVar = btagString)
-      nameb, cutb =  nameAndCut(stb, htb, srNJet, btb=(0,0), presel=presel_bkg+"&&deltaPhi_Wl>"+str(deltaPhiCut), btagVar = btagString)
+      nameb, cutb =  nameAndCut(stb, htb, srNJet, btb=(0,-1), presel=presel_bkg+"&&deltaPhi_Wl>"+str(deltaPhiCut), btagVar = btagString)
+      namett, cut_Q =  nameAndCut(stb, htb, srNJet, btb=(0,0), presel=presel_bkg+"&&deltaPhi_Wl>"+str(deltaPhiCut), btagVar = btagString)
       if not first: print '&'
       first = False
       print '&$'+varBin(htb)+'$'
-      B = getYieldFromChain(cBkg, cutb, weight = "weight")
-      B_Err = sqrt(getYieldFromChain(cBkg, cutb, weight = "weight*weight"))
+      B = getYieldFromChain(cBkg, cutb, weight = weight_str_bkg+"*(weightBTag0_SF)")
+      B_Err = sqrt(getYieldFromChain(cBkg, cutb, weight = weight_str_bkg+"*"+weight_str_bkg+"*(weightBTag0_SF)"+"*(weightBTag0_SF)"))
+      QCD = getYieldFromChain(cQCD, cut_Q, weight = weight_str_bkg)
+      QCD_Err = sqrt(getYieldFromChain(cQCD, cut_Q, weight = weight_str_bkg+"*"+weight_str_bkg))
+      B = B + QCD
+      B_Err = B_Err**2+QCD_Err**2
+      B_Err = sqrt(B_Err)
       S1200 = getYieldFromChain(cS1200, cut, weight = weight_str)
       S1200_Err = sqrt(getYieldFromChain(cS1200, cut, weight = weight_str+"*"+weight_str))
       S1500 = getYieldFromChain(cS1500, cut, weight = weight_str)

@@ -18,7 +18,8 @@ cWJets  = getChain(WJetsHTToLNu_25ns,histname='')
 #cTTJets = getChain(TTJets_HTLO_25ns,histname='')
 cTTJets = getChain(TTJets_combined,histname='')
 #cBkg = getChain([WJetsHTToLNu_25ns,TTJets_combined,singleTop_25ns,TTV_25ns,DY_25ns,QCDHT_25ns],histname='')#no QCD
-cBkg = getChain([WJetsHTToLNu_25ns,TTJets_combined,singleTop_25ns,TTV_25ns,DY_25ns],histname='')#no QCD
+#cBkg = getChain([WJetsHTToLNu_25ns,TTJets_combined,singleTop_25ns,TTV_25ns,DY_25ns],histname='')#no QCD
+cDY = getChain([DY_25ns],histname='')#no QCD
 #cBkg = getChain([WJetsHTToLNu_25ns,TTJets_HTLO_25ns,singleTop_25ns,TTV_25ns,DY_25ns,QCDHT_25ns],histname='')#no QCD
 #cData = getChain([data_mu_25ns , data_ele_25ns] , histname='')
 ##cData = getChain([data_mu_25ns] , histname='')
@@ -376,7 +377,7 @@ sideBand3fb = signalRegion3fbReduced
 
 ########TTJets RCS Plots######
 
-signalRegion3fb = {(5, 5): {(250, 350): {(500, -1 ):   {'deltaPhi': 1.0}}}}
+signalRegion3fb = {(4, -1): {(250, -1): {(500, -1 ):   {'deltaPhi': 1.0}}}}
 #                            (350, 450): {(500, -1):   {'deltaPhi': 1.0}}}}
 #signalRegion3fbReduced = {(5, 5):  {(250, 350): {(500, -1):  {'deltaPhi': 1.0}},
 #                                    (350, 450): {(500, -1):  {'deltaPhi': 1.0}},
@@ -410,8 +411,8 @@ for srNJet in signalRegions:
         rCS_crLowNJet_Name_1b, rCS_crLowNJet_Cut_1b = nameAndCut(stb, htb, crNJet, btb=(0,-1), presel=presel, btagVar = btagVarString)
         rCS_crLowNJet_Name_0b, rCS_crLowNJet_Cut_0b = nameAndCut(stb, htb, crNJet, btb=(0,-1), presel=presel, btagVar = btagVarString)
         print rCS_crLowNJet_Name_1b
-        rCS_1b = getRCS(cBkg, rCS_crLowNJet_Cut_1b,  deltaPhiCut,weight = "weight*weightBTag1_SF")
-        rCS_0b = getRCS(cBkg, rCS_crLowNJet_Cut_0b,  deltaPhiCut,weight = "weight*weightBTag0_SF")
+        rCS_1b = getRCS(cTTJets , rCS_crLowNJet_Cut_1b,  deltaPhiCut,weight = "weight*weightBTag1_SF")
+        rCS_0b = getRCS(cTTJets , rCS_crLowNJet_Cut_0b,  deltaPhiCut,weight = "weight*weightBTag0_SF")
         print "rCS 1b from function:" , rCS_1b['rCS'] , rCS_1b['rCSE_sim']
         print "rCS 0b from function:" , rCS_0b['rCS'] , rCS_0b['rCSE_sim']
         bin[srNJet][stb][htb][crNJet] = {\
@@ -443,7 +444,7 @@ for srNJet in signalRegions:
       h1b.SetBarOffset(0)
       h1b.SetStats(0)
       h1b.SetMinimum(0) 
-      h1b.SetMaximum(0.2) 
+      h1b.SetMaximum(0.1) 
       #h1b.SetMaximum(0.05) 
       for i , crNJet in enumerate(nJetbins):
           h1b.SetBinContent(i+1, njet_dict[crNJet]['1b_value']) 
@@ -460,7 +461,7 @@ for srNJet in signalRegions:
       h0b.SetBarOffset(0)
       h0b.SetStats(0)
       h0b.SetMinimum(0)
-      h0b.SetMaximum(0.2)
+      h0b.SetMaximum(0.1)
       #h0b.SetMaximum(0.05)
       for i , crNJet in enumerate(nJetbins):
           h0b.SetBinContent(i+1, njet_dict[crNJet]['0b_value'])
@@ -481,10 +482,10 @@ for srNJet in signalRegions:
       latex.DrawLatex(0.6,0.8,lt)
       #latex.DrawLatex(0.6,0.8,nJetBinName(srNJet))
       #latex.DrawLatex(0.6,0.75,"#Delta#Phi cut:"+str(njet_dict['deltaPhi']))
-      latex.DrawLatex(0.3,0.85,"EWK")
+      latex.DrawLatex(0.3,0.85,"ttjets")
       #latex.DrawLatex(0.3,0.8,"di-Lepton")
       cb.Draw()
-      cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/ewk_rCS_LT'+str(stb[0])+str(stb[1])+'_HT'+str(htb[0])+str(htb[1])+'_nJET'+str(srNJet[0])+str(srNJet[1])+'btagW.png')
-      cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/ewk_rCS_LT'+str(stb[0])+str(stb[1])+'_HT'+str(htb[0])+str(htb[1])+'_nJET'+str(srNJet[0])+str(srNJet[1])+'btagW.pdf')
-      cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/ewk_rCS_LT'+str(stb[0])+str(stb[1])+'_HT'+str(htb[0])+str(htb[1])+'_nJET'+str(srNJet[0])+str(srNJet[1])+'btagW.root')
+      cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/TTJets_rCS_LT'+str(stb[0])+str(stb[1])+'_HT'+str(htb[0])+str(htb[1])+'_nJET'+str(srNJet[0])+str(srNJet[1])+'btagW.png')
+      cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/TTJets_rCS_LT'+str(stb[0])+str(stb[1])+'_HT'+str(htb[0])+str(htb[1])+'_nJET'+str(srNJet[0])+str(srNJet[1])+'btagW.pdf')
+      cb.SaveAs('~/www/Spring15/25ns/rCS_Plots/TTJets_rCS_LT'+str(stb[0])+str(stb[1])+'_HT'+str(htb[0])+str(htb[1])+'_nJET'+str(srNJet[0])+str(srNJet[1])+'btagW.root')
 
