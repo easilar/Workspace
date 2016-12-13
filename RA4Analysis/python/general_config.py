@@ -3,7 +3,7 @@ import ROOT
 ##General
 
 sample_lumi = 3000##pb
-lumi = 12880 #2300##pb
+lumi = 40000 #2300##pb
 lumi_label = 12.88
 scale = '(1)'
 btagVarString = 'nBJetMediumCSV30'

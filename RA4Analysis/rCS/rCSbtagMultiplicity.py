@@ -8,7 +8,7 @@ from Workspace.RA4Analysis.cmgTuples_Spring15_25ns_postProcessed_fromArtur impor
 
 
 from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName, nBTagBinName, varBinName, varBin
-from rCShelpers import *
+from Workspace.RA4Analysis.rCShelpers import *
 import math
 import pickle
 from Workspace.RA4Analysis.signalRegions import *

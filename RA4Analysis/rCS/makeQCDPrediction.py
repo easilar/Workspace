@@ -22,7 +22,7 @@ from Workspace.RA4Analysis.cmgTuples_Data25ns_Promtv2_antiSel_postprocessed impo
 from math import *
 from Workspace.HEPHYPythonTools.user import username
 from LpTemplateFit import LpTemplateFit
-from rCShelpers import *
+from Workspace.RA4Analysis.rCShelpers import *
 
 isData = False
 makeFit = False

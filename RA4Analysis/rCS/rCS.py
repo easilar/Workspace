@@ -3,7 +3,7 @@ import os,sys
 from Workspace.HEPHYPythonTools.helpers import *
 from Workspace.RA4Analysis.helpers import *# nameAndCut, nJetBinName, nBTagBinName, varBinName, varBin
 
-from rCShelpers import *
+from Workspace.RA4Analysis.rCShelpers import *
 from predictionConfig import *
 
 import math

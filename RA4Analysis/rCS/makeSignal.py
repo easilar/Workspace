@@ -7,7 +7,7 @@ from makeTTPrediction import makeTTPrediction
 from makeWPrediction import makeWPrediction
 from Workspace.HEPHYPythonTools.user import username
 from binnedNBTagsFit import binnedNBTagsFit
-from rCShelpers import *
+from Workspace.RA4Analysis.rCShelpers import *
 from math import pi, sqrt
 
 lepSel = 'hard'

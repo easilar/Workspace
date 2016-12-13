@@ -6,7 +6,7 @@ from Workspace.HEPHYPythonTools.helpers import getChain, getPlotFromChain, getYi
 from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName,nBTagBinName,varBinName
 from Workspace.HEPHYPythonTools.user import username
 from math import pi, sqrt, isnan
-from rCShelpers import *# weight_str , weight_err_str , lumi
+from Workspace.RA4Analysis.rCShelpers import *# weight_str , weight_err_str , lumi
 
 from predictionConfig import *
 
@@ -47,7 +47,7 @@ def binnedNBTagsFit(cut, MCcut, cutname, samples, prefix = "", QCD_dict={0:{'y':
   hQCD.Scale(0.5) #split in +/- charge
   
   #Get histograms binned in b-tag multiplicity
-  template_WJets_PosPdg_Dict = getTemplate(cutname, templateDir, 'WJets_PosPdg') #these templates will always be MC, so a reweighting (e.g. b-tagging) should not be used
+  template_WJets_PosPdg_Dict = getTemplate(cutname, templateDir, 'WJets_PosPdg',creatnew=True) #these templates will always be MC, so a reweighting (e.g. b-tagging) should not be used
   if template_WJets_PosPdg_Dict['loadTemp'] and loadTemplate:
     template_WJets_PosPdg = template_WJets_PosPdg_Dict['hist']
     tempFile_WJets_PosPdg = template_WJets_PosPdg_Dict['file']
@@ -62,7 +62,7 @@ def binnedNBTagsFit(cut, MCcut, cutname, samples, prefix = "", QCD_dict={0:{'y':
     template_WJets_PosPdg.Write()
     #tempFile.Close()
 
-  template_WJets_NegPdg_Dict = getTemplate(cutname, templateDir, 'WJets_NegPdg') #these templates will always be MC, so a reweighting (e.g. b-tagging) should not be used
+  template_WJets_NegPdg_Dict = getTemplate(cutname, templateDir, 'WJets_NegPdg',creatnew=True) #these templates will always be MC, so a reweighting (e.g. b-tagging) should not be used
   if template_WJets_NegPdg_Dict['loadTemp'] and loadTemplate:
     template_WJets_NegPdg = template_WJets_NegPdg_Dict['hist']
     tempFile_WJets_NegPdg = template_WJets_NegPdg_Dict['file']
@@ -77,7 +77,7 @@ def binnedNBTagsFit(cut, MCcut, cutname, samples, prefix = "", QCD_dict={0:{'y':
     template_WJets_NegPdg.Write()
     #tempFile.Close()
 
-  template_TTJets_Dict = getTemplate(cutname, templateDir, 'TTJets') #these templates will always be MC, so a reweighting (e.g. b-tagging) should not be used
+  template_TTJets_Dict = getTemplate(cutname, templateDir, 'TTJets',creatnew=True) #these templates will always be MC, so a reweighting (e.g. b-tagging) should not be used
   if template_TTJets_Dict['loadTemp'] and loadTemplate:
     template_TTJets = template_TTJets_Dict['hist']
     tempFile_TTJets = template_TTJets_Dict['file']
@@ -92,7 +92,7 @@ def binnedNBTagsFit(cut, MCcut, cutname, samples, prefix = "", QCD_dict={0:{'y':
     template_TTJets.Write()
     #tempFile.Close()
 
-  template_Rest_PosPdg_Dict = getTemplate(cutname, templateDir, 'Rest_PosPdg') #these templates will always be MC, so a reweighting (e.g. b-tagging) should not be used
+  template_Rest_PosPdg_Dict = getTemplate(cutname, templateDir, 'Rest_PosPdg',creatnew=True) #these templates will always be MC, so a reweighting (e.g. b-tagging) should not be used
   if template_Rest_PosPdg_Dict['loadTemp'] and loadTemplate:
     template_Rest_PosPdg = template_Rest_PosPdg_Dict['hist']
     tempFile_Rest_PosPdg = template_Rest_PosPdg_Dict['file']
@@ -107,7 +107,7 @@ def binnedNBTagsFit(cut, MCcut, cutname, samples, prefix = "", QCD_dict={0:{'y':
     template_Rest_PosPdg.Write()
     #tempFile.Close()
 
-  template_Rest_NegPdg_Dict = getTemplate(cutname, templateDir, 'Rest_NegPdg') #these templates will always be MC, so a reweighting (e.g. b-tagging) should not be used
+  template_Rest_NegPdg_Dict = getTemplate(cutname, templateDir, 'Rest_NegPdg',creatnew=True) #these templates will always be MC, so a reweighting (e.g. b-tagging) should not be used
   if template_Rest_NegPdg_Dict['loadTemp'] and loadTemplate:
     template_Rest_NegPdg = template_Rest_NegPdg_Dict['hist']
     tempFile_Rest_NegPdg = template_Rest_NegPdg_Dict['file']

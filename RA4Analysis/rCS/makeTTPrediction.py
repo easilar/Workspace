@@ -3,9 +3,8 @@ from Workspace.HEPHYPythonTools.helpers import getChain, getPlotFromChain, getYi
 from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName,nBTagBinName,varBinName
 from Workspace.HEPHYPythonTools.user import username
 from binnedNBTagsFit import binnedNBTagsFit
-from rCShelpers import * 
 from math import pi, sqrt, isnan
-from rCShelpers import *
+from Workspace.RA4Analysis.rCShelpers import *
 
 from predictionConfig import *
 

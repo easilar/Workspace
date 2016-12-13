@@ -8,7 +8,7 @@ ROOT.setTDRStyle()
 from Workspace.HEPHYPythonTools.helpers import getChain, getPlotFromChain, getYieldFromChain
 from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName,nBTagBinName,varBinName
 from Workspace.HEPHYPythonTools.user import username
-from rCShelpers import *
+from Workspace.RA4Analysis.rCShelpers import *
 from math import pi, sqrt, isnan
 from Workspace.RA4Analysis.signalRegions import *
 

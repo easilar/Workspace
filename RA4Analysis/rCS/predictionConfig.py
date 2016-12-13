@@ -1,5 +1,4 @@
 ## use this file to define all necessary samples, variables etc needed for the entire prediction process
-
 import ROOT
 import pickle
 import os,sys
@@ -11,6 +10,12 @@ from Workspace.RA4Analysis.cmgTuples_Data25ns_Promtv2_postprocessed import *
 from Workspace.HEPHYPythonTools.user import username
 from Workspace.RA4Analysis.signalRegions import *
 
+#class PredConfig:
+#
+#   def __init__(self,nSR):
+#       self.signalRegions = signalRegions_Moriond2017_onebyone[nSR]
+#       self.nSR = nSR
+#
 testRun = False
 
 ## b-tagging and other variables
@@ -30,7 +35,7 @@ if QCDup: nameSuffix += '_QCDup'
 if QCDdown: nameSuffix += '_QCDdown'
 
 ## samples
-isData              = True
+isData              = False
 unblinded           = True
 validation          = False
 isCentralPrediction = True
@@ -74,19 +79,23 @@ else:
 
 
 ## signal region definition
+if testRun:
+  signalRegions = oneRegion
 if validation:
   signalRegions = validation2016
   regStr = 'validation_4j_altWSB'
 else:
-  signalRegions = signalRegions2016
-  regStr = 'SR2016_postApp_v2'
+  #signalRegions = signalRegions2016
+  #signalRegions = con.signalRegions
+  #regStr = 'SR_Moriond2017_v1'
+  regStr = 'SR_ICHEP2016_v1'
   #regStr = 'SR2016_v2'
 
 ## weight calculations
-lumi = 12.9
-templateLumi = 12.9 # lumi that was used when template was created - if defined wrong, fixed rest backgrounds will be wrong
+lumi = 40
+templateLumi = 40 # lumi that was used when template was created - if defined wrong, fixed rest backgrounds will be wrong
 sampleLumi = 3.
-printlumi = '12.9'
+printlumi = '40'
 debugReweighting = False
 
 year = '2016'
@@ -99,7 +108,7 @@ else:
   templateLumistr = str(templateLumi)#.replace('.','p')
 
 ## Template Bootstrap error dictionary
-templateBootstrap = True
+templateBootstrap = False
 if validation:
   templateBootstrap = False
 templateBootstrapDir = '/data/dspitzbart/bootstrap2016/bootstrap_unc_pkl'
@@ -112,15 +121,16 @@ if isData:
 else:
   templateName   = 'Spring16_templates_'+regStr+'_lep_MC'
   predictionName = templateName+btagWeightSuffix + nameSuffix
-printDir    = '/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Spring15/25ns/templateFit_'+predictionName+'_'+lumistr+'/'
-pickleDir   = '/data/'+username+'/Results'+year+'/Prediction_'+predictionName+'_'+lumistr+'/'
-templateDir = '/data/'+username+'/Results'+year+'/btagTemplates_'+templateName+'_'+templateLumistr+'/'
-prefix = 'singleLeptonic_Spring16_'
-
+printDir    = '/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Spring16/25ns/templateFit_'+predictionName+'_'+lumistr+'/'
+pickleDir   = '/afs/hephy.at/data/'+username+'01/Results'+year+'/Prediction_'+predictionName+'_'+lumistr+'/'
+templateDir = '/afs/hephy.at/data/'+username+'01/Results'+year+'/btagTemplates_'+templateName+'_'+templateLumistr+'/'
+prefix = "singleLeptonic_Spring16_Aggregate40_ht5001000"
+#prefix = "singleLeptonic_Spring16_Aggregate40_ht1000_new"
+#prefix = "singleLeptonic_Spring16_Aggregate40"
 if validation:
   kappa_dict_dir = '/data/dspitzbart/Results'+year+'/Prediction_Spring16_templates_validation_4j_altWSB_lep_MC_SF_12p9/singleLeptonic_Spring16__estimationResults_pkl_kappa_corrected'
 else:
-  kappa_dict_dir = '/data/dspitzbart/Results'+year+'/Prediction_Spring16_templates_SR2016_postApp_v2_lep_MC_SF_12p9/singleLeptonic_Spring16__estimationResults_pkl_kappa_corrected'
+  kappa_dict_dir = '/afs/hephy.at/data/'+username+'01/Results'+year+'/Prediction_templates_'+prefix+'SR2016_postApp_v2_lep_MC_SF_40/singleLeptonic_Spring16__estimationResults_pkl_kappa_corrected'
 
 ## Preselection cut
 triggers = "((HLT_EleHT350||HLT_EleHT400||HLT_Ele105)||(HLT_MuHT350||HLT_MuHT400))"
@@ -143,23 +153,22 @@ if not isData: presel = presel_MC
 ## weights for MC
 muTriggerEff = '0.926'
 eleTriggerErr = '0.963'
-MCweight = 'TopPtWeight*puReweight_true_max4*(singleMuonic*'+muTriggerEff+' + singleElectronic*'+eleTriggerErr+')*lepton_muSF_HIP*lepton_muSF_mediumID*lepton_muSF_miniIso02*lepton_muSF_sip3d*lepton_eleSF_cutbasedID*lepton_eleSF_miniIso01*lepton_eleSF_gsf'
+MCweight = 'TopPtWeight*puReweight_true_max4*(singleMuonic*'+muTriggerEff+' + singleElectronic*'+eleTriggerErr+')*leptonSF'
 
 ## corrections
 createFits = True # turn off if you already did one
 if not isCentralPrediction:
   createFits = False
-fitDir = '/data/'+username+'/Results'+year+'/correctionFit_'+regStr+'_MC_'+lumistr+nameSuffix+'/'
+fitDir = '/afs/hephy.at/data/'+username+'01'+'/Results'+year+'/correctionFit_'+regStr+'_MC_'+lumistr+nameSuffix+'/'
 #fitDir = '/data/'+username+'/Results'+year+'/correctionFit_SR2016_v1_MC_test/'
 fitPrintDir = '/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Results'+year+'/25ns/RcsFit_'+predictionName+'_'+lumistr+'_test/'
 
 ## do stuff for test runs
 if testRun:
-  signalRegions = oneRegion
   predictionName = 'testRun'
   printDir    = '/afs/hephy.at/user/'+username[0]+'/'+username+'/www/Results'+year+'/25ns/templateFit_'+predictionName+'_'+lumistr+'/'
-  pickleDir   = '/data/'+username+'/Results'+year+'/Prediction_'+predictionName+'_'+lumistr+'/'
-  templateDir = '/data/'+username+'/Results'+year+'/btagTemplates_'+predictionName+'_'+templateLumistr+'/'
+  pickleDir   = '/afs/hephy.at/data/'+username+'01/Results'+year+'/Prediction_'+predictionName+'_'+lumistr+'/'
+  templateDir = '/afs/hephy.at/data/'+username+'01/Results'+year+'/btagTemplates_'+predictionName+'_'+templateLumistr+'/'
 
 
 
@@ -174,3 +183,7 @@ if not os.path.exists(templateDir):
   os.makedirs(templateDir)
 if not os.path.exists(fitPrintDir):
   os.makedirs(fitPrintDir)
+
+
+
+

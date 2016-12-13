@@ -5,14 +5,28 @@ from Workspace.HEPHYPythonTools.helpers import getChain, getPlotFromChain, getYi
 from Workspace.RA4Analysis.helpers import nameAndCut, nJetBinName,nBTagBinName,varBinName
 
 from Workspace.HEPHYPythonTools.user import username
-from rCShelpers import *
+from Workspace.RA4Analysis.rCShelpers import *
 from math import pi, sqrt
 from Workspace.RA4Analysis.signalRegions import *
 
 from predictionConfig import *
 
+from optparse import OptionParser
+parser = OptionParser()
+parser.add_option("--nSR", dest="nSR", default=0, action="store", help="enter the number of SR you want to enter 0-27")
+(options, args) = parser.parse_args()
+
+nSR = int(options.nSR)
+prefix = prefix+"_"+str(nSR)
+#signalRegions = signalRegions_Moriond2017_onebyone[nSR]
+#signalRegions = signalRegions2016_onebyone[nSR]
+#signalRegions = signalRegions2016_HT500_onebyone[nSR]
+signalRegions = signalRegions2016_HT5001000_onebyone[nSR]
+#signalRegions = signalRegions2016_HT1000_onebyone[nSR]
+
 ROOT.gROOT.LoadMacro('../../HEPHYPythonTools/scripts/root/tdrstyle.C')
 ROOT.setTDRStyle()
+
 
 ROOT.TH1F().SetDefaultSumw2()
 if not createFits: loadedFit = pickle.load(file(fitDir+prefix+'_fit_pkl'))

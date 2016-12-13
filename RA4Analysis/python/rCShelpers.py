@@ -18,10 +18,10 @@ def makeWeight(lumi=4., sampleLumi=3.,debug=False, reWeight='lepton_eleSF_miniIs
     weight_err_str = '('+weight_str+'*'+weight_str+')'
   return weight_str, weight_err_str
 
-def getTemplate(cutName, path, sampleName):
+def getTemplate(cutName, path, sampleName,creatnew=False):
   temp = ROOT.TH1F()
   tempFile = ROOT.TFile(path+cutName+'_'+sampleName+'.root')
-  if tempFile.IsOpen():
+  if tempFile.IsOpen() and not creatnew:
     print 'Found existing template at:',path,'and will use this one'
     temp = tempFile.Get('h_tmp')
     print temp
@@ -227,3 +227,5 @@ def setNiceBinLabel(hist, signalRegions):
       for htb in sorted(signalRegions[njb][stb]):
         hist.GetXaxis().SetBinLabel(i,'#splitline{'+signalRegions[njb][stb][htb]['njet']+'}{#splitline{'+signalRegions[njb][stb][htb]['LT']+'}{'+signalRegions[njb][stb][htb]['HT']+'}}')
         i += 1
+
+
